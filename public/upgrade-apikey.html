@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upgrade Apikey - Arulzxd API</title>
+    <link rel="icon" href="https://arulz-xd.my.id/files/Q2C70y.png" type="image/png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- QRCode Generator & SweetAlert2 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #0b1329;
+        }
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-glow: rgba(0, 243, 255, 0.4);
+            --bg-dark: #030712;
+            --bg-card: rgba(15, 23, 42, 0.75);
+            --border-color: rgba(0, 243, 255, 0.2);
+        }
+
+        html.light {
+            --neon-cyan: #008b9b;
+            --neon-glow: rgba(0, 139, 155, 0.25);
+            --bg-dark: #f0fdfa;
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --border-color: rgba(0, 139, 155, 0.3);
+        }
+
+        #cyber-loader-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background-color: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s ease;
+        }
+
+        #cyber-loader-overlay.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .scanner-beam {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 300%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.05), transparent);
+            animation: scanAnimation 4s infinite linear;
+        }
+        @keyframes scanAnimation {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        .hud-ring {
+            position: relative;
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ring-outer {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px dashed var(--neon-cyan);
+            opacity: 0.6;
+            animation: spinClockwise 10s linear infinite;
+            box-shadow: 0 0 15px var(--neon-glow);
+        }
+
+        .ring-middle {
+            position: absolute;
+            inset: 10px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: var(--neon-cyan);
+            border-bottom-color: var(--neon-cyan);
+            animation: spinCounterClockwise 4s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+        }
+
+        .ring-inner {
+            position: absolute;
+            inset: 20px;
+            border-radius: 50%;
+            border: 1px dotted var(--neon-cyan);
+            opacity: 0.8;
+            animation: spinClockwise 6s linear infinite;
+        }
+
+        .hud-avatar {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--neon-cyan);
+            box-shadow: 0 0 20px var(--neon-cyan);
+            z-index: 10;
+        }
+
+        @keyframes spinClockwise { 100% { transform: rotate(360deg); } }
+        @keyframes spinCounterClockwise { 100% { transform: rotate(-360deg); } }
+
+        .animated-dots::after {
+            content: '';
+            display: inline-block;
+            width: 1.5em;
+            text-align: left;
+            animation: dotsAnimation 1.5s steps(4, end) infinite;
+        }
+        @keyframes dotsAnimation {
+            0% { content: ''; }
+            25% { content: '.'; }
+            50% { content: '..'; }
+            75% { content: '...'; }
+        }
+
+        .neon-progress-bar {
+            background: linear-gradient(90deg, #06b6d4, var(--neon-cyan));
+            box-shadow: 0 0 12px var(--neon-cyan);
+            transition: width 0.15s ease-out;
+        }
+
+        .swal2-popup.cyber-swal {
+            background: #0a1628 !important;
+            border: 1px solid #162a45 !important;
+            border-radius: 16px !important;
+            color: #e2e8f0 !important;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.25) !important;
+            font-family: 'Space Grotesk', sans-serif !important;
+        }
+        .swal2-title.cyber-swal-title {
+            color: #00f3ff !important;
+            font-family: 'Orbitron', sans-serif !important;
+            font-size: 1.1rem !important;
+        }
+        .swal2-html-container.cyber-swal-text {
+            color: #94a3b8 !important;
+            font-size: 0.85rem !important;
+        }
+        .swal2-confirm.cyber-swal-confirm {
+            background: #00f3ff !important;
+            color: #050b14 !important;
+            font-weight: 800 !important;
+            font-family: 'Orbitron', sans-serif !important;
+            border-radius: 8px !important;
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.4) !important;
+        }
+
+        #qrcodeContainer canvas, #qrcodeContainer img {
+            margin: 0 auto;
+            max-width: 100%;
+            height: auto !important;
+            display: block;
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between antialiased selection:bg-cyan-500/30 selection:text-cyan-300 relative">
+
+    <div id="cyber-loader-overlay">
+        <div class="scanner-beam"></div>
+
+        <div class="hud-ring mb-6">
+            <div class="ring-outer"></div>
+            <div class="ring-middle"></div>
+            <div class="ring-inner"></div>
+            <img src="https://arulz-xd.my.id/files/Q2C70y.png" alt="Logo" class="hud-avatar">
+        </div>
+
+        <div class="text-center px-4">
+            <div id="loader-title-text" class="text-sm font-extrabold tracking-widest uppercase text-cyan-400 code-font mb-1">
+                Memuat Halaman<span class="animated-dots"></span>
+            </div>
+            <div class="text-[10px] text-slate-400 font-mono tracking-wider opacity-80 uppercase">
+                SYSTEM INITIALIZING // CORE GATEWAY
+            </div>
+        </div>
+
+        <div class="w-64 sm:w-80 mt-6">
+            <div class="flex items-center justify-between text-xs font-bold code-font mb-2">
+                <span class="text-slate-400 text-[10px]">SYSTEM STATUS</span>
+                <span id="loader-percentage" class="text-cyan-400 text-sm">0%</span>
+            </div>
+            <div class="w-full h-2 bg-slate-900/90 rounded-full border border-cyan-500/30 overflow-hidden p-0.5">
+                <div id="loader-progress-fill" class="h-full rounded-full neon-progress-bar w-0"></div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-6 text-[10px] font-mono text-slate-500 uppercase tracking-widest">
+            Arulz-XD API v2.0
+        </div>
+    </div>
+
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,#1e293b10_1px,transparent_1px),linear-gradient(to_bottom,#1e293b10_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none"></div>
+
+    <header class="relative max-w-4xl mx-auto w-full px-6 pt-12 pb-6 text-center z-10">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 text-xs font-semibold tracking-wider uppercase mb-4 animate-pulse">
+            <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+            Pricing Plans 2026
+        </div>
+        <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-3">
+            Pilih Paket <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">API Terbaik</span> Anda
+        </h1>
+        <p class="text-slate-400 text-sm md:text-base max-w-xl mx-auto">
+            Tingkatkan batas request, dapatkan performa maksimal, dan nikmati fitur eksklusif untuk kebutuhan pengembangan aplikasi Anda.
+        </p>
+
+        <div id="userLoggedInfoBanner" class="mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-xl bg-slate-900/80 border border-cyan-500/30 text-xs text-slate-300">
+            <i class="fa-solid fa-user-check text-cyan-400"></i>
+            <span>Akun Terhubung: <strong id="userBannerUsername" class="text-white">Loading...</strong> (<span id="userBannerEmail" class="text-cyan-400">Loading...</span>)</span>
+        </div>
+    </header>
+
+    <main class="relative max-w-6xl mx-auto w-full px-4 md:px-6 py-6 z-10 flex-1 flex items-center">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full items-stretch">
+            
+            <!-- FREE PLAN -->
+            <div class="bg-slate-900/60 border border-white/5 rounded-2xl p-6 flex flex-col justify-between shadow-xl backdrop-blur-sm transition-all duration-300 hover:border-slate-700 hover:translate-y-[-4px]">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Free Plan</span>
+                        <span class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-800 text-slate-300 border border-slate-700">Dasar</span>
+                    </div>
+                    <div class="mb-6">
+                        <span class="text-3xl font-extrabold text-white">Rp 0</span>
+                        <span class="text-slate-500 text-xs font-mono block mt-1">Selamanya Gratis</span>
+                    </div>
+                    <p class="text-slate-400 text-xs mb-6 leading-relaxed">
+                        Cocok untuk uji coba awal, eksperimen lokal, dan mempelajari integrasi endpoint Arulzxd API.
+                    </p>
+                    <div class="border-t border-white/5 pt-5 space-y-3.5">
+                        <div class="flex items-start gap-2.5 text-xs text-slate-300">
+                            <svg class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            <span>Limit <strong class="text-white font-semibold">100 Request</strong> / hari</span>
+                        </div>
+                        <div class="flex items-start gap-2.5 text-xs text-slate-300">
+                            <svg class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            <span>Akses Standar ke Semua Endpoint</span>
+                        </div>
+                        <div class="flex items-start gap-2.5 text-xs text-slate-500 line-through decoration-red-500/50">
+                            <svg class="w-4 h-4 text-slate-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                            <span>Tanpa Apikey Custom</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-8">
+                    <a href="/docs" class="block w-full text-center bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold py-3 px-4 rounded-xl transition duration-200 border border-white/5 uppercase tracking-wider">
+                        Coba Fitur
+                    </a>
+                </div>
+            </div>
+
+            <!-- PREMIUM PLAN (MINIMAL 10 HARI) -->
+            <div class="bg-slate-900/90 border-2 border-amber-500/60 rounded-2xl p-6 flex flex-col justify-between shadow-2xl relative backdrop-blur-sm transition-all duration-300 hover:border-amber-400 hover:translate-y-[-4px]">
+                <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-amber-500 to-yellow-400 text-slate-950 text-[10px] font-black rounded-full uppercase tracking-wider shadow-lg">
+                    Paling Populer
+                </div>
+                <div class="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-2xl pointer-events-none"></div>
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-bold text-amber-400 uppercase tracking-widest">Premium Plan</span>
+                        <span class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-500/10 text-amber-300 border border-amber-500/20">Rekomendasi</span>
+                    </div>
+                    <div class="mb-6">
+                        <span class="text-3xl font-extrabold text-white" id="premium-display-price">Rp 1.000</span>
+                        <span class="text-slate-400 text-xs font-mono block mt-1">Rp 100 / Hari (Min. 10 Hari)</span>
+                    </div>
+                    <p class="text-slate-300 text-xs mb-6 leading-relaxed">
+                        Pilihan tepat untuk developer aplikasi mandiri yang membutuhkan performa stabil dan kuota request besar.
+                    </p>
+                    <div class="border-t border-white/10 pt-5 space-y-3.5">
+                        <div class="flex items-start gap-2.5 text-xs text-slate-200">
+                            <svg class="w-4 h-4 text-amber-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            <span>Limit <strong class="text-amber-400 font-bold">1.000 Request</strong> / hari</span>
+                        </div>
+                        <div class="flex items-start gap-2.5 text-xs text-slate-200">
+                            <svg class="w-4 h-4 text-amber-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            <span>Akses Penuh ke Semua Endpoint Premium</span>
+                        </div>
+                        <div class="flex items-start gap-2.5 text-xs text-slate-200">
+                            <svg class="w-4 h-4 text-amber-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            <span>Apikey Otomatis Format Premium</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-8 space-y-4">
+                    <div class="flex items-center justify-between bg-slate-950/40 border border-white/10 p-2 rounded-xl">
+                        <span class="text-xs text-slate-400 font-medium pl-2">Durasi Paket</span>
+                        <div class="flex items-center gap-3">
+                            <button onclick="updateDays('premium', -1)" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold text-lg flex items-center justify-center transition border border-white/5">-</button>
+                            <span id="premium-days" class="text-sm font-bold text-white font-mono w-6 text-center">10</span>
+                            <button onclick="updateDays('premium', 1)" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-amber-400 font-bold text-lg flex items-center justify-center transition border border-white/5">+</button>
+                            <span class="text-xs text-slate-400 pr-2">Hari</span>
+                        </div>
+                    </div>
+                    <button onclick="processPaywuzPayment('premium')" class="block w-full text-center bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-600 hover:to-yellow-500 text-slate-950 text-xs font-black py-3 px-4 rounded-xl transition duration-200 uppercase tracking-wider shadow-lg shadow-amber-500/10">
+                        <i class="fa-solid fa-bolt mr-1"></i> Beli Premium (Otomatis)
+                    </button>
+                </div>
+            </div>
+
+            <!-- VIP PLAN (MINIMAL 3 HARI) -->
+            <div class="bg-slate-900/60 border border-white/5 rounded-2xl p-6 flex flex-col justify-between shadow-xl backdrop-blur-sm transition-all duration-300 hover:border-purple-500/50 hover:translate-y-[-4px]">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-2xl pointer-events-none"></div>
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-xs font-bold text-purple-400 uppercase tracking-widest">VIP Plan</span>
+                        <span class="px-2.5 py-1 rounded-md text-[10px] font-bold bg-purple-500/10 text-purple-300 border border-purple-500/20">Ultimate</span>
+                    </div>
+                    <div class="mb-6">
+                        <span class="text-3xl font-extrabold text-white" id="vip-display-price">Rp 1.500</span>
+                        <span class="text-slate-400 text-xs font-mono block mt-1">Rp 500 / Hari (Min. 3 Hari)</span>
+                    </div>
+                    <p class="text-slate-400 text-xs mb-6 leading-relaxed">
+                        Sempurna untuk aplikasi skala produksi besar, bot publik masif, atau sistem komersial tanpa batas.
+                    </p>
+                    <div class="border-t border-white/5 pt-5 space-y-3.5">
+                        <div class="flex items-start gap-2.5 text-xs text-slate-200">
+                            <svg class="w-4 h-4 text-purple-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            <span>Limit <strong class="text-purple-400 font-bold">Unlimited Request</strong></span>
+                        </div>
+                        <div class="flex items-start gap-2.5 text-xs text-slate-200">
+                            <svg class="w-4 h-4 text-purple-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            <span>Akses Prioritas Fitur VIP</span>
+                        </div>
+                        <div class="flex items-start gap-2.5 text-xs text-slate-200">
+                            <svg class="w-4 h-4 text-purple-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            <span>Apikey Custom Suka-Suka</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 space-y-4">
+                    <div class="flex items-center justify-between bg-slate-950/40 border border-white/10 p-2 rounded-xl">
+                        <span class="text-xs text-slate-400 font-medium pl-2">Durasi Paket</span>
+                        <div class="flex items-center gap-3">
+                            <button onclick="updateDays('vip', -1)" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-purple-400 font-bold text-lg flex items-center justify-center transition border border-white/5">-</button>
+                            <span id="vip-days" class="text-sm font-bold text-white font-mono w-6 text-center">3</span>
+                            <button onclick="updateDays('vip', 1)" class="w-8 h-8 rounded-lg bg-slate-800 hover:bg-slate-700 text-purple-400 font-bold text-lg flex items-center justify-center transition border border-white/5">+</button>
+                            <span class="text-xs text-slate-400 pr-2">Hari</span>
+                        </div>
+                    </div>
+                    <button onclick="processPaywuzPayment('vip')" class="block w-full text-center bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold py-3 px-4 rounded-xl transition duration-200 uppercase tracking-wider shadow-lg shadow-purple-500/20">
+                        <i class="fa-solid fa-bolt mr-1"></i> Beli VIP (Otomatis)
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div id="paymentModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+        <div class="bg-slate-900 w-full max-w-lg rounded-2xl border border-cyan-500/40 overflow-hidden my-auto max-h-[95vh] flex flex-col shadow-[0_0_25px_rgba(0,243,255,0.3)]">
+
+            <div class="bg-gradient-to-r from-cyan-900 to-slate-900 p-4 text-white flex justify-between items-center border-b border-white/10 flex-shrink-0">
+                <h3 class="font-bold text-sm font-mono flex items-center gap-2 text-cyan-400">
+                    <i class="fa-solid fa-bolt"></i> Pembayaran QRIS PayWuz
+                </h3>
+                <button onclick="closePaymentModal()" class="text-slate-400 hover:text-white text-lg transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="overflow-y-auto p-4 sm:p-5 flex-1">
+                
+                <div id="qrisContainerBox" class="flex flex-col items-center justify-center space-y-4">
+                    <div class="w-full bg-slate-950 p-3 rounded-xl border border-cyan-500/30 text-center">
+                        <p class="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Total Pembayaran Paket</p>
+                        <h3 id="modalQrisAmount" class="text-2xl font-extrabold text-cyan-400 font-mono mt-0.5">Rp 0</h3>
+                        <p class="text-[10px] text-slate-400 mt-1">Order ID: <span id="modalQrisOrderId" class="font-mono text-white">TRX-000000</span></p>
+                        <p class="text-[10px] text-amber-400 mt-0.5">Role Target: <strong id="modalQrisTargetRole" class="uppercase">PREMIUM USER</strong></p>
+                    </div>
+
+                    <div class="flex items-center justify-center gap-2 bg-red-950/50 border border-red-500/40 text-red-400 px-4 py-2 rounded-lg text-xs font-mono font-bold w-full">
+                        <i class="fa-solid fa-clock animate-pulse"></i>
+                        <span>Selesaikan Sebelum: <strong id="modalQrisCountdown" class="text-white text-sm">15:00</strong></span>
+                    </div>
+
+                    <div class="text-center">
+                        <p class="text-xs text-slate-300 font-semibold">Scan QRIS untuk Upgrade Role Otomatis</p>
+                        <p class="text-[10px] text-slate-400">Dukungan GoPay, OVO, DANA, ShopeePay & All Bank</p>
+                    </div>
+
+                    <div class="bg-white p-3 rounded-xl border-2 border-cyan-400 shadow-[0_0_15px_rgba(0,243,255,0.4)] flex flex-col items-center justify-center w-full max-w-[280px]">
+                        <div id="qrcodeContainer" class="w-full flex justify-center items-center overflow-hidden"></div>
+                    </div>
+
+                    <div class="flex items-center gap-2 text-xs font-mono text-amber-400 bg-amber-950/40 px-3 py-1.5 rounded-lg border border-amber-800/40 animate-pulse w-full justify-center">
+                        <i class="fa-solid fa-spinner fa-spin"></i> Menunggu Verifikasi Pembayaran...
+                    </div>
+
+                    <button type="button" onclick="cancelTransaction()" class="w-full bg-red-950/40 hover:bg-red-900/60 border border-red-500/50 text-red-400 hover:text-red-300 font-bold py-2.5 rounded-xl text-xs transition-all flex items-center justify-center gap-2 tracking-wider">
+                        <i class="fa-solid fa-xmark text-sm"></i> BATALKAN TRANSAKSI
+                    </button>
+                </div>
+
+                <div id="qrisSuccessBox" class="hidden flex flex-col items-center justify-center space-y-4 text-center py-4">
+                    <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 rounded-full flex items-center justify-center text-3xl shadow-[0_0_20px_rgba(16,185,129,0.4)]">
+                        <i class="fa-solid fa-check"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-white uppercase tracking-wide">Upgrade Berhasil!</h4>
+                        <p class="text-xs text-slate-300 mt-1">Pembayaran telah dikonfirmasi. Role & API Key Anda telah diubah secara otomatis oleh sistem.</p>
+                    </div>
+
+                    <div class="w-full bg-slate-950 border border-cyan-500/50 p-4 rounded-xl text-left space-y-2 text-xs">
+                        <div class="flex justify-between border-b border-white/10 pb-1.5">
+                            <span class="text-slate-400">Status Role:</span>
+                            <span id="successUserRole" class="text-cyan-400 font-bold">Premium User</span>
+                        </div>
+                        <div class="flex flex-col pt-1">
+                            <span class="text-slate-400 mb-1">API Key Baru Anda:</span>
+                            <span id="successUserApiKey" class="text-amber-400 font-mono font-bold break-all bg-slate-900 p-2 rounded border border-white/10">key-12345</span>
+                        </div>
+                    </div>
+
+                    <a href="/docs" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-3 rounded-xl text-xs transition uppercase tracking-wider block text-center">
+                        Kembali Ke Dashboard
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <footer class="relative max-w-4xl mx-auto w-full px-6 py-8 text-center border-t border-white/5 text-slate-500 text-xs z-10">
+        <p>© 2026 Arulzxd API. All rights reserved. Hubungi admin untuk kostumisasi limit korporat.</p>
+    </footer>
+
+    <script>
+        const config = {
+            premium: { rate: 100, days: 10, min: 10, displayId: 'premium-display-price', daysId: 'premium-days', name: 'Premium User', roleName: 'Premium User' },
+            vip: { rate: 500, days: 3, min: 3, displayId: 'vip-display-price', daysId: 'vip-days', name: 'VIP User', roleName: 'VIP User' }
+        };
+
+        let currentUser = {
+            loggedIn: false,
+            username: "Belum Login",
+            email: "-"
+        };
+
+        let currentOrderId = "";
+        let pollingInterval = null;
+        let countdownInterval = null;
+
+        function formatRupiah(amount) {
+            return "Rp " + amount.toLocaleString('id-ID');
+        }
+
+        function generateUniqueOrderId() {
+            return `UPG-${Date.now().toString().slice(-6)}-${Math.floor(100 + Math.random() * 900)}`;
+        }
+
+        function updateDays(type, change) {
+            let plan = config[type];
+            let newDays = plan.days + change;
+            
+            if (newDays >= plan.min) {
+                plan.days = newDays;
+                document.getElementById(plan.daysId).innerText = plan.days;
+                
+                let totalCost = plan.days * plan.rate;
+                document.getElementById(plan.displayId).innerText = formatRupiah(totalCost);
+            }
+        }
+
+        async function fetchUserStatus() {
+            try {
+                const res = await fetch('/api/user-status');
+                const data = await res.json();
+                if (data.loggedIn && data.user) {
+                    currentUser.loggedIn = true;
+                    currentUser.username = data.user.username || data.user.name || "User";
+                    currentUser.email = data.user.email || "-";
+
+                    document.getElementById('userBannerUsername').innerText = currentUser.username;
+                    document.getElementById('userBannerEmail').innerText = currentUser.email;
+                } else {
+                    document.getElementById('userBannerUsername').innerText = "Belum Login";
+                    document.getElementById('userBannerEmail').innerText = "Silakan login dulu";
+                }
+            } catch (err) {
+                console.error("Gagal mengambil data user-status:", err);
+            }
+        }
+
+        function renderQrisCode(qrisString) {
+            const qrContainer = document.getElementById('qrcodeContainer');
+            qrContainer.innerHTML = '';
+
+            new QRCode(qrContainer, {
+                text: qrisString,
+                width: 260,
+                height: 260,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+
+        async function processPaywuzPayment(type) {
+            if (!currentUser.loggedIn) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'HARUS LOGIN',
+                    text: 'Anda harus login terlebih dahulu sebelum dapat mengupgrade paket API Key!',
+                    confirmButtonText: 'Ke Halaman Login',
+                    customClass: { popup: 'cyber-swal', confirmButton: 'cyber-swal-confirm' }
+                }).then(() => {
+                    window.location.href = '/login';
+                });
+                return;
+            }
+
+            const plan = config[type];
+            const totalAmount = plan.days * plan.rate;
+            currentOrderId = generateUniqueOrderId();
+
+            Swal.fire({
+                title: 'MEMPROSES QRIS',
+                text: 'Menghubungkan ke gateway...',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); },
+                customClass: { popup: 'cyber-swal', title: 'cyber-swal-title', htmlContainer: 'cyber-swal-text' }
+            });
+
+            try {
+                const res = await fetch('/transactions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        orderId: currentOrderId,
+                        amount: totalAmount,
+                        qty: plan.days,
+                        itemDetails: {
+                            nama: `Upgrade Role - ${plan.roleName}`,
+                            harga: totalAmount,
+                            kategori: 'Upgrade API Key'
+                        }
+                    })
+                });
+
+                const result = await res.json();
+                if (!result.status) throw new Error(result.message || "Gagal membuat transaksi QRIS");
+
+                Swal.close();
+
+                document.getElementById('modalQrisAmount').innerText = formatRupiah(result.data.amount || totalAmount);
+                document.getElementById('modalQrisOrderId').innerText = currentOrderId;
+                document.getElementById('modalQrisTargetRole').innerText = plan.roleName;
+
+                renderQrisCode(result.data.paymentNumber);
+
+                document.getElementById('qrisContainerBox').classList.remove('hidden');
+                document.getElementById('qrisSuccessBox').classList.add('hidden');
+                document.getElementById('paymentModal').classList.remove('hidden');
+
+                const expireTime = result.data.expiredAt ? new Date(result.data.expiredAt).getTime() : Date.now() + (15 * 60 * 1000);
+                startCountdown(expireTime);
+                startStatusPolling(plan.roleName);
+
+            } catch (err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'GAGAL MEMBUAT QRIS',
+                    text: err.message || 'Terjadi kesalahan sistem saat membuat QRIS.',
+                    customClass: { popup: 'cyber-swal', confirmButton: 'cyber-swal-confirm' }
+                });
+            }
+        }
+
+        function startCountdown(expireTimestamp) {
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            countdownInterval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = expireTimestamp - now;
+
+                if (distance <= 0) {
+                    clearInterval(countdownInterval);
+                    if (pollingInterval) clearInterval(pollingInterval);
+                    document.getElementById('modalQrisCountdown').innerText = "00:00";
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'WAKTU HABIS',
+                        text: 'Batas waktu pembayaran 15 menit telah berakhir.',
+                        customClass: { popup: 'cyber-swal', confirmButton: 'cyber-swal-confirm' }
+                    });
+                    closePaymentModal();
+                    return;
+                }
+
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById('modalQrisCountdown').innerText = 
+                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function startStatusPolling(targetRoleName) {
+            if (pollingInterval) clearInterval(pollingInterval);
+
+            pollingInterval = setInterval(async () => {
+                try {
+                    const res = await fetch(`/transactions/${currentOrderId}`);
+                    const result = await res.json();
+
+                    if (result && result.data) {
+                        const status = (result.data.status || "").toLowerCase();
+
+                        if (["settlement", "success", "paid", "settled"].includes(status)) {
+                            clearInterval(pollingInterval);
+                            if (countdownInterval) clearInterval(countdownInterval);
+
+                            const userRes = await fetch('/api/user-status');
+                            const userData = await userRes.json();
+
+                            document.getElementById('qrisContainerBox').classList.add('hidden');
+                            document.getElementById('qrisSuccessBox').classList.remove('hidden');
+
+                            if (userData.loggedIn && userData.user) {
+                                document.getElementById('successUserRole').innerText = userData.user.role;
+                                document.getElementById('successUserApiKey').innerText = userData.user.apikey;
+                            }
+                        } else if (["cancelled", "failed"].includes(status)) {
+                            clearInterval(pollingInterval);
+                            if (countdownInterval) clearInterval(countdownInterval);
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'TRANSAKSI BATAL',
+                                text: 'Transaksi telah dibatalkan atau gagal.',
+                                customClass: { popup: 'cyber-swal' }
+                            });
+                            closePaymentModal();
+                        }
+                    }
+                } catch (e) {
+                    console.error("Error polling status transaksi:", e);
+                }
+            }, 3000);
+        }
+
+        async function cancelTransaction() {
+            if (pollingInterval) clearInterval(pollingInterval);
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            try {
+                await fetch(`/transactions/${currentOrderId}/cancel`, { method: 'POST' });
+            } catch (e) {}
+
+            closePaymentModal();
+        }
+
+        function closePaymentModal() {
+            if (pollingInterval) clearInterval(pollingInterval);
+            if (countdownInterval) clearInterval(countdownInterval);
+            document.getElementById('paymentModal').classList.add('hidden');
+        }
+
+        window.onload = function() {
+            fetchUserStatus();
+        };
+
+        function getPageDisplayName() {
+            const path = window.location.pathname;
+            let fileName = path.split('/').pop().replace('.html', '').toLowerCase();
+
+            if (!fileName || fileName === '' || fileName === 'index') return 'Home';
+
+            const pageMap = {
+                'home': 'Home',
+                'docs': 'Dokumentasi',
+                'doc': 'Dokumentasi',
+                'status': 'Status Server',
+                'store': 'Store API',
+                'changelog': 'Changelog',
+                'uploader': 'Uploader File',
+                'pastecode': 'Pastecode',
+                'feedback': 'Feedback',
+                'privacy': 'Kebijakan Privasi',
+                'support': 'Dukungan Support',
+                'login': 'Halaman Login'
+            };
+
+            if (pageMap[fileName]) return pageMap[fileName];
+            return fileName.charAt(0).toUpperCase() + fileName.slice(1);
+        }
+
+        const pageName = getPageDisplayName();
+        const loaderTitleEl = document.getElementById('loader-title-text');
+        if (loaderTitleEl) {
+            loaderTitleEl.innerHTML = `Memuat ${pageName}<span class="animated-dots"></span>`;
+        }
+
+        let currentProgress = 0;
+        const progressFill = document.getElementById('loader-progress-fill');
+        const percentageText = document.getElementById('loader-percentage');
+        const loaderOverlay = document.getElementById('cyber-loader-overlay');
+
+        function updateProgress(targetVal) {
+            currentProgress = Math.min(Math.max(currentProgress, targetVal), 100);
+            if (progressFill) progressFill.style.width = currentProgress + '%';
+            if (percentageText) percentageText.innerText = Math.floor(currentProgress) + '%';
+        }
+
+        const progressInterval = setInterval(() => {
+            if (currentProgress < 85) {
+                const increment = Math.random() * 12 + 5;
+                updateProgress(currentProgress + increment);
+            }
+        }, 120);
+
+        window.addEventListener('load', () => {
+            clearInterval(progressInterval);
+            updateProgress(100);
+
+            setTimeout(() => {
+                if (loaderOverlay) loaderOverlay.classList.add('fade-out');
+            }, 400);
+        });
+
+        setTimeout(() => {
+            clearInterval(progressInterval);
+            updateProgress(100);
+            if (loaderOverlay && !loaderOverlay.classList.contains('fade-out')) {
+                loaderOverlay.classList.add('fade-out');
+            }
+        }, 4000);
+    </script>
+</body>
+</html>
