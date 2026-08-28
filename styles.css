@@ -539,3 +539,229 @@
         opacity: 1;
     }
 }
+
+/* =========================================================
+   XS-PEDIA • COMIC GREEN SMOOTH THEME
+   Keeps existing component behavior while refreshing visuals.
+   ========================================================= */
+
+:root {
+    --bg-primary: #07130d;
+    --bg-secondary: #0b1f14;
+    --bg-tertiary: #10291b;
+    --text-primary: #f2fff6;
+    --text-secondary: #c8ead3;
+    --text-tertiary: #82b394;
+    --border-color: rgba(94, 234, 140, 0.24);
+    --scrollbar-thumb: #2fa85f;
+    --scrollbar-track: #07130d;
+    --card-bg: rgba(12, 35, 23, 0.78);
+    --input-bg: rgba(5, 23, 14, 0.82);
+    --method-badge: rgba(32, 120, 67, 0.78);
+    --social-bg: rgba(19, 58, 35, 0.82);
+    --social-text: #ecfff2;
+    --social-hover: rgba(37, 148, 81, 0.88);
+    --stats-bg: rgba(10, 31, 19, 0.82);
+    --stats-border: rgba(94, 234, 140, 0.2);
+    --stats-text: #f2fff6;
+    --stats-text-secondary: #aed8b9;
+    --comic-green-1: #0b3d20;
+    --comic-green-2: #159447;
+    --comic-green-3: #6ee7a0;
+    --comic-ink: #06140b;
+    --comic-glow: rgba(74, 222, 128, 0.34);
+}
+
+html {
+    background: var(--bg-primary);
+}
+
+body {
+    font-family: "Trebuchet MS", "Comic Sans MS", system-ui, sans-serif;
+    background:
+        radial-gradient(circle at 10% 0%, rgba(110, 231, 160, 0.12), transparent 34%),
+        radial-gradient(circle at 90% 12%, rgba(21, 148, 71, 0.16), transparent 36%),
+        linear-gradient(145deg, #06140b 0%, #0a2114 48%, #06160c 100%);
+    color: var(--text-primary);
+    letter-spacing: 0.01em;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.18;
+    background-image:
+        radial-gradient(rgba(255,255,255,0.25) 0.7px, transparent 0.7px);
+    background-size: 7px 7px;
+    mask-image: linear-gradient(to bottom, black, transparent 88%);
+}
+
+button,
+a,
+input,
+select,
+textarea,
+.card-hover,
+.theme-toggle-btn {
+    transition:
+        transform 0.22s ease,
+        box-shadow 0.22s ease,
+        border-color 0.22s ease,
+        background 0.22s ease,
+        color 0.22s ease,
+        opacity 0.22s ease;
+}
+
+button,
+a[class*="bg-"],
+.btn-loading,
+.theme-toggle-btn {
+    border-radius: 16px !important;
+}
+
+input,
+select,
+textarea,
+.search-input {
+    background: linear-gradient(145deg, rgba(7, 27, 16, 0.94), rgba(12, 48, 28, 0.82)) !important;
+    border: 2px solid rgba(94, 234, 140, 0.28) !important;
+    border-radius: 15px !important;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.search-input:focus {
+    outline: none;
+    border-color: rgba(110, 231, 160, 0.72) !important;
+    box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.12), 0 10px 30px rgba(0,0,0,0.18);
+}
+
+.card-hover,
+.stats-card,
+.toast,
+#welcomePopup > div > div {
+    background: linear-gradient(
+        145deg,
+        rgba(18, 57, 34, 0.88),
+        rgba(7, 27, 16, 0.9)
+    ) !important;
+    border: 2px solid rgba(94, 234, 140, 0.18) !important;
+    border-radius: 22px !important;
+    box-shadow:
+        0 14px 36px rgba(0, 0, 0, 0.22),
+        0 0 0 1px rgba(255,255,255,0.02) inset;
+    backdrop-filter: blur(14px);
+}
+
+.card-hover:hover,
+.stats-card:hover {
+    transform: translateY(-6px) rotate(-0.2deg);
+    border-color: rgba(110, 231, 160, 0.42) !important;
+    box-shadow:
+        0 20px 42px rgba(0,0,0,0.28),
+        0 0 28px var(--comic-glow);
+}
+
+button,
+a[class*="bg-"] {
+    font-weight: 800;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.14);
+}
+
+button:hover,
+a[class*="bg-"]:hover,
+.theme-toggle-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.22), 0 0 18px rgba(74, 222, 128, 0.18);
+}
+
+.gray-gradient-text {
+    background: linear-gradient(
+        120deg,
+        #f2fff6 0%,
+        #b7f7c9 30%,
+        #4ade80 58%,
+        #dcffe6 82%,
+        #8ff3b0 100%
+    );
+    background-size: 220% 220%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: xsGreenGradient 5s ease infinite;
+}
+
+@keyframes xsGreenGradient {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.method-badge,
+.social-badge,
+.status-ready {
+    border-radius: 999px !important;
+}
+
+.method-badge {
+    background: linear-gradient(135deg, rgba(19, 107, 58, 0.92), rgba(42, 176, 91, 0.72)) !important;
+    border: 1px solid rgba(152, 251, 177, 0.28);
+}
+
+.status-ready {
+    background: rgba(46, 204, 113, 0.18) !important;
+    border-color: rgba(110, 231, 160, 0.34) !important;
+    color: #a7f3be !important;
+}
+
+.theme-toggle-btn {
+    background: linear-gradient(145deg, #103c21, #0b2416) !important;
+    border: 2px solid rgba(110, 231, 160, 0.3) !important;
+}
+
+.spinner,
+.local-spinner {
+    border-color: rgba(110, 231, 160, 0.2);
+    border-top-color: #6ee7a0;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(#37c86d, #178b43);
+    border-radius: 999px;
+}
+
+::selection {
+    background: rgba(110, 231, 160, 0.28);
+    color: #ffffff;
+}
+
+/* Comic-style accent panels/borders used by common utility layouts. */
+[class*="border-cyan-"],
+[class*="border-sky-"],
+[class*="border-blue-"] {
+    border-color: rgba(110, 231, 160, 0.25) !important;
+}
+
+[class*="text-cyan-"],
+[class*="text-sky-"],
+[class*="text-blue-"] {
+    color: #8ff3b0 !important;
+}
+
+@media (max-width: 640px) {
+    body {
+        background:
+            radial-gradient(circle at 50% -10%, rgba(110, 231, 160, 0.15), transparent 42%),
+            linear-gradient(160deg, #06140b 0%, #0a2013 100%);
+    }
+
+    .card-hover,
+    .stats-card,
+    .toast {
+        border-radius: 18px !important;
+    }
+}

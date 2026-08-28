@@ -1,8 +1,8 @@
-# 🚀 ArulzXD API
+# 🚀 XS-Pedia API
 
 <div align="center">
 
-<img src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=28&pause=1000&color=00D4FF&center=true&vCenter=true&width=600&lines=Welcome+To+ArulzXD+API;Fast+%F0%9F%9A%80+Reliable+%E2%9A%A1;Free+REST+API+Services;Developer+Friendly+API" alt="Typing SVG" />
+<img src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=28&pause=1000&color=00D4FF&center=true&vCenter=true&width=600&lines=Welcome+To+XS-Pedia+API;Fast+%F0%9F%9A%80+Reliable+%E2%9A%A1;Free+REST+API+Services;Developer+Friendly+API" alt="Typing SVG" />
 
 <p>
   <img src="https://img.shields.io/badge/API-ONLINE-success?style=for-the-badge">
@@ -16,7 +16,7 @@
 
 ## ✨ Tentang API
 
-ArulzXD API adalah layanan REST API yang menyediakan berbagai endpoint untuk kebutuhan developer seperti:
+XS-Pedia API adalah layanan REST API yang menyediakan berbagai endpoint untuk kebutuhan developer seperti:
 
 - 🤖 AI Tools
 - 📥 Downloader
