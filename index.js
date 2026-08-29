@@ -3079,6 +3079,19 @@ app.get('/docs', (req, res) => {
     .scrollbar-hide::-webkit-scrollbar { display: none; }
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
+    #cyber-loader-overlay {
+        position: fixed; inset: 0; z-index: 99999;
+        background:#f7f3e8; color:#17251e;
+        display:flex; flex-direction:column; align-items:center; justify-content:center;
+        transition:opacity .18s ease, visibility .18s ease;
+    }
+    #cyber-loader-overlay.fade-out { opacity:0; visibility:hidden; pointer-events:none; }
+    .scanner-beam,.ring-outer,.ring-middle,.ring-inner { display:none !important; }
+    .hud-ring { width:64px; height:64px; display:flex; align-items:center; justify-content:center; margin-bottom:14px !important; }
+    .hud-avatar { width:48px; height:48px; border-radius:14px; object-fit:cover; border:2px solid #1f2b24; box-shadow:3px 3px 0 #b9c8b7; }
+    .animated-dots::after { content:'...'; display:inline-block; width:1.5em; animation:none !important; }
+    .neon-progress-bar { background:#2f9b59 !important; box-shadow:none !important; transition:none !important; }
+
 .cyber-popup-bg {
   background-color: #010811;
   background-image: radial-gradient(circle at 50% 30%, #031e36 0%, #010811 80%);
@@ -3124,6 +3137,40 @@ app.get('/docs', (req, res) => {
 </style>
 </head>
 <body class="min-h-screen antialiased text-slate-900 relative">
+
+<div id="cyber-loader-overlay">
+    <div class="scanner-beam"></div>
+
+    <div class="hud-ring mb-6">
+        <div class="ring-outer"></div>
+        <div class="ring-middle"></div>
+        <div class="ring-inner"></div>
+        <img src="https://arulz-xd.my.id/files/Q2C70y.png" alt="Logo" class="hud-avatar">
+    </div>
+
+    <div class="text-center px-4">
+        <div id="loader-title-text" class="text-sm font-extrabold tracking-widest uppercase text-cyan-400 code-font mb-1">
+            Memuat Halaman<span class="animated-dots"></span>
+        </div>
+        <div class="text-[10px] text-slate-400 font-mono tracking-wider opacity-80 uppercase">
+            SYSTEM INITIALIZING // CORE GATEWAY
+        </div>
+    </div>
+
+    <div class="w-64 sm:w-80 mt-6">
+        <div class="flex items-center justify-between text-xs font-bold code-font mb-2">
+            <span class="text-slate-400 text-[10px]">SYSTEM STATUS</span>
+            <span id="loader-percentage" class="text-cyan-400 text-sm">0%</span>
+        </div>
+        <div class="w-full h-2 bg-slate-900/90 rounded-full border border-cyan-500/30 overflow-hidden p-0.5">
+            <div id="loader-progress-fill" class="h-full rounded-full neon-progress-bar w-0"></div>
+        </div>
+    </div>
+
+    <div class="absolute bottom-6 text-[10px] font-mono text-slate-500 uppercase tracking-widest">
+        XS-PEDIA API v2.0
+    </div>
+</div>
 
 <div id="themeBg" class="fixed inset-0 -z-10"></div>
 
@@ -3372,6 +3419,12 @@ body.dark-mode #themeBg,
   background-image:none !important;
 }
 
+html.dark-mode #cyber-loader-overlay,
+body.dark-mode #cyber-loader-overlay,
+.dark-mode #cyber-loader-overlay{
+  background:#000 !important;
+  color:#f4f1e8 !important;
+}
 
 html.dark-mode .glass-panel,
 body.dark-mode .glass-panel,
@@ -4206,982 +4259,96 @@ function fetchUserProfile() {
             fetchUserProfile();
         });
 
+        function getPageDisplayName() {
+            const path = window.location.pathname;
+            let fileName = path.split('/').pop().replace('.html', '').toLowerCase();
 
+            if (!fileName || fileName === '' || fileName === 'index') return 'Home';
 
+            const pageMap = {
+                'home': 'Home',
+                'docs': 'Dokumentasi',
+                'doc': 'Dokumentasi',
+                'status': 'Status Server',
+                'store': 'Store API',
+                'changelog': 'Changelog',
+                'uploader': 'Uploader File',
+                'pastecode': 'Pastecode',
+                'feedback': 'Feedback',
+                'privacy': 'Kebijakan Privasi',
+                'support': 'Dukungan Support',
+                'login': 'Halaman Login'
+            };
 
+            if (pageMap[fileName]) return pageMap[fileName];
+            return fileName.charAt(0).toUpperCase() + fileName.slice(1);
+        }
 
+        const pageName = getPageDisplayName();
+        const loaderTitleEl = document.getElementById('loader-title-text');
+        if (loaderTitleEl) {
+            loaderTitleEl.innerHTML = 'Memuat ' + pageName + '<span class="animated-dots"></span>';
+        }
 
+        let currentProgress = 0;
+        let hasFinishedLoading = false;
+        const progressFill = document.getElementById('loader-progress-fill');
+        const percentageText = document.getElementById('loader-percentage');
+        const loaderOverlay = document.getElementById('cyber-loader-overlay');
 
-<!-- FINAL XS-PEDIA UI PATCH v2 -->
-<style id="xs-pedia-ui-final-v2">
-/* =========================================================
-   THEME VARIABLES
-   ========================================================= */
-:root{
-  --xs-light-bg:#ffffff;
-  --xs-light-surface:#ffffff;
-  --xs-light-surface-2:#f7fbf8;
-  --xs-light-ink:#172019;
-  --xs-light-muted:#516157;
-  --xs-light-stroke:#172019;
-  --xs-green:#176b3a;
-  --xs-green-bright:#21a954;
-  --xs-green-soft:#d9f6e0;
+        function updateProgress(targetVal) {
+            currentProgress = Math.min(Math.max(currentProgress, targetVal), 100);
+            if (progressFill) progressFill.style.width = currentProgress + '%';
+            if (percentageText) percentageText.innerText = Math.floor(currentProgress) + '%';
+        }
 
-  --xs-dark-bg:#000000;
-  --xs-dark-surface:#0d0f10;
-  --xs-dark-surface-2:#15181a;
-  --xs-dark-ink:#f6f7f4;
-  --xs-dark-muted:#aeb8b1;
-  --xs-dark-stroke:#d9ded9;
-}
+        function hideLoaderImmediately() {
+            if (!loaderOverlay) return;
+            loaderOverlay.classList.add('fade-out');
+            loaderOverlay.style.display = 'none';
+        }
 
-/* =========================================================
-   CATEGORY LIST: ONLY THE CATEGORY HEADER IS A PILL.
-   The parent wrapper must never become a giant clipped oval.
-   ========================================================= */
-#apiList > *{
-  background:transparent !important;
-  border:0 !important;
-  border-radius:0 !important;
-  box-shadow:none !important;
-  overflow:visible !important;
-  margin:0 0 18px 0 !important;
-  padding:0 !important;
-}
+        function finishLoader() {
+            if (hasFinishedLoading) return;
+            hasFinishedLoading = true;
+            updateProgress(100);
+            try { sessionStorage.setItem('xs_pedia_loader_seen', '1'); } catch (_) {}
+            if (loaderOverlay) {
+                loaderOverlay.classList.add('fade-out');
+                setTimeout(() => { loaderOverlay.style.display = 'none'; }, 180);
+            }
+        }
 
-/* Any generic wrapper inside a category stays flat. */
-#apiList > * > div,
-#apiList > * > section,
-#apiList > * > article{
-  background:transparent !important;
-  border:0 !important;
-  box-shadow:none !important;
-  overflow:visible !important;
-}
+        let hasSeenLoader = false;
+        try { hasSeenLoader = sessionStorage.getItem('xs_pedia_loader_seen') === '1'; } catch (_) {}
 
-/* The first block is the actual category header. */
-#apiList > * > :first-child{
-  width:100% !important;
-  min-height:116px !important;
-  background:#ffffff !important;
-  color:var(--xs-light-ink) !important;
-  border:3px solid var(--xs-light-stroke) !important;
-  border-radius:999px !important;
-  box-shadow:5px 5px 0 rgba(23,32,25,.13) !important;
-  overflow:hidden !important;
-}
-
-/* Nested endpoint cards: same width as category, no extra outer shell. */
-#apiList .endpoint-card,
-#apiList .api-card{
-  width:100% !important;
-  max-width:none !important;
-  background:#ffffff !important;
-  color:var(--xs-light-ink) !important;
-  border:2px solid var(--xs-light-stroke) !important;
-  border-radius:999px !important;
-  box-shadow:3px 3px 0 rgba(23,32,25,.10) !important;
-  overflow:hidden !important;
-  margin:8px 0 !important;
-  padding:14px 14px !important;
-}
-
-/* Keep endpoint internals flat so there is never a stack of boxes. */
-#apiList .endpoint-card > div,
-#apiList .endpoint-card > section,
-#apiList .endpoint-card > article,
-#apiList .api-card > div,
-#apiList .api-card > section,
-#apiList .api-card > article{
-  background:transparent !important;
-  border:0 !important;
-  box-shadow:none !important;
-}
-
-/* =========================================================
-   STATUS / BADGES: strong contrast, never washed out
-   ========================================================= */
-#apiList .text-green-300,
-#apiList .text-green-400,
-#apiList .text-emerald-300,
-#apiList .text-emerald-400{
-  color:#176b3a !important;
-  font-weight:900 !important;
-  opacity:1 !important;
-  text-shadow:none !important;
-}
-
-#apiList span[class*="bg-green"],
-#apiList span[class*="bg-emerald"],
-#apiList div[class*="bg-green"],
-#apiList div[class*="bg-emerald"]{
-  background:#d8f6df !important;
-  color:#0d5b2f !important;
-  border:2px solid #41a563 !important;
-  opacity:1 !important;
-  border-radius:999px !important;
-  font-weight:900 !important;
-  text-shadow:none !important;
-}
-
-/* FREE / cyan-blue chips: also keep fully readable. */
-#apiList span[class*="bg-cyan"],
-#apiList div[class*="bg-cyan"],
-#apiList span[class*="bg-blue"],
-#apiList div[class*="bg-blue"]{
-  background:#dff5fb !important;
-  color:#075467 !important;
-  border:2px solid #58aac2 !important;
-  opacity:1 !important;
-  border-radius:999px !important;
-  font-weight:900 !important;
-  text-shadow:none !important;
-}
-
-/* Generic status/method labels: never inherit accidental low opacity. */
-#apiList [class*="status"],
-#apiList [class*="badge"],
-#apiList [class*="method"]{
-  opacity:1 !important;
-  font-weight:900 !important;
-  text-shadow:none !important;
-}
-
-/* Explicitly prevent Tailwind opacity utilities from washing badges out. */
-#apiList [class*="/10"],
-#apiList [class*="/20"],
-#apiList [class*="/30"]{
-  opacity:1 !important;
-}
-
-/* =========================================================
-   REQUEST / RESPONSE: LIGHT SURFACE IN LIGHT MODE
-   ========================================================= */
-#apiList div:has(> pre),
-#apiList section:has(> pre),
-#apiList article:has(> pre){
-  background:#ffffff !important;
-  color:#172019 !important;
-  border:2px solid #172019 !important;
-  border-radius:24px !important;
-  box-shadow:none !important;
-  overflow:hidden !important;
-  padding:14px 14px !important;
-}
-
-#apiList pre,
-#apiList code{
-  display:block !important;
-  background:#f7fbf8 !important;
-  color:#172019 !important;
-  border:1.5px solid #718077 !important;
-  border-radius:16px !important;
-  box-shadow:none !important;
-  margin:10px 0 !important;
-  padding:14px !important;
-  font-family:'JetBrains Mono',monospace !important;
-  font-size:12.5px !important;
-  line-height:1.65 !important;
-  white-space:pre-wrap !important;
-  overflow-wrap:anywhere !important;
-  word-break:break-word !important;
-  opacity:1 !important;
-}
-
-#apiList [class*="font-mono"]{
-  font-family:'JetBrains Mono',monospace !important;
-  color:#25362c !important;
-  text-shadow:none !important;
-  overflow-wrap:anywhere !important;
-  word-break:break-word !important;
-}
-
-/* Request/response headings remain visible on the light surface. */
-#apiList div:has(> pre) h1,
-#apiList div:has(> pre) h2,
-#apiList div:has(> pre) h3,
-#apiList div:has(> pre) h4,
-#apiList div:has(> pre) p,
-#apiList div:has(> pre) span,
-#apiList section:has(> pre) h1,
-#apiList section:has(> pre) h2,
-#apiList section:has(> pre) h3,
-#apiList section:has(> pre) h4,
-#apiList section:has(> pre) p,
-#apiList section:has(> pre) span,
-#apiList article:has(> pre) h1,
-#apiList article:has(> pre) h2,
-#apiList article:has(> pre) h3,
-#apiList article:has(> pre) h4,
-#apiList article:has(> pre) p,
-#apiList article:has(> pre) span{
-  color:#25362c !important;
-  opacity:1 !important;
-  text-shadow:none !important;
-}
-
-/* Copy controls are pills, not mini-cards. */
-#apiList button,
-#apiList a[class*="copy"],
-#apiList [aria-label*="copy" i],
-#apiList [title*="copy" i]{
-  border:2px solid #172019 !important;
-  border-radius:999px !important;
-  box-shadow:3px 3px 0 rgba(23,32,25,.12) !important;
-  opacity:1 !important;
-}
-
-/* =========================================================
-   DARK THEME: PURE BLACK WALLPAPER + DARK SURFACES
-   ========================================================= */
-html[data-xs-theme="dark"],
-body[data-xs-theme="dark"]{
-  background:#000000 !important;
-  background-color:#000000 !important;
-  color:var(--xs-dark-ink) !important;
-}
-
-html[data-xs-theme="dark"] body,
-body[data-xs-theme="dark"]{
-  background:#000000 !important;
-  background-color:#000000 !important;
-  background-image:none !important;
-  color:var(--xs-dark-ink) !important;
-}
-
-html[data-xs-theme="dark"]:before,
-body[data-xs-theme="dark"]:before{
-  display:none !important;
-  content:none !important;
-}
-
-html[data-xs-theme="dark"] #themeBg,
-body[data-xs-theme="dark"] #themeBg{
-  background:#000000 !important;
-  background-color:#000000 !important;
-  background-image:none !important;
-}
-
-
-html[data-xs-theme="dark"] .glass-panel,
-body[data-xs-theme="dark"] .glass-panel{
-  background:#0d0f10 !important;
-  color:#f6f7f4 !important;
-  border-color:#2a3030 !important;
-  box-shadow:none !important;
-}
-
-/* Dark category header: one pill only. */
-html[data-xs-theme="dark"] #apiList > * > :first-child,
-body[data-xs-theme="dark"] #apiList > * > :first-child{
-  background:#0d0f10 !important;
-  color:#f6f7f4 !important;
-  border-color:#d9ded9 !important;
-  box-shadow:5px 5px 0 rgba(0,0,0,.9) !important;
-}
-
-/* Dark endpoint rows. */
-html[data-xs-theme="dark"] #apiList .endpoint-card,
-html[data-xs-theme="dark"] #apiList .api-card,
-body[data-xs-theme="dark"] #apiList .endpoint-card,
-body[data-xs-theme="dark"] #apiList .api-card{
-  background:#0d0f10 !important;
-  color:#f6f7f4 !important;
-  border-color:#d9ded9 !important;
-  box-shadow:3px 3px 0 rgba(0,0,0,.9) !important;
-}
-
-/* Dark request/response stays dark and readable, never green. */
-html[data-xs-theme="dark"] #apiList div:has(> pre),
-html[data-xs-theme="dark"] #apiList section:has(> pre),
-html[data-xs-theme="dark"] #apiList article:has(> pre),
-body[data-xs-theme="dark"] #apiList div:has(> pre),
-body[data-xs-theme="dark"] #apiList section:has(> pre),
-body[data-xs-theme="dark"] #apiList article:has(> pre){
-  background:#111416 !important;
-  color:#f6f7f4 !important;
-  border-color:#d9ded9 !important;
-}
-
-html[data-xs-theme="dark"] #apiList pre,
-html[data-xs-theme="dark"] #apiList code,
-body[data-xs-theme="dark"] #apiList pre,
-body[data-xs-theme="dark"] #apiList code{
-  background:#171a1c !important;
-  color:#f6f7f4 !important;
-  border-color:#4c5552 !important;
-}
-
-html[data-xs-theme="dark"] #apiList [class*="font-mono"],
-body[data-xs-theme="dark"] #apiList [class*="font-mono"]{
-  color:#eef3ef !important;
-}
-
-/* Strong READY in dark mode. */
-html[data-xs-theme="dark"] #apiList span[class*="bg-green"],
-html[data-xs-theme="dark"] #apiList span[class*="bg-emerald"],
-html[data-xs-theme="dark"] #apiList div[class*="bg-green"],
-html[data-xs-theme="dark"] #apiList div[class*="bg-emerald"],
-body[data-xs-theme="dark"] #apiList span[class*="bg-green"],
-body[data-xs-theme="dark"] #apiList span[class*="bg-emerald"],
-body[data-xs-theme="dark"] #apiList div[class*="bg-green"],
-body[data-xs-theme="dark"] #apiList div[class*="bg-emerald"]{
-  background:#173d26 !important;
-  color:#8ff0b0 !important;
-  border-color:#4caf70 !important;
-}
-
-/* Strong FREE in dark mode. */
-html[data-xs-theme="dark"] #apiList span[class*="bg-cyan"],
-html[data-xs-theme="dark"] #apiList div[class*="bg-cyan"],
-html[data-xs-theme="dark"] #apiList span[class*="bg-blue"],
-html[data-xs-theme="dark"] #apiList div[class*="bg-blue"],
-body[data-xs-theme="dark"] #apiList span[class*="bg-cyan"],
-body[data-xs-theme="dark"] #apiList div[class*="bg-cyan"],
-body[data-xs-theme="dark"] #apiList span[class*="bg-blue"],
-body[data-xs-theme="dark"] #apiList div[class*="bg-blue"]{
-  background:#102f38 !important;
-  color:#8ee8f4 !important;
-  border-color:#49a6bc !important;
-}
-
-html[data-xs-theme="dark"] #apiList .text-green-300,
-html[data-xs-theme="dark"] #apiList .text-green-400,
-html[data-xs-theme="dark"] #apiList .text-emerald-300,
-html[data-xs-theme="dark"] #apiList .text-emerald-400,
-body[data-xs-theme="dark"] #apiList .text-green-300,
-body[data-xs-theme="dark"] #apiList .text-green-400,
-body[data-xs-theme="dark"] #apiList .text-emerald-300,
-body[data-xs-theme="dark"] #apiList .text-emerald-400{
-  color:#8ff0b0 !important;
-  opacity:1 !important;
-}
-
-/* Keep body-level text readable in dark mode. */
-html[data-xs-theme="dark"] #mainDescription,
-body[data-xs-theme="dark"] #mainDescription,
-html[data-xs-theme="dark"] #siteFooter,
-body[data-xs-theme="dark"] #siteFooter{
-  color:#aeb8b1 !important;
-}
-
-/* =========================================================
-   MOBILE: no clipping / same width / comfortable rows
-   ========================================================= */
-@media(max-width:640px){
-  #apiList > *{
-    margin-bottom:18px !important;
-  }
-
-  #apiList > * > :first-child{
-    min-height:108px !important;
-    border-width:2.5px !important;
-  }
-
-  #apiList .endpoint-card,
-  #apiList .api-card{
-    border-width:2px !important;
-    border-radius:999px !important;
-    padding:12px 12px !important;
-    margin:7px 0 !important;
-  }
-
-  #apiList div:has(> pre),
-  #apiList section:has(> pre),
-  #apiList article:has(> pre){
-    border-radius:20px !important;
-    padding:12px !important;
-  }
-
-  #apiList pre,
-  #apiList code{
-    font-size:12px !important;
-    line-height:1.6 !important;
-    margin:8px 0 !important;
-    padding:12px !important;
-    border-radius:14px !important;
-  }
-}
-</style>
-
-<script id="xs-pedia-theme-sync">
-(function(){
-  function syncXsTheme(){
-    var html = document.documentElement;
-    var body = document.body;
-    if (!html || !body) return;
-
-    var light = html.classList.contains('light-mode') ||
-                body.classList.contains('light-mode') ||
-                html.classList.contains('light') ||
-                body.classList.contains('light');
-
-    var explicitDark = html.classList.contains('dark-mode') || body.classList.contains('dark-mode') ||
-                       html.classList.contains('dark') || body.classList.contains('dark');
-
-    var theme = explicitDark ? 'dark' : (light ? 'light' : 'dark');
-    html.setAttribute('data-xs-theme', theme);
-    body.setAttribute('data-xs-theme', theme);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', syncXsTheme, { once:true });
-  } else {
-    syncXsTheme();
-  }
-
-  var observer = new MutationObserver(syncXsTheme);
-  observer.observe(document.documentElement, { attributes:true, attributeFilter:['class'] });
-  observer.observe(document.body, { attributes:true, attributeFilter:['class'] });
-})();
+        if (hasSeenLoader) {
+            hideLoaderImmediately();
+            hasFinishedLoading = true;
+        } else {
+            updateProgress(35);
+            document.addEventListener('DOMContentLoaded', () => {
+                updateProgress(70);
+                const list = document.getElementById('apiList');
+                if (list) {
+                    const showWhenReady = () => {
+                        if (list.children.length > 0) {
+                            observer.disconnect();
+                            finishLoader();
+                        }
+                    };
+                    const observer = new MutationObserver(showWhenReady);
+                    observer.observe(list, { childList:true, subtree:true });
+                    showWhenReady();
+                }
+                // Fast fallback only if the page has no endpoint list to populate.
+                setTimeout(() => {
+                    if (!document.getElementById('apiList')?.children.length) finishLoader();
+                }, 900);
+            }, { once:true });
+        }
 </script>
 
-<!-- FINAL XS-PEDIA UI PATCH v3 -->
-<style id="xs-pedia-ui-final-v3">
-/* =========================================================
-   V3: NO GIANT OUTER OVAL / ONE REAL CATEGORY PILL
-   ========================================================= */
-#apiList > .xs-category,
-#apiList > *{
-  background:transparent !important;
-  border:0 !important;
-  border-radius:0 !important;
-  box-shadow:none !important;
-  overflow:visible !important;
-  padding:0 !important;
-}
-
-/* Old generic "first child = giant pill" rules are neutralized. */
-#apiList > .xs-category > :first-child,
-#apiList > * > :first-child{
-  background:transparent !important;
-  color:inherit !important;
-  border:0 !important;
-  border-radius:0 !important;
-  box-shadow:none !important;
-  overflow:visible !important;
-  min-height:0 !important;
-  width:auto !important;
-}
-
-/* The JS below marks ONLY the actual category header. */
-#apiList .xs-category-header{
-  display:flex !important;
-  align-items:center !important;
-  width:100% !important;
-  min-height:112px !important;
-  box-sizing:border-box !important;
-  padding:22px 28px !important;
-  background:#ffffff !important;
-  color:#172019 !important;
-  border:3px solid #172019 !important;
-  border-radius:999px !important;
-  box-shadow:5px 5px 0 rgba(23,32,25,.12) !important;
-  overflow:hidden !important;
-  margin:0 0 12px 0 !important;
-}
-
-/* Endpoint rows stay separate from the category header. */
-#apiList .xs-endpoint-row,
-#apiList .endpoint-card,
-#apiList .api-card{
-  width:100% !important;
-  max-width:none !important;
-  box-sizing:border-box !important;
-  background:#ffffff !important;
-  color:#172019 !important;
-  border:2px solid #172019 !important;
-  border-radius:999px !important;
-  box-shadow:3px 3px 0 rgba(23,32,25,.10) !important;
-  overflow:hidden !important;
-  margin:8px 0 !important;
-  padding:14px 14px !important;
-}
-
-#apiList .xs-endpoint-row > div,
-#apiList .xs-endpoint-row > section,
-#apiList .xs-endpoint-row > article,
-#apiList .endpoint-card > div,
-#apiList .endpoint-card > section,
-#apiList .endpoint-card > article,
-#apiList .api-card > div,
-#apiList .api-card > section,
-#apiList .api-card > article{
-  background:transparent !important;
-  border:0 !important;
-  box-shadow:none !important;
-}
-
-/* =========================================================
-   READY / FREE / MAINTENANCE: STRONG, NEVER WASHED OUT
-   ========================================================= */
-#apiList .text-green-300,
-#apiList .text-green-400,
-#apiList .text-emerald-300,
-#apiList .text-emerald-400{
-  color:#166534 !important;
-  opacity:1 !important;
-  font-weight:900 !important;
-  text-shadow:none !important;
-}
-
-#apiList [class*="bg-green"],
-#apiList [class*="bg-emerald"]{
-  background:#dcfce7 !important;
-  color:#14532d !important;
-  border:2px solid #34a853 !important;
-  opacity:1 !important;
-  border-radius:999px !important;
-  font-weight:900 !important;
-  text-shadow:none !important;
-}
-
-#apiList [class*="bg-cyan"],
-#apiList [class*="bg-blue"]{
-  background:#dff6fb !important;
-  color:#075985 !important;
-  border:2px solid #3fa3bf !important;
-  opacity:1 !important;
-  border-radius:999px !important;
-  font-weight:900 !important;
-  text-shadow:none !important;
-}
-
-#apiList [class*="status"],
-#apiList [class*="badge"],
-#apiList [class*="method"]{
-  opacity:1 !important;
-  font-weight:900 !important;
-  text-shadow:none !important;
-}
-
-/* =========================================================
-   REQUEST / RESPONSE: LIGHT BOXES IN LIGHT MODE
-   ========================================================= */
-#apiList .xs-detail-surface{
-  background:#ffffff !important;
-  color:#172019 !important;
-  border:2px solid #172019 !important;
-  border-radius:22px !important;
-  box-shadow:none !important;
-  padding:12px 14px !important;
-  overflow:hidden !important;
-}
-
-#apiList .xs-codebox,
-#apiList pre,
-#apiList code{
-  background:#ffffff !important;
-  color:#172019 !important;
-  border:2px solid #789083 !important;
-  border-radius:16px !important;
-  box-shadow:none !important;
-  padding:14px !important;
-  margin:9px 0 !important;
-  font-family:'JetBrains Mono',monospace !important;
-  font-size:12.5px !important;
-  line-height:1.65 !important;
-  white-space:pre-wrap !important;
-  overflow-wrap:anywhere !important;
-  word-break:break-word !important;
-  opacity:1 !important;
-}
-
-#apiList .xs-detail-surface pre,
-#apiList .xs-detail-surface code{
-  border-color:#789083 !important;
-  background:#ffffff !important;
-}
-
-#apiList [class*="font-mono"]{
-  color:#25362c !important;
-  opacity:1 !important;
-  text-shadow:none !important;
-  overflow-wrap:anywhere !important;
-  word-break:break-word !important;
-}
-
-/* Request/response labels */
-#apiList .xs-detail-surface h1,
-#apiList .xs-detail-surface h2,
-#apiList .xs-detail-surface h3,
-#apiList .xs-detail-surface h4,
-#apiList .xs-detail-surface p,
-#apiList .xs-detail-surface span,
-#apiList .xs-codebox h1,
-#apiList .xs-codebox h2,
-#apiList .xs-codebox h3,
-#apiList .xs-codebox h4,
-#apiList .xs-codebox p,
-#apiList .xs-codebox span{
-  color:#25362c !important;
-  opacity:1 !important;
-  text-shadow:none !important;
-}
-
-/* Copy buttons remain simple outlined pills. */
-#apiList button,
-#apiList a[class*="copy"],
-#apiList [aria-label*="copy" i],
-#apiList [title*="copy" i]{
-  border:2px solid #172019 !important;
-  border-radius:999px !important;
-  box-shadow:3px 3px 0 rgba(23,32,25,.12) !important;
-  opacity:1 !important;
-}
-
-/* =========================================================
-   TRUE DARK MODE: BLACK BACKDROP + DARK MENU
-   ========================================================= */
-html[data-xs-theme="dark"],
-body[data-xs-theme="dark"],
-html.dark-mode,
-body.dark-mode{
-  background:#000000 !important;
-  background-color:#000000 !important;
-  background-image:none !important;
-  color:#f5f7f5 !important;
-}
-
-html[data-xs-theme="dark"] #themeBg,
-body[data-xs-theme="dark"] #themeBg,
-html.dark-mode #themeBg,
-body.dark-mode #themeBg{
-  background:#000000 !important;
-  background-color:#000000 !important;
-  background-image:none !important;
-}
-
-html[data-xs-theme="dark"] #apiList .xs-category-header,
-body[data-xs-theme="dark"] #apiList .xs-category-header,
-html.dark-mode #apiList .xs-category-header,
-body.dark-mode #apiList .xs-category-header{
-  background:#0b0d0e !important;
-  color:#f5f7f5 !important;
-  border-color:#e1e7e2 !important;
-  box-shadow:5px 5px 0 rgba(0,0,0,.85) !important;
-}
-
-html[data-xs-theme="dark"] #apiList .xs-endpoint-row,
-body[data-xs-theme="dark"] #apiList .xs-endpoint-row,
-html.dark-mode #apiList .xs-endpoint-row,
-body.dark-mode #apiList .xs-endpoint-row,
-html[data-xs-theme="dark"] #apiList .endpoint-card,
-body[data-xs-theme="dark"] #apiList .endpoint-card,
-html.dark-mode #apiList .endpoint-card,
-body.dark-mode #apiList .endpoint-card,
-html[data-xs-theme="dark"] #apiList .api-card,
-body[data-xs-theme="dark"] #apiList .api-card,
-html.dark-mode #apiList .api-card,
-body.dark-mode #apiList .api-card{
-  background:#0b0d0e !important;
-  color:#f5f7f5 !important;
-  border-color:#e1e7e2 !important;
-  box-shadow:3px 3px 0 rgba(0,0,0,.9) !important;
-}
-
-/* Dark request/response boxes are charcoal, not green/cream. */
-html[data-xs-theme="dark"] #apiList .xs-detail-surface,
-body[data-xs-theme="dark"] #apiList .xs-detail-surface,
-html.dark-mode #apiList .xs-detail-surface,
-body.dark-mode #apiList .xs-detail-surface{
-  background:#0f1213 !important;
-  color:#f5f7f5 !important;
-  border-color:#d7dfda !important;
-}
-
-html[data-xs-theme="dark"] #apiList .xs-codebox,
-body[data-xs-theme="dark"] #apiList .xs-codebox,
-html.dark-mode #apiList .xs-codebox,
-body.dark-mode #apiList .xs-codebox,
-html[data-xs-theme="dark"] #apiList pre,
-body[data-xs-theme="dark"] #apiList pre,
-html.dark-mode #apiList pre,
-body.dark-mode #apiList pre,
-html[data-xs-theme="dark"] #apiList code,
-body[data-xs-theme="dark"] #apiList code,
-html.dark-mode #apiList code,
-body.dark-mode #apiList code{
-  background:#171a1c !important;
-  color:#f5f7f5 !important;
-  border-color:#535d58 !important;
-}
-
-html[data-xs-theme="dark"] #apiList .xs-detail-surface h1,
-html[data-xs-theme="dark"] #apiList .xs-detail-surface h2,
-html[data-xs-theme="dark"] #apiList .xs-detail-surface h3,
-html[data-xs-theme="dark"] #apiList .xs-detail-surface h4,
-html[data-xs-theme="dark"] #apiList .xs-detail-surface p,
-html[data-xs-theme="dark"] #apiList .xs-detail-surface span,
-html[data-xs-theme="dark"] #apiList [class*="font-mono"],
-body[data-xs-theme="dark"] #apiList .xs-detail-surface h1,
-body[data-xs-theme="dark"] #apiList .xs-detail-surface h2,
-body[data-xs-theme="dark"] #apiList .xs-detail-surface h3,
-body[data-xs-theme="dark"] #apiList .xs-detail-surface h4,
-body[data-xs-theme="dark"] #apiList .xs-detail-surface p,
-body[data-xs-theme="dark"] #apiList .xs-detail-surface span,
-body[data-xs-theme="dark"] #apiList [class*="font-mono"],
-html.dark-mode #apiList .xs-detail-surface h1,
-html.dark-mode #apiList .xs-detail-surface h2,
-html.dark-mode #apiList .xs-detail-surface h3,
-html.dark-mode #apiList .xs-detail-surface h4,
-html.dark-mode #apiList .xs-detail-surface p,
-html.dark-mode #apiList .xs-detail-surface span,
-html.dark-mode #apiList [class*="font-mono"],
-body.dark-mode #apiList .xs-detail-surface h1,
-body.dark-mode #apiList .xs-detail-surface h2,
-body.dark-mode #apiList .xs-detail-surface h3,
-body.dark-mode #apiList .xs-detail-surface h4,
-body.dark-mode #apiList .xs-detail-surface p,
-body.dark-mode #apiList .xs-detail-surface span,
-body.dark-mode #apiList [class*="font-mono"]{
-  color:#eef4ef !important;
-}
-
-html[data-xs-theme="dark"] #apiList [class*="bg-green"],
-html[data-xs-theme="dark"] #apiList [class*="bg-emerald"],
-body[data-xs-theme="dark"] #apiList [class*="bg-green"],
-body[data-xs-theme="dark"] #apiList [class*="bg-emerald"]{
-  background:#153923 !important;
-  color:#98efb1 !important;
-  border-color:#4da66d !important;
-}
-
-html[data-xs-theme="dark"] #apiList [class*="bg-cyan"],
-html[data-xs-theme="dark"] #apiList [class*="bg-blue"],
-body[data-xs-theme="dark"] #apiList [class*="bg-cyan"],
-body[data-xs-theme="dark"] #apiList [class*="bg-blue"]{
-  background:#102f38 !important;
-  color:#9ae9f5 !important;
-  border-color:#4ca8be !important;
-}
-
-/* DARK MODE MENU / 3-LINE PANEL — force every layer dark. */
-html[data-xs-theme="dark"] #bioDropdown,
-body[data-xs-theme="dark"] #bioDropdown,
-html.dark-mode #bioDropdown,
-body.dark-mode #bioDropdown,
-#bioDropdown.xs-dark-menu{
-  background:#050607 !important;
-  background-color:#050607 !important;
-  background-image:none !important;
-  color:#f4f7f5 !important;
-  border-left:1px solid #2a302d !important;
-  box-shadow:-18px 0 45px rgba(0,0,0,.65) !important;
-}
-
-html[data-xs-theme="dark"] #bioDropdown > *,
-body[data-xs-theme="dark"] #bioDropdown > *,
-html.dark-mode #bioDropdown > *,
-body.dark-mode #bioDropdown > *,
-#bioDropdown.xs-dark-menu > *{
-  background-color:transparent !important;
-}
-
-html[data-xs-theme="dark"] #bioDropdown .glass-panel,
-body[data-xs-theme="dark"] #bioDropdown .glass-panel,
-html.dark-mode #bioDropdown .glass-panel,
-body.dark-mode #bioDropdown .glass-panel,
-#bioDropdown.xs-dark-menu .glass-panel{
-  background:#0d1011 !important;
-  color:#f4f7f5 !important;
-  border-color:#303734 !important;
-}
-
-html[data-xs-theme="dark"] #bioDropdown a,
-html[data-xs-theme="dark"] #bioDropdown button,
-html[data-xs-theme="dark"] #bioDropdown span,
-html[data-xs-theme="dark"] #bioDropdown p,
-html[data-xs-theme="dark"] #bioDropdown h1,
-html[data-xs-theme="dark"] #bioDropdown h2,
-html[data-xs-theme="dark"] #bioDropdown h3,
-body[data-xs-theme="dark"] #bioDropdown a,
-body[data-xs-theme="dark"] #bioDropdown button,
-body[data-xs-theme="dark"] #bioDropdown span,
-body[data-xs-theme="dark"] #bioDropdown p,
-body[data-xs-theme="dark"] #bioDropdown h1,
-body[data-xs-theme="dark"] #bioDropdown h2,
-body[data-xs-theme="dark"] #bioDropdown h3,
-#bioDropdown.xs-dark-menu a,
-#bioDropdown.xs-dark-menu button,
-#bioDropdown.xs-dark-menu span,
-#bioDropdown.xs-dark-menu p,
-#bioDropdown.xs-dark-menu h1,
-#bioDropdown.xs-dark-menu h2,
-#bioDropdown.xs-dark-menu h3{
-  color:#f4f7f5 !important;
-}
-
-html[data-xs-theme="dark"] #bioDropdown .text-green-300,
-html[data-xs-theme="dark"] #bioDropdown .text-green-400,
-body[data-xs-theme="dark"] #bioDropdown .text-green-300,
-body[data-xs-theme="dark"] #bioDropdown .text-green-400,
-#bioDropdown.xs-dark-menu .text-green-300,
-#bioDropdown.xs-dark-menu .text-green-400{
-  color:#8fe8ac !important;
-}
-
-@media(max-width:640px){
-  #apiList .xs-category-header{
-    min-height:108px !important;
-    padding:18px 20px !important;
-    border-width:2.5px !important;
-    margin-bottom:10px !important;
-  }
-
-  #apiList .xs-endpoint-row,
-  #apiList .endpoint-card,
-  #apiList .api-card{
-    border-width:2px !important;
-    border-radius:999px !important;
-    margin:7px 0 !important;
-    padding:12px !important;
-  }
-
-  #apiList .xs-detail-surface{
-    border-radius:18px !important;
-    padding:10px 12px !important;
-  }
-
-  #apiList .xs-codebox,
-  #apiList pre,
-  #apiList code{
-    border-radius:14px !important;
-    padding:12px !important;
-    margin:8px 0 !important;
-    font-size:12px !important;
-    line-height:1.6 !important;
-  }
-}
-</style>
-
-<script id="xs-pedia-v3-dom-fix">
-(function(){
-  function isEndpoint(el){
-    return !!(el && el.matches && el.matches('.endpoint-card, .api-card'));
-  }
-
-  function rectArea(el){
-    try {
-      var r = el.getBoundingClientRect();
-      return {w:r.width,h:r.height,area:r.width*r.height};
-    } catch(e){ return {w:0,h:0,area:0}; }
-  }
-
-  function pickCategoryHeader(category){
-    var all = Array.from(category.querySelectorAll('*'));
-    var categoryWidth = rectArea(category).w || window.innerWidth * 0.9;
-    var candidates = all.filter(function(el){
-      if (!el || isEndpoint(el)) return false;
-      if (el.closest('.endpoint-card, .api-card')) return false;
-      var txt = (el.textContent || '').replace(/\s+/g,' ').trim();
-      if (!/\b\d+\s+endpoints?\b/i.test(txt)) return false;
-      var r = rectArea(el);
-      return r.w >= categoryWidth * 0.70 && r.h >= 65 && r.h <= 190;
-    });
-
-    candidates.sort(function(a,b){
-      return rectArea(a).area - rectArea(b).area;
-    });
-
-    if (candidates.length) return candidates[0];
-
-    var direct = Array.from(category.children).filter(function(el){
-      return !isEndpoint(el) && !el.querySelector('.endpoint-card, .api-card');
-    });
-    if (direct.length) return direct[0];
-
-    return null;
-  }
-
-  function markDetailSurface(pre){
-    var endpoint = pre.closest('.endpoint-card, .api-card');
-    if (!endpoint) return;
-
-    var endpointWidth = rectArea(endpoint).w || window.innerWidth;
-    var chain = [];
-    var node = pre.parentElement;
-    while (node && node !== endpoint && chain.length < 5){
-      var r = rectArea(node);
-      if (r.w >= endpointWidth * 0.72 && r.h >= 80 && !isEndpoint(node)) chain.push({el:node,r:r});
-      node = node.parentElement;
-    }
-
-    if (!chain.length) return;
-    chain.sort(function(a,b){ return a.r.area - b.r.area; });
-    var chosen = chain[0].el;
-    chosen.classList.add('xs-detail-surface');
-  }
-
-  function enhance(){
-    var list = document.getElementById('apiList');
-    if (!list) return;
-
-    Array.from(list.children).forEach(function(category){
-      category.classList.add('xs-category');
-
-      var header = pickCategoryHeader(category);
-      if (header) header.classList.add('xs-category-header');
-
-      category.querySelectorAll('.endpoint-card, .api-card').forEach(function(card){
-        card.classList.add('xs-endpoint-row');
-      });
-
-      category.querySelectorAll('pre').forEach(function(pre){
-        pre.classList.add('xs-codebox');
-        markDetailSurface(pre);
-      });
-    });
-  }
-
-  function syncTheme(){
-    var html = document.documentElement;
-    var body = document.body;
-    if (!html || !body) return;
-
-    var dark = html.classList.contains('dark-mode') ||
-               body.classList.contains('dark-mode') ||
-               html.classList.contains('dark') ||
-               body.classList.contains('dark') ||
-               html.getAttribute('data-xs-theme') === 'dark' ||
-               body.getAttribute('data-xs-theme') === 'dark';
-
-    var theme = dark ? 'dark' : 'light';
-    html.setAttribute('data-xs-theme', theme);
-    body.setAttribute('data-xs-theme', theme);
-
-    var menu = document.getElementById('bioDropdown');
-    if (menu) menu.classList.toggle('xs-dark-menu', dark);
-  }
-
-  function runAll(){
-    syncTheme();
-    enhance();
-  }
-
-  if (document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', runAll, {once:true});
-  } else {
-    runAll();
-  }
-
-  var list = document.getElementById('apiList');
-  if (list){
-    new MutationObserver(function(){ enhance(); }).observe(list, {childList:true,subtree:true});
-  } else {
-    document.addEventListener('DOMContentLoaded', function(){
-      var liveList = document.getElementById('apiList');
-      if (liveList) new MutationObserver(function(){ enhance(); }).observe(liveList,{childList:true,subtree:true});
-    }, {once:true});
-  }
-
-  new MutationObserver(function(){ syncTheme(); }).observe(document.documentElement,{attributes:true,attributeFilter:['class','data-xs-theme']});
-  new MutationObserver(function(){ syncTheme(); }).observe(document.body,{attributes:true,attributeFilter:['class','data-xs-theme']});
-
-  window.addEventListener('resize', enhance);
-})();
-</script>
 
 </body>
 </html>
