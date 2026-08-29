@@ -3288,159 +3288,201 @@ app.get('/docs', (req, res) => {
 </style>
 
 
-<!-- CLEAN COMIC API UI PATCH -->
-<style id="clean-comic-api-ui">
-:root{
-  --api-paper:#fffdf7;
-  --api-paper-2:#f3ead8;
-  --api-ink:#17231d;
-  --api-stroke:#17231d;
-  --api-green:#17683a;
-  --api-green-soft:#bfe8c8;
+<!-- API DOCUMENTATION UI PATCH -->
+<style id="api-documentation-ui">
+/*
+ * API LIST UI
+ * - Main endpoint cards are rectangular, never capsule/oval.
+ * - Nested request/response wrappers are flattened so they do not look
+ *   like a second card or escape the parent layer.
+ * - Dark mode follows the cyber/cyan palette used by index 2.js.
+ */
+:root {
+  --api-bg: #ffffff;
+  --api-bg-soft: #f8fafc;
+  --api-text: #0f172a;
+  --api-muted: #64748b;
+  --api-border: rgba(15, 23, 42, 0.12);
+  --api-accent: #06b6d4;
+  --api-accent-strong: #22d3ee;
+  --api-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
 }
 
-/* Only the main API cards get an outline. Inner wrappers stay flat. */
-#apiList > *{
-  background:var(--api-paper) !important;
-  color:var(--api-ink) !important;
-  border:2.5px solid var(--api-stroke) !important;
-  border-radius:999px !important;
-  box-shadow:4px 4px 0 rgba(23,35,29,.14) !important;
-  overflow:hidden !important;
+/* Main endpoint card */
+#apiList > * {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  background: var(--api-bg) !important;
+  color: var(--api-text) !important;
+  border: 1.5px solid var(--api-border) !important;
+  border-radius: 18px !important;
+  box-shadow: var(--api-shadow) !important;
+  overflow: hidden !important;
+  isolation: isolate !important;
 }
 
+/* Keep the endpoint list itself as a normal vertical stack. */
+#apiList {
+  width: 100% !important;
+}
+
+/* Remove extra visual layers from generated endpoint markup. */
+#apiList > * > div,
+#apiList > * > section,
+#apiList > * > article,
 #apiList > * div,
 #apiList > * section,
-#apiList > * article{
-  box-shadow:none !important;
+#apiList > * article {
+  box-shadow: none !important;
 }
 
-/* Remove accidental nested card/border layers inside an endpoint. */
 #apiList > * .rounded-lg,
 #apiList > * .rounded-xl,
 #apiList > * .rounded-2xl,
-#apiList > * .rounded-3xl{
-  box-shadow:none !important;
+#apiList > * .rounded-3xl,
+#apiList > * .rounded-full {
+  box-shadow: none !important;
 }
 
-/* Request + response columns: one box only, same surface as the main card. */
+/*
+ * Request/response panels: one visible box only.
+ * The <pre>/<code> itself is transparent so code cannot form another card.
+ */
 #apiList div:has(> pre),
 #apiList section:has(> pre),
-#apiList article:has(> pre){
-  background:var(--api-paper) !important;
-  color:var(--api-ink) !important;
-  border:2px solid var(--api-stroke) !important;
-  border-radius:22px !important;
-  box-shadow:none !important;
-  padding:12px 14px !important;
+#apiList article:has(> pre) {
+  background: var(--api-bg-soft) !important;
+  color: var(--api-text) !important;
+  border: 1px solid var(--api-border) !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+  padding: 12px 14px !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
 }
 
-/* Code is no longer a second card inside request/response. */
 #apiList pre,
-#apiList code{
-  display:block !important;
-  background:transparent !important;
-  color:#213129 !important;
-  border:0 !important;
-  border-radius:0 !important;
-  box-shadow:none !important;
-  margin:0 !important;
-  padding:0 !important;
-  font-family:'JetBrains Mono',monospace !important;
-  font-size:12.5px !important;
-  line-height:1.65 !important;
-  white-space:pre-wrap !important;
-  overflow-wrap:anywhere !important;
-  word-break:break-word !important;
+#apiList code {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  color: inherit !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 12.5px !important;
+  line-height: 1.65 !important;
+  white-space: pre-wrap !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+  overflow-x: auto !important;
 }
 
-/* Keep URL/cURL/code text tidy and readable. */
-#apiList [class*="font-mono"]{
-  font-family:'JetBrains Mono',monospace !important;
-  overflow-wrap:anywhere !important;
-  word-break:break-word !important;
-  text-shadow:none !important;
+/* Keep endpoint URLs, cURL and parameter text inside their parent. */
+#apiList [class*="font-mono"] {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  overflow-wrap: anywhere !important;
+  word-break: break-word !important;
+  white-space: normal;
+  text-shadow: none !important;
 }
 
-/* Strong contrast for the green status / labels. */
+/* Status / tier labels */
 #apiList .text-green-300,
 #apiList .text-green-400,
 #apiList .text-emerald-300,
-#apiList .text-emerald-400{
-  color:var(--api-green) !important;
-  font-weight:900 !important;
-  text-shadow:0 1px 0 rgba(255,255,255,.6) !important;
+#apiList .text-emerald-400 {
+  color: var(--api-accent) !important;
+  font-weight: 800 !important;
+  text-shadow: none !important;
 }
 
 #apiList [class*="bg-green"],
-#apiList [class*="bg-emerald"]{
-  border-color:#28764a !important;
-  color:#12572e !important;
+#apiList [class*="bg-emerald"] {
+  border-color: rgba(6, 182, 212, 0.35) !important;
+  color: #0e7490 !important;
 }
 
-/* Buttons/chips: outlined pills without creating extra card layers. */
+/* Buttons/chips stay pill-shaped; only the cards are rectangular. */
 #apiList button,
 #apiList [role="button"],
 #apiList a[class*="copy"],
 #apiList [aria-label*="copy" i],
-#apiList [title*="copy" i]{
-  border:2px solid var(--api-stroke) !important;
-  border-radius:999px !important;
-  box-shadow:3px 3px 0 rgba(23,35,29,.13) !important;
+#apiList [title*="copy" i] {
+  box-sizing: border-box !important;
+  border-width: 1.5px !important;
+  border-style: solid !important;
+  border-color: rgba(6, 182, 212, 0.35) !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
 }
 
-/* Dark mode: true black wallpaper, not cream. */
+/* Keep the endpoint card's immediate content from adding an outer border. */
+#apiList > * > :not(pre):not(code) {
+  min-width: 0;
+}
+
+/* =========================
+ * DARK MODE — CYBER / CYAN
+ * Same visual direction as index 2.js, not the old green theme.
+ * ========================= */
 html.dark-mode,
 body.dark-mode,
-.dark-mode{
-  --api-paper:#0d0f0e;
-  --api-paper-2:#0d0f0e;
-  --api-ink:#f4f1e8;
-  --api-stroke:#e8e3d7;
-  --api-green:#7ee2a1;
-  background:#000 !important;
-  background-color:#000 !important;
-  background-image:radial-gradient(rgba(255,255,255,.08) 1.1px,transparent 1.1px) !important;
-  background-size:18px 18px !important;
-  color:#f4f1e8 !important;
+.dark-mode {
+  --api-bg: #0b1329;
+  --api-bg-soft: #0f172a;
+  --api-text: #f3f4f6;
+  --api-muted: #94a3b8;
+  --api-border: rgba(6, 182, 212, 0.12);
+  --api-accent: #22d3ee;
+  --api-accent-strong: #00f3ff;
+  --api-shadow: 0 8px 30px rgba(0, 0, 0, 0.22);
+
+  background: #020617 !important;
+  background-color: #020617 !important;
+  color: #f3f4f6 !important;
 }
 
-html.dark-mode:before,
-body.dark-mode:before,
-.dark-mode:before{
-  display:none !important;
+html.dark-mode::before,
+body.dark-mode::before,
+.dark-mode::before {
+  opacity: 0 !important;
+  background: none !important;
 }
 
 html.dark-mode #themeBg,
 body.dark-mode #themeBg,
-.dark-mode #themeBg{
-  background:#000 !important;
-  background-color:#000 !important;
-  background-image:none !important;
-}
-
-html.dark-mode #cyber-loader-overlay,
-body.dark-mode #cyber-loader-overlay,
-.dark-mode #cyber-loader-overlay{
-  background:#000 !important;
-  color:#f4f1e8 !important;
+.dark-mode #themeBg {
+  background: #0f172a !important;
+  background-color: #0f172a !important;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1.5px, transparent 1.5px) !important;
+  background-size: 24px 24px !important;
 }
 
 html.dark-mode .glass-panel,
 body.dark-mode .glass-panel,
-.dark-mode .glass-panel{
-  background:#0b0d0c !important;
-  border-color:rgba(232,227,215,.18) !important;
-  color:#f4f1e8 !important;
+.dark-mode .glass-panel {
+  background: #0b1329 !important;
+  border-color: rgba(6, 182, 212, 0.08) !important;
+  color: #f3f4f6 !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2) !important;
 }
 
 html.dark-mode #apiList > *,
 body.dark-mode #apiList > *,
-.dark-mode #apiList > *{
-  background:#0d0f0e !important;
-  color:#f4f1e8 !important;
-  border-color:#e8e3d7 !important;
-  box-shadow:4px 4px 0 rgba(0,0,0,.85) !important;
+.dark-mode #apiList > * {
+  background: #0b1329 !important;
+  color: #f3f4f6 !important;
+  border-color: rgba(6, 182, 212, 0.18) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.24) !important;
 }
 
 html.dark-mode #apiList div:has(> pre),
@@ -3451,10 +3493,10 @@ body.dark-mode #apiList section:has(> pre),
 body.dark-mode #apiList article:has(> pre),
 .dark-mode #apiList div:has(> pre),
 .dark-mode #apiList section:has(> pre),
-.dark-mode #apiList article:has(> pre){
-  background:#0d0f0e !important;
-  color:#f4f1e8 !important;
-  border-color:#e8e3d7 !important;
+.dark-mode #apiList article:has(> pre) {
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+  border-color: rgba(6, 182, 212, 0.16) !important;
 }
 
 html.dark-mode #apiList pre,
@@ -3462,9 +3504,9 @@ html.dark-mode #apiList code,
 body.dark-mode #apiList pre,
 body.dark-mode #apiList code,
 .dark-mode #apiList pre,
-.dark-mode #apiList code{
-  background:transparent !important;
-  color:#f4f1e8 !important;
+.dark-mode #apiList code {
+  background: transparent !important;
+  color: #e2e8f0 !important;
 }
 
 html.dark-mode #apiList .text-green-300,
@@ -3478,26 +3520,56 @@ body.dark-mode #apiList .text-emerald-400,
 .dark-mode #apiList .text-green-300,
 .dark-mode #apiList .text-green-400,
 .dark-mode #apiList .text-emerald-300,
-.dark-mode #apiList .text-emerald-400{
-  color:#7ee2a1 !important;
-  text-shadow:0 1px 0 rgba(0,0,0,.7) !important;
+.dark-mode #apiList .text-emerald-400 {
+  color: #7ee2a1 !important;
+  text-shadow: none !important;
 }
 
-@media(max-width:640px){
-  #apiList > *{
-    border-width:2px !important;
-    border-radius:999px !important;
+/* The dark theme should remain cyan, not inherit the old green comic theme. */
+html.dark-mode .music-player-card,
+body.dark-mode .music-player-card,
+.dark-mode .music-player-card {
+  background: #0b1329 !important;
+  border-color: rgba(6, 182, 212, 0.12) !important;
+}
+
+html.dark-mode #mainTitle,
+body.dark-mode #mainTitle,
+.dark-mode #mainTitle {
+  color: #f8fafc !important;
+}
+
+html.dark-mode #mainDescription,
+body.dark-mode #mainDescription,
+.dark-mode #mainDescription {
+  color: #94a3b8 !important;
+}
+
+html.dark-mode #siteFooter,
+body.dark-mode #siteFooter,
+.dark-mode #siteFooter {
+  color: #64748b !important;
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Mobile: rectangular cards remain rectangular and never become giant ovals. */
+@media (max-width: 640px) {
+  #apiList > * {
+    border-width: 1.5px !important;
+    border-radius: 16px !important;
   }
+
   #apiList div:has(> pre),
   #apiList section:has(> pre),
-  #apiList article:has(> pre){
-    border-radius:18px !important;
-    padding:10px 12px !important;
+  #apiList article:has(> pre) {
+    border-radius: 10px !important;
+    padding: 10px 12px !important;
   }
+
   #apiList pre,
-  #apiList code{
-    font-size:12px !important;
-    line-height:1.6 !important;
+  #apiList code {
+    font-size: 12px !important;
+    line-height: 1.6 !important;
   }
 }
 </style>
