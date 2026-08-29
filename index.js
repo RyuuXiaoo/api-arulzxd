@@ -41,13 +41,13 @@ mongoose.connect(MONGODB_URI)
     .then(() => console.log('📦 Berhasil terhubung ke MongoDB!'))
     .catch(err => console.error('❌ Gagal koneksi ke MongoDB:', err));
 
-const JWT_SECRET = process.env.JWT_SECRET || 'xs-pedia-super-secret-jwt-key-999';
+const JWT_SECRET = process.env.JWT_SECRET || 'arulzxd-super-secret-jwt-key-999';
 
 // ====================================================
 // HELPER GENERATOR API KEY SESUAI ATURAN
 // ====================================================
 function generateFreeApiKey() {
-    return 'xs-pedia' + crypto.randomBytes(3).toString('hex').slice(0, 5);
+    return 'arulzxdfree-' + crypto.randomBytes(3).toString('hex').slice(0, 5);
 }
 
 function generatePremiumApiKey(username) {
@@ -89,7 +89,7 @@ userSchema.pre('save', function() {
                 this.apikey = generatePremiumApiKey(this.username);
             }
         } else {
-            if (!this.apikey || !this.apikey.startsWith('xs-pedia')) {
+            if (!this.apikey || !this.apikey.startsWith('arulzxdfree-')) {
                 this.apikey = generateFreeApiKey();
             }
         }
@@ -207,7 +207,7 @@ app.post('/api/user/update-avatar', checkAuthSession, (req, res) => {
                 username: updatedUser.username,
                 email: updatedUser.email,
                 name: updatedUser.username,
-                avatar: updatedUser.avatar?.startsWith('data:') ? null : updatedUser.avatar,
+                avatar: updatedUser.avatar,
                 role: updatedUser.role,
                 apikey: updatedUser.apikey
             };
@@ -280,7 +280,7 @@ app.post('/api/user/custom-apikey', checkAuthSession, async (req, res) => {
             username: user.username,
             email: user.email,
             name: user.username,
-            avatar: user.avatar?.startsWith('data:') ? null : user.avatar,
+            avatar: user.avatar,
             role: user.role,
             apikey: user.apikey
         };
@@ -1168,7 +1168,7 @@ app.post('/webhook', async (req, res) => {
                                 if (targetRole === "Premium User") {
                                     targetUser.apikey = generatePremiumApiKey(targetUser.username);
                                 } else if (targetRole === "VIP User") {
-                                    if (!targetUser.apikey || targetUser.apikey.startsWith('xs-pedia')) {
+                                    if (!targetUser.apikey || targetUser.apikey.startsWith('arulzxdfree-')) {
                                         targetUser.apikey = `${targetUser.username.toLowerCase()}-custom-vip`;
                                     }
                                 }
@@ -1368,7 +1368,7 @@ app.post('/auth/login', (req, res, next) => {
                         needSave = true;
                     }
                 } else {
-                    if (!user.apikey || !user.apikey.startsWith('xs-pedia')) {
+                    if (!user.apikey || !user.apikey.startsWith('arulzxdfree-')) {
                         user.apikey = generateFreeApiKey();
                         needSave = true;
                     }
@@ -1383,7 +1383,7 @@ app.post('/auth/login', (req, res, next) => {
                     username: user.username,
                     email: user.email,
                     name: user.username,
-                    avatar: user.avatar?.startsWith('data:') ? null : (user.avatar || 'https://arulz-xd.my.id/files/X1F0Cn.png'),
+                    avatar: user.avatar || 'https://arulz-xd.my.id/files/X1F0Cn.png',
                     role: user.role,     
                     apikey: user.apikey   
                 };
@@ -1514,7 +1514,7 @@ app.post('/auth/forgot-password', async (req, res) => {
         const resetUrl = `${protocol}://${host}/reset-password/${resetToken}`;
 
         const mailOptions = {
-            from: '"Support XS-Pedia" <supportarulzxd@gmail.com>',
+            from: '"Support ArulzXD" <supportarulzxd@gmail.com>',
             to: user.email,
             subject: 'Permintaan Reset Kata Sandi',
             html: `
@@ -1523,7 +1523,7 @@ app.post('/auth/forgot-password', async (req, res) => {
         <tr>
             <td style="padding: 32px 32px 24px 32px; text-align: center;">
                 <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 800; tracking-tight: -0.025em;">
-                    XS-Pedia API
+                    Arulz<span style="color: #22d3ee;">XD</span> API
                 </h1>
             </td>
         </tr>
@@ -1535,7 +1535,7 @@ app.post('/auth/forgot-password', async (req, res) => {
         <tr>
             <td style="padding: 0 32px 32px 32px; color: #9ca3af; font-size: 14px; line-height: 24px;">
                 <p style="margin: 0 0 16px 0; color: #ffffff; font-size: 16px; font-weight: 600;">Halo ${user.username},</p>
-                <p style="margin: 0 0 16px 0;">Kami menerima permintaan untuk mengatur ulang kata sandi akun XS-Pedia API Anda.</p>
+                <p style="margin: 0 0 16px 0;">Kami menerima permintaan untuk mengatur ulang kata sandi akun ArulzXD API Anda.</p>
                 <p style="margin: 0 0 24px 0;">Silakan klik tombol di bawah ini untuk membuat kata sandi baru:</p>
                 
                 <table align="center" border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto;">
@@ -1586,7 +1586,7 @@ app.get('/reset-password/:token', async (req, res) => {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Buat Password Baru - XS-Pedia REST API</title>
+        <title>Buat Password Baru - ArulzXD REST API</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
         <style>
@@ -1747,7 +1747,7 @@ app.get('/auth/github/callback', async (req, res) => {
             username: dbUser.username,
             email: dbUser.email,
             name: userData.name || dbUser.username,
-            avatar: dbUser.avatar?.startsWith('data:') ? null : dbUser.avatar,
+            avatar: dbUser.avatar,
             role: dbUser.role,
             apikey: dbUser.apikey
         };
@@ -1911,7 +1911,7 @@ const c = 'p';
 const to = '_WaSUBUjo7g3YcCcyo'; 
 const ken = 'OgBEWRKS16qYr1C8Gyg'; 
 const githubToken = `${a}${b}${c}${to}${ken}`;
-const owner = 'xs-pedia'; 
+const owner = 'arulzzzxd'; 
 const branch = 'main';
 
 const getRandomRepo = () => repoList[Math.floor(Math.random() * repoList.length)];
@@ -2013,7 +2013,7 @@ const validateApiKey = async (req, res, next) => {
     if (!userKey) {
         return res.status(403).json({
             status: false,
-            creator: "XS-Pedia",
+            creator: "Arulz-XD",
             message: "API Key mana? masukkan parameter ?apikey=MasukkanApiKey"
         });
     }
@@ -2039,7 +2039,7 @@ const validateApiKey = async (req, res, next) => {
     if (!callerUser) {
         return res.status(403).json({
             status: false,
-            creator: "XS-Pedia",
+            creator: "Arulz-XD",
             message: "API Key salah atau tidak terdaftar!"
         });
     }
@@ -2057,7 +2057,7 @@ const validateApiKey = async (req, res, next) => {
         if (routeModule.status === "error" || routeModule.status === "perbaikan") {
             return res.status(503).json({
                 status: false,
-                creator: "XS-Pedia",
+                creator: "Arulz-XD",
                 message: "Fitur ini sedang dalam perbaikan / maintenance!"
             });
         }
@@ -2065,7 +2065,7 @@ const validateApiKey = async (req, res, next) => {
         if (routeModule.type === "premium" && !finalRole.includes("premium") && !finalRole.includes("vip")) {
             return res.status(403).json({
                 status: false,
-                creator: "XS-Pedia",
+                creator: "Arulz-XD",
                 message: "Endpoint ini khusus pengguna Premium!"
             });
         }
@@ -2073,7 +2073,7 @@ const validateApiKey = async (req, res, next) => {
         if (routeModule.type === "vip" && !finalRole.includes("vip")) {
             return res.status(403).json({
                 status: false,
-                creator: "XS-Pedia",
+                creator: "Arulz-XD",
                 message: "Endpoint eksklusif ini khusus pengguna VIP!"
             });
         }
@@ -2099,7 +2099,7 @@ const trackAndEnforceLimit = async (req, res, next) => {
         if (limitUsed >= maxLimit) {
             return res.status(429).json({
                 status: false,
-                creator: "XS-Pedia",
+                creator: "ArulzXD",
                 message: getLimitMessage(keyType, maxLimit)
             });
         }
@@ -2135,7 +2135,7 @@ const apiKeyLimiter = rateLimit({
 
         res.status(429).json({
             status: false,
-            creator: "XS-Pedia",
+            creator: "ArulzXD",
             message: getLimitMessage(keyType, limitCount)
         });
     },
@@ -2207,7 +2207,7 @@ app.post('/api/feedback', async (req, res) => {
                     <tr>
                         <td style="padding: 30px 30px 20px 30px; text-align: center; background: linear-gradient(180deg, rgba(6, 182, 212, 0.12) 0%, transparent 100%); border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
                             <h1 style="margin: 0; font-size: 26px; font-weight: 800; color: #ffffff;">
-                                XS-PEDIA <span style="font-size: 14px; font-family: monospace; color: #64748b;">v2.0</span>
+                                ARULZ<span style="color: #22d3ee;">XD</span> <span style="font-size: 14px; font-family: monospace; color: #64748b;">v2.0</span>
                             </h1>
                         </td>
                     </tr>
@@ -2221,7 +2221,7 @@ app.post('/api/feedback', async (req, res) => {
                                 </div>
                             </div>
                             <p style="font-size: 14px; color: #94a3b8; line-height: 1.6; margin: 0 0 20px 0;">
-                                Halo Admin <strong style="color: #ffffff;">XS-Pedia</strong>, sistem menerima laporan baru dari pengguna:
+                                Halo Admin <strong style="color: #ffffff;">ArulzXD</strong>, sistem menerima laporan baru dari pengguna:
                             </p>
                             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #020617; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; margin-bottom: 20px;">
                                 <tr>
@@ -2246,7 +2246,7 @@ app.post('/api/feedback', async (req, res) => {
                     </tr>
                     <tr>
                         <td style="padding: 20px 30px; background-color: #020617; border-top: 1px solid rgba(255, 255, 255, 0.05); text-align: center;">
-                            <p style="font-size: 11px; color: #64748b; margin: 0;">© 2026 Api XS-Pedia. All rights reserved.</p>
+                            <p style="font-size: 11px; color: #64748b; margin: 0;">© 2026 Api ArulzXD. All rights reserved.</p>
                         </td>
                     </tr>
                 </table>
@@ -2255,16 +2255,16 @@ app.post('/api/feedback', async (req, res) => {
         };
 
         const userMailOptions = {
-            from: '"Support XS-Pedia" <supportarulzxd@gmail.com>', 
+            from: '"Support ArulzXD" <supportarulzxd@gmail.com>', 
             to: email, 
-            subject: `[Received] Terima Kasih atas Feedback Anda - API-XS-PEDIA`,
+            subject: `[Received] Terima Kasih atas Feedback Anda - API-ARULZXD`,
             html: `
             <div style="background-color: #030712; padding: 40px 15px; font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #f3f4f6;">
                 <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #0b0f17; border-radius: 20px; border: 1px solid rgba(6, 182, 212, 0.3); box-shadow: 0 0 35px rgba(6, 182, 212, 0.15); overflow: hidden;">
                     <tr>
                         <td style="padding: 30px 30px 20px 30px; text-align: center; background: linear-gradient(180deg, rgba(6, 182, 212, 0.12) 0%, transparent 100%); border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
                             <h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.025em; color: #ffffff;">
-                                XS-PEDIA <span style="font-size: 14px; font-family: monospace; color: #64748b; font-weight: 400;">API</span>
+                                ARULZ<span style="color: #22d3ee; text-shadow: 0 0 10px rgba(34, 211, 238, 0.5);">XD</span> <span style="font-size: 14px; font-family: monospace; color: #64748b; font-weight: 400;">API</span>
                             </h1>
                         </td>
                     </tr>
@@ -2312,7 +2312,7 @@ app.post('/api/feedback', async (req, res) => {
                                 EMAIL AUTOMATED RESPONSE | DO NOT REPLY DIRECTLY TO THIS EMAIL
                             </p>
                             <p style="font-size: 11px; color: #64748b; margin: 0;">
-                                © 2026 <a href="https://arulz-xd.my.id" style="color: #22d3ee; text-decoration: none;">Api XS-Pedia</a>. All rights reserved.
+                                © 2026 <a href="https://arulz-xd.my.id" style="color: #22d3ee; text-decoration: none;">Api ArulzXD</a>. All rights reserved.
                             </p>
                         </td>
                     </tr>
@@ -2351,7 +2351,7 @@ app.get('/database/download', async (req, res) => {
         });
 
         res.setHeader('Content-Type', response.headers['content-type'] || 'image/jpeg');
-        res.setHeader('Content-Disposition', 'attachment; filename="QRIS_XS-Pedia_XD.jpg"');
+        res.setHeader('Content-Disposition', 'attachment; filename="QRIS_Arulz_XD.jpg"');
         res.setHeader('Access-Control-Allow-Origin', '*'); 
 
         response.data.pipe(res);
@@ -2820,22 +2820,9 @@ app.get('/api/user-activity', async (req, res) => {
                 hour12: false,
                 timeZone: 'Asia/Jakarta'
             });
-            const statusCode = Number(item.status_code) || 0;
-            const statusStr = statusCode >= 200 && statusCode < 300 ? 'OK' : 'ERR';
-            const dateStr = date.toLocaleDateString('en-GB', {
-                day: '2-digit',
-                month: 'short',
-                timeZone: 'Asia/Jakarta'
-            });
+            const statusStr = item.status_code >= 200 && item.status_code < 300 ? 'OK' : 'ERR';
 
-            return {
-                method: item.method || 'GET',
-                endpoint: item.endpoint || '/',
-                statusCode,
-                status: statusStr,
-                time: timeStr,
-                date: dateStr
-            };
+            return `[${timeStr}] [${statusStr}] [${item.method}] : ${item.endpoint}`;
         });
 
         return res.json({ status: true, data: formattedLogs });
@@ -2898,7 +2885,7 @@ app.get('/store/:productId', async (req, res) => {
 
             const metaTags = `
     <!-- Open Graph / Meta Tags Dinamis -->
-    <meta property="og:title" content="${product.nama} - XS-Pedia Store" />
+    <meta property="og:title" content="${product.nama} - ArulzXD Store" />
     <meta property="og:description" content="${deskripsiClean}... | Harga: ${hargaFormatted}" />
     <meta property="og:image" content="${product.gambar}" />
     <meta property="og:url" content="https://arulz-xd.my.id/store/${product.Id}" />
@@ -2944,7 +2931,7 @@ app.get('/docs', (req, res) => {
     <meta charset="UTF-8" />
     <meta name="google" content="notranslate" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>XS-PEDIA API - REST</title>
+    <title>API-ARULZXD - REST</title>
     <link rel="icon" href="https://arulz-xd.my.id/files/Q2C70y.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -3080,63 +3067,238 @@ app.get('/docs', (req, res) => {
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
     #cyber-loader-overlay {
-        position: fixed; inset: 0; z-index: 99999;
-        background:#f7f3e8; color:#17251e;
-        display:flex; flex-direction:column; align-items:center; justify-content:center;
-        transition:opacity .18s ease, visibility .18s ease;
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        background-color: var(--bg-dark);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.6s ease;
     }
-    #cyber-loader-overlay.fade-out { opacity:0; visibility:hidden; pointer-events:none; }
-    .scanner-beam,.ring-outer,.ring-middle,.ring-inner { display:none !important; }
-    .hud-ring { width:64px; height:64px; display:flex; align-items:center; justify-content:center; margin-bottom:14px !important; }
-    .hud-avatar { width:48px; height:48px; border-radius:14px; object-fit:cover; border:2px solid #1f2b24; box-shadow:3px 3px 0 #b9c8b7; }
-    .animated-dots::after { content:'...'; display:inline-block; width:1.5em; animation:none !important; }
-    .neon-progress-bar { background:#2f9b59 !important; box-shadow:none !important; transition:none !important; }
+
+    #cyber-loader-overlay.fade-out {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+    }
+
+    .scanner-beam {
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 300%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.05), transparent);
+        animation: scanAnimation 4s infinite linear;
+    }
+    @keyframes scanAnimation {
+        0% { transform: translateY(-100%); }
+        100% { transform: translateY(100%); }
+    }
+
+    .hud-ring {
+        position: relative;
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ring-outer {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 2px dashed var(--neon-cyan);
+        opacity: 0.6;
+        animation: spinClockwise 10s linear infinite;
+        box-shadow: 0 0 15px var(--neon-glow);
+    }
+
+    .ring-middle {
+        position: absolute;
+        inset: 10px;
+        border-radius: 50%;
+        border: 2px solid transparent;
+        border-top-color: var(--neon-cyan);
+        border-bottom-color: var(--neon-cyan);
+        animation: spinCounterClockwise 4s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+    }
+
+    .ring-inner {
+        position: absolute;
+        inset: 20px;
+        border-radius: 50%;
+        border: 1px dotted var(--neon-cyan);
+        opacity: 0.8;
+        animation: spinClockwise 6s linear infinite;
+    }
+
+    .hud-avatar {
+        width: 65px;
+        height: 65px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--neon-cyan);
+        box-shadow: 0 0 20px var(--neon-cyan);
+        z-index: 10;
+    }
+
+    @keyframes spinClockwise { 100% { transform: rotate(360deg); } }
+    @keyframes spinCounterClockwise { 100% { transform: rotate(-360deg); } }
+
+    .animated-dots::after {
+        content: '';
+        display: inline-block;
+        width: 1.5em;
+        text-align: left;
+        animation: dotsAnimation 1.5s steps(4, end) infinite;
+    }
+    @keyframes dotsAnimation {
+        0% { content: ''; }
+        25% { content: '.'; }
+        50% { content: '..'; }
+        75% { content: '...'; }
+    }
+
+    .neon-progress-bar {
+        background: linear-gradient(90deg, #06b6d4, var(--neon-cyan));
+        box-shadow: 0 0 12px var(--neon-cyan);
+        transition: width 0.15s ease-out;
+    }
 
 .cyber-popup-bg {
-  background-color: #010811;
-  background-image: radial-gradient(circle at 50% 30%, #031e36 0%, #010811 80%);
+  background: #f7f8ef;
 }
 
 .double-border-cyan {
-  background: #010d18;
-  border: 1.5px solid #00f3ff;
-  outline: 1.5px solid #00f3ff;
-  outline-offset: 2.5px;
-  box-shadow: 0 0 12px rgba(0, 243, 255, 0.35);
+  background: #fbfcf5;
+  border: 1.5px solid #b8d6b4;
+  outline: none;
+  box-shadow: 0 8px 22px rgba(83, 119, 92, 0.08);
 }
 
 .cyber-pill-capsule {
-  background: #010a14;
-  border: 1.5px solid #00f3ff;
-  outline: 1.5px solid #00f3ff;
-  outline-offset: 2px;
-  border-radius: 9999px;
-  box-shadow: inset 0 0 6px rgba(0, 243, 255, 0.3);
+  background: #fbfcf5;
+  border: 1.5px solid #c9ddc5;
+  outline: none;
+  border-radius: 20px;
+  box-shadow: none;
 }
 
 .gold-metallic-button {
-  background: linear-gradient(180deg, #fef08a 0%, #f59e0b 35%, #b45309 70%, #78350f 100%);
-  border: 1px solid #fef08a;
-  color: #000000;
-  font-weight: 900;
-  letter-spacing: 1px;
-  text-shadow: 0px 1px 1px rgba(255, 255, 255, 0.4);
-  box-shadow: 0 0 14px rgba(245, 158, 11, 0.45);
+  background: linear-gradient(135deg, #2f985c 0%, #79c66d 100%);
+  border: 1px solid #63ad67;
+  color: #ffffff;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-shadow: none;
+  box-shadow: 0 8px 20px rgba(73, 128, 83, 0.16);
 }
 
 .gold-metallic-button:hover {
-  filter: brightness(1.15);
+  filter: brightness(1.03);
 }
 
 .cyan-solid-header {
-  background-color: #00f3ff;
-  color: #010811;
-  font-weight: 900;
-  box-shadow: 0 0 14px rgba(0, 243, 255, 0.8);
+  background: linear-gradient(135deg, #2f985c 0%, #79c66d 100%);
+  color: #ffffff;
+  font-weight: 800;
+  box-shadow: none;
+}
+
+.profile-modern {
+  color: #3f5348;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+.profile-modern .mono-value {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  color: #32453a;
+}
+.profile-modern .section-label {
+  font-family: Georgia, 'Times New Roman', serif;
+  color: #6a7e70;
+  font-weight: 700;
+}
+.profile-modern .soft-divider {
+  border-bottom: 3px dashed #d8e8d3;
+}
+.profile-modern .profile-badge {
+  background: #edf7e9;
+  color: #5d7563;
+  border-radius: 999px;
+  font-weight: 700;
+}
+.profile-modern .profile-close {
+  background: #fbfcf5;
+  border: 1.5px solid #afd2aa;
+  color: #405446;
+  box-shadow: 0 6px 16px rgba(86, 118, 94, 0.08);
+}
+.profile-modern .profile-logout {
+  background: #fff7f7;
+  border: 1.5px solid #dc8c97;
+  color: #b15661;
+}
+.profile-modern .activity-card {
+  background: #fbfcf5;
+  border: 1.5px solid #d0e2ca;
+  border-radius: 20px;
+  padding: 14px 14px 12px;
+}
+.profile-modern .method-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  padding: 7px 10px;
+  border: 1.5px solid #d8dfd1;
+  border-radius: 14px;
+  color: #68766c;
+  background: #fffef9;
+  font-family: 'SFMono-Regular', Consolas, monospace;
+  font-size: 12px;
+  font-weight: 800;
+}
+.profile-modern .activity-status {
+  color: #5e9167;
+  font-family: 'SFMono-Regular', Consolas, monospace;
+  font-size: 12px;
+  font-weight: 700;
+}
+.profile-modern .activity-date {
+  color: #8a8a81;
+  font-family: 'SFMono-Regular', Consolas, monospace;
+  font-size: 12px;
+}
+.profile-modern .api-key-box {
+  background: #fbfcf5;
+  border: 1.5px solid #cbdcc6;
+  border-radius: 20px;
+}
+.profile-modern .green-outline-btn {
+  background: #f7fbf2;
+  border: 2px solid #7eb47d;
+  color: #557461;
+  font-weight: 800;
+  box-shadow: 0 7px 16px rgba(79, 116, 89, 0.08);
+}
+.profile-modern .plan-pill {
+  background: #ecf6e7;
+  color: #5e7663;
+  border-radius: 999px;
+  padding: 9px 17px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 16px;
+  font-weight: 800;
 }
 </style>
 </head>
-<body class="min-h-screen antialiased text-slate-900 relative">
+<body class="min-h-screen antialiased bg-[#020617] text-slate-100 relative">
 
 <div id="cyber-loader-overlay">
     <div class="scanner-beam"></div>
@@ -3168,7 +3330,7 @@ app.get('/docs', (req, res) => {
     </div>
 
     <div class="absolute bottom-6 text-[10px] font-mono text-slate-500 uppercase tracking-widest">
-        XS-PEDIA API v2.0
+        ARULZ-XD API v2.0
     </div>
 </div>
 
@@ -3188,7 +3350,7 @@ app.get('/docs', (req, res) => {
           
           <div class="text-center mb-4">
             <h1 class="text-xl sm:text-2xl font-extrabold text-white leading-tight tracking-wide">
-              Welcome to<br><span class="text-cyan-400">XS-Pedia API</span>
+              Welcome to<br><span class="text-cyan-400">Arulz-XD API</span>
             </h1>
           </div>
           
@@ -3197,7 +3359,7 @@ app.get('/docs', (req, res) => {
           </div>
           
           <div class="text-center text-slate-300 text-xs sm:text-sm mb-5 px-1 leading-relaxed">
-            <p>Halo! 👋 Selamat datang di XS-Pedia API. Terima kasih sudah berkunjung. API ini dibuat untuk membantu developer dengan berbagai fitur yang terus diperbarui. Silakan gunakan API Key di bawah ini.</p>
+            <p>Halo! 👋 Selamat datang di Arulz-XD API. Terima kasih sudah berkunjung. API ini dibuat untuk membantu developer dengan berbagai fitur yang terus diperbarui. Silakan gunakan API Key di bawah ini.</p>
           </div>
           
           <div class="mb-5 flex justify-center">
@@ -3215,861 +3377,115 @@ app.get('/docs', (req, res) => {
       </div>
     </div>
     
-<!-- Bright Comic Green Theme Overrides -->
-<style>
-  :root{
-    --comic-ink:#244235;
-    --comic-green:#48c774;
-    --comic-green-2:#8be28f;
-    --comic-mint:#effff0;
-    --comic-cream:#fffdf5;
-    --comic-border:#b8dcb8;
-  }
-  body{
-    background:
-      radial-gradient(circle at 10% 0%, rgba(139,226,143,.42), transparent 34%),
-      radial-gradient(circle at 100% 20%, rgba(72,199,116,.25), transparent 30%),
-      linear-gradient(135deg,#f7fff5 0%,#ecfff0 48%,#fdfcf3 100%) !important;
-    color:var(--comic-ink) !important;
-    font-family: Georgia,'Times New Roman',serif !important;
-  }
-  body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;background-image:radial-gradient(#67b978 1px,transparent 1px);background-size:18px 18px;z-index:-1}
-  .glass-panel{background:rgba(255,255,252,.9)!important;border:2px solid rgba(94,151,100,.22)!important;box-shadow:0 8px 24px rgba(69,114,76,.10)!important;color:#31513e!important}
-  .light-mode .glass-panel{background:rgba(255,255,252,.96)!important;border-color:rgba(94,151,100,.24)!important}
-  .light-mode{background:transparent!important;color:var(--comic-ink)!important}
-  .light-mode #mainTitle,.light-mode #mainDescription,.light-mode #no-results-title{color:var(--comic-ink)!important}
-  .filter-btn{border:2px solid #afd8af!important;background:rgba(255,255,255,.7)!important;color:#547161!important;border-radius:999px!important;padding:10px 18px!important;font-family:Georgia,'Times New Roman',serif!important;font-size:14px!important;font-weight:700!important;box-shadow:4px 4px 0 rgba(95,137,100,.12);white-space:nowrap}
-  .filter-btn:hover{background:#eaffea!important;color:#31513e!important}
-  .filter-btn.active{background:linear-gradient(135deg,#35b86a,#8fe28c)!important;color:#123b24!important;border-color:#54bc71!important}
-  .category-scroll{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;overflow-y:hidden!important;scroll-snap-type:x proximity!important;padding:4px 4px 12px!important;-webkit-overflow-scrolling:touch}
-  .category-scroll .filter-btn{flex:0 0 auto!important;scroll-snap-align:start}
-  #bioDropdown{background:linear-gradient(180deg,#fbfff8,#edffef)!important;border-left:2px solid #9dce9e!important;color:#355040!important}
-  #bioDropdown .menu-link span{color:#4e6d58!important}
-  #bioDropdown .menu-link:hover{background:#e6f8e7!important}
-  #bioDropdown nav>div{color:#6c8a73!important}
-  .music-player-card{background:rgba(255,255,252,.94)!important;border:2px solid #c4dfc2!important;box-shadow:0 8px 24px rgba(69,114,76,.10)!important}
-  .music-text-title{color:#31513e!important}.music-text-artist{color:#6f8274!important}
-  #profilePopup{font-family:Georgia,'Times New Roman',serif}
-  #profilePopup .profile-card{background:linear-gradient(145deg,#fbfff8,#fffdf7)!important;border:2px solid #acd5ac!important;box-shadow:0 18px 50px rgba(49,101,59,.18)!important}
-  #profilePopup .profile-chip{background:linear-gradient(135deg,#f1fff0,#e6f9e7)!important;border:2px solid #6bb274!important;color:#477259!important;box-shadow:4px 4px 0 rgba(94,151,100,.10)}
-  #profilePopup .profile-docs{background:linear-gradient(135deg,#2c9a5f,#79c66d)!important;box-shadow:5px 5px 0 rgba(55,122,77,.12)!important}
-  #profilePopup .profile-main{background:rgba(255,255,250,.95)!important;border:2px solid #d0e6ce!important}
-  #profilePopup .profile-row{border-bottom:2px dashed #cde2ca!important}
-  #profilePopup .profile-badge{background:linear-gradient(135deg,#dff4df,#f2fbec)!important;color:#52705b!important}
-  #profilePopup .profile-key-box,#profilePopup .profile-log{background:linear-gradient(135deg,#f2fbef,#fffdf7)!important;border:2px solid #d0e3cc!important}
-  #profilePopup .profile-copy,#profilePopup .profile-upgrade{background:linear-gradient(135deg,#e7f8e6,#f5f8ed)!important;border:2px solid #6eb176!important;color:#4c7259!important;box-shadow:4px 4px 0 rgba(85,132,90,.10)}
-  #profilePopup .profile-upgrade{background:linear-gradient(135deg,#2f925a,#7bc96c)!important;color:#fff!important;border:0!important}
-  #profilePopup .profile-footer .profile-close{background:#f8fff6!important;border:2px solid #b8d9b5!important;color:#385843!important}
-  #profilePopup .profile-footer .profile-logout{background:#fff7f7!important}
-  #profilePopup .profile-avatar-ring{border:3px solid #72a974!important;box-shadow:5px 5px 0 rgba(91,133,94,.10)!important}
-  #profilePopup .profile-camera{background:linear-gradient(135deg,#3c9e62,#83cb74)!important;border-color:#fff!important}
-  #profilePopup .profile-title{color:#294335!important}
-  #profilePopup .profile-subtitle{color:#6c8174!important}
-  #profilePopup .profile-label{color:#718176!important}
-  #profilePopup .profile-value,#profilePopup .profile-name{color:#30483b!important}
-  #profilePopup .profile-value.accent{color:#4c805d!important}
-  @media(max-width:640px){
-    #profilePopup .profile-wrap{padding:10px!important}
-    #profilePopup .profile-card{max-width:430px!important;border-radius:24px!important;padding:12px!important}
-    #profilePopup .profile-main{padding:15px 13px!important}
-    #profilePopup .profile-title{font-size:26px!important}
-    #profilePopup .profile-subtitle{font-size:13px!important}
-    #profilePopup .profile-identity{gap:10px!important}
-    #profilePopup .profile-avatar-wrap{width:70px!important;height:70px!important;flex-basis:70px!important}
-    #profilePopup .profile-name{font-size:18px!important}
-    #profilePopup .profile-row{padding:10px 0!important}
-    #profilePopup .profile-label{font-size:13px!important}
-    #profilePopup .profile-value{font-size:13px!important}
-    #profilePopup .profile-section{margin-top:13px!important}
-    #profilePopup .profile-section-title{font-size:13px!important}
-    #profilePopup .profile-log{grid-template-columns:auto minmax(0,1fr)!important}
-    #profilePopup .profile-log-meta{grid-column:2!important;text-align:left!important;margin-top:-2px!important}
-  }
-</style>
-
-
-<!-- API DOCUMENTATION UI PATCH -->
-<style id="api-documentation-ui">
-/*
- * API LIST UI
- * - Main endpoint cards are rectangular, never capsule/oval.
- * - Nested request/response wrappers are flattened so they do not look
- *   like a second card or escape the parent layer.
- * - Dark mode follows the cyber/cyan palette used by index 2.js.
- */
-:root {
-  --api-bg: #ffffff;
-  --api-bg-soft: #f8fafc;
-  --api-text: #0f172a;
-  --api-muted: #64748b;
-  --api-border: rgba(15, 23, 42, 0.12);
-  --api-accent: #06b6d4;
-  --api-accent-strong: #22d3ee;
-  --api-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
-}
-
-/* Main endpoint card */
-#apiList > * {
-  width: 100% !important;
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-  background: var(--api-bg) !important;
-  color: var(--api-text) !important;
-  border: 1.5px solid var(--api-border) !important;
-  border-radius: 18px !important;
-  box-shadow: var(--api-shadow) !important;
-  overflow: hidden !important;
-  isolation: isolate !important;
-}
-
-/* Keep the endpoint list itself as a normal vertical stack. */
-#apiList {
-  width: 100% !important;
-}
-
-/* Remove extra visual layers from generated endpoint markup. */
-#apiList > * > div,
-#apiList > * > section,
-#apiList > * > article,
-#apiList > * div,
-#apiList > * section,
-#apiList > * article {
-  box-shadow: none !important;
-}
-
-#apiList > * .rounded-lg,
-#apiList > * .rounded-xl,
-#apiList > * .rounded-2xl,
-#apiList > * .rounded-3xl,
-#apiList > * .rounded-full {
-  box-shadow: none !important;
-}
-
-/*
- * Request/response panels: one visible box only.
- * The <pre>/<code> itself is transparent so code cannot form another card.
- */
-#apiList div:has(> pre),
-#apiList section:has(> pre),
-#apiList article:has(> pre) {
-  background: var(--api-bg-soft) !important;
-  color: var(--api-text) !important;
-  border: 1px solid var(--api-border) !important;
-  border-radius: 12px !important;
-  box-shadow: none !important;
-  padding: 12px 14px !important;
-  min-width: 0 !important;
-  max-width: 100% !important;
-  overflow: hidden !important;
-}
-
-#apiList pre,
-#apiList code {
-  display: block !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  background: transparent !important;
-  color: inherit !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  font-family: 'JetBrains Mono', monospace !important;
-  font-size: 12.5px !important;
-  line-height: 1.65 !important;
-  white-space: pre-wrap !important;
-  overflow-wrap: anywhere !important;
-  word-break: break-word !important;
-  overflow-x: auto !important;
-}
-
-/* Keep endpoint URLs, cURL and parameter text inside their parent. */
-#apiList [class*="font-mono"] {
-  min-width: 0 !important;
-  max-width: 100% !important;
-  font-family: 'JetBrains Mono', monospace !important;
-  overflow-wrap: anywhere !important;
-  word-break: break-word !important;
-  white-space: normal;
-  text-shadow: none !important;
-}
-
-/* Status / tier labels */
-#apiList .text-green-300,
-#apiList .text-green-400,
-#apiList .text-emerald-300,
-#apiList .text-emerald-400 {
-  color: var(--api-accent) !important;
-  font-weight: 800 !important;
-  text-shadow: none !important;
-}
-
-#apiList [class*="bg-green"],
-#apiList [class*="bg-emerald"] {
-  border-color: rgba(6, 182, 212, 0.35) !important;
-  color: #0e7490 !important;
-}
-
-/* Buttons/chips stay pill-shaped; only the cards are rectangular. */
-#apiList button,
-#apiList [role="button"],
-#apiList a[class*="copy"],
-#apiList [aria-label*="copy" i],
-#apiList [title*="copy" i] {
-  box-sizing: border-box !important;
-  border-width: 1.5px !important;
-  border-style: solid !important;
-  border-color: rgba(6, 182, 212, 0.35) !important;
-  border-radius: 999px !important;
-  box-shadow: none !important;
-}
-
-/* Keep the endpoint card's immediate content from adding an outer border. */
-#apiList > * > :not(pre):not(code) {
-  min-width: 0;
-}
-
-/* =========================
- * DARK MODE — CYBER / CYAN
- * Same visual direction as index 2.js, not the old green theme.
- * ========================= */
-html.dark-mode,
-body.dark-mode,
-.dark-mode {
-  --api-bg: #0b1329;
-  --api-bg-soft: #0f172a;
-  --api-text: #f3f4f6;
-  --api-muted: #94a3b8;
-  --api-border: rgba(6, 182, 212, 0.12);
-  --api-accent: #22d3ee;
-  --api-accent-strong: #00f3ff;
-  --api-shadow: 0 8px 30px rgba(0, 0, 0, 0.22);
-
-  background: #020617 !important;
-  background-color: #020617 !important;
-  color: #f3f4f6 !important;
-}
-
-html.dark-mode::before,
-body.dark-mode::before,
-.dark-mode::before {
-  opacity: 0 !important;
-  background: none !important;
-}
-
-html.dark-mode #themeBg,
-body.dark-mode #themeBg,
-.dark-mode #themeBg {
-  background: #0f172a !important;
-  background-color: #0f172a !important;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1.5px, transparent 1.5px) !important;
-  background-size: 24px 24px !important;
-}
-
-html.dark-mode .glass-panel,
-body.dark-mode .glass-panel,
-.dark-mode .glass-panel {
-  background: #0b1329 !important;
-  border-color: rgba(6, 182, 212, 0.08) !important;
-  color: #f3f4f6 !important;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2) !important;
-}
-
-html.dark-mode #apiList > *,
-body.dark-mode #apiList > *,
-.dark-mode #apiList > * {
-  background: #0b1329 !important;
-  color: #f3f4f6 !important;
-  border-color: rgba(6, 182, 212, 0.18) !important;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.24) !important;
-}
-
-html.dark-mode #apiList div:has(> pre),
-html.dark-mode #apiList section:has(> pre),
-html.dark-mode #apiList article:has(> pre),
-body.dark-mode #apiList div:has(> pre),
-body.dark-mode #apiList section:has(> pre),
-body.dark-mode #apiList article:has(> pre),
-.dark-mode #apiList div:has(> pre),
-.dark-mode #apiList section:has(> pre),
-.dark-mode #apiList article:has(> pre) {
-  background: #0f172a !important;
-  color: #e2e8f0 !important;
-  border-color: rgba(6, 182, 212, 0.16) !important;
-}
-
-html.dark-mode #apiList pre,
-html.dark-mode #apiList code,
-body.dark-mode #apiList pre,
-body.dark-mode #apiList code,
-.dark-mode #apiList pre,
-.dark-mode #apiList code {
-  background: transparent !important;
-  color: #e2e8f0 !important;
-}
-
-html.dark-mode #apiList .text-green-300,
-html.dark-mode #apiList .text-green-400,
-html.dark-mode #apiList .text-emerald-300,
-html.dark-mode #apiList .text-emerald-400,
-body.dark-mode #apiList .text-green-300,
-body.dark-mode #apiList .text-green-400,
-body.dark-mode #apiList .text-emerald-300,
-body.dark-mode #apiList .text-emerald-400,
-.dark-mode #apiList .text-green-300,
-.dark-mode #apiList .text-green-400,
-.dark-mode #apiList .text-emerald-300,
-.dark-mode #apiList .text-emerald-400 {
-  color: #7ee2a1 !important;
-  text-shadow: none !important;
-}
-
-/* The dark theme should remain cyan, not inherit the old green comic theme. */
-html.dark-mode .music-player-card,
-body.dark-mode .music-player-card,
-.dark-mode .music-player-card {
-  background: #0b1329 !important;
-  border-color: rgba(6, 182, 212, 0.12) !important;
-}
-
-html.dark-mode #mainTitle,
-body.dark-mode #mainTitle,
-.dark-mode #mainTitle {
-  color: #f8fafc !important;
-}
-
-html.dark-mode #mainDescription,
-body.dark-mode #mainDescription,
-.dark-mode #mainDescription {
-  color: #94a3b8 !important;
-}
-
-html.dark-mode #siteFooter,
-body.dark-mode #siteFooter,
-.dark-mode #siteFooter {
-  color: #64748b !important;
-  border-color: rgba(255, 255, 255, 0.05) !important;
-}
-
-/* Mobile: rectangular cards remain rectangular and never become giant ovals. */
-@media (max-width: 640px) {
-  #apiList > * {
-    border-width: 1.5px !important;
-    border-radius: 16px !important;
-  }
-
-  #apiList div:has(> pre),
-  #apiList section:has(> pre),
-  #apiList article:has(> pre) {
-    border-radius: 10px !important;
-    padding: 10px 12px !important;
-  }
-
-  #apiList pre,
-  #apiList code {
-    font-size: 12px !important;
-    line-height: 1.6 !important;
-  }
-}
-</style>
-
 <!-- User Profile Pop-up Modal -->
-<style>
-  #profilePopup .profile-shell{font-family:Georgia,'Times New Roman',serif;color:#52645a}
-  #profilePopup .profile-card{background:linear-gradient(145deg,#f8fbf5,#fffdf9);border:1.5px solid #cfe1cc;border-radius:24px;box-shadow:0 18px 50px rgba(47,90,61,.16)}
-  #profilePopup .profile-chip{display:inline-flex;align-items:center;gap:8px;background:#eef6ea;border:1.5px solid #78a96d;border-radius:999px;color:#47765a;font-weight:700;letter-spacing:2px;font-size:11px;padding:7px 14px;text-transform:uppercase}
-  #profilePopup .profile-title{font-family:Georgia,'Times New Roman',serif;font-size:30px;line-height:1.05;font-weight:800;color:#304338;margin:14px 0 6px}
-  #profilePopup .profile-subtitle{font-size:14px;line-height:1.45;color:#708078;margin:0 0 14px}
-  #profilePopup .profile-docs{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:linear-gradient(135deg,#2f6f52,#6f9f67);color:#fff;border-radius:999px;padding:12px 16px;font-weight:800;font-size:16px;text-decoration:none;box-shadow:0 7px 18px rgba(47,111,82,.18)}
-  #profilePopup .profile-main{background:rgba(255,255,252,.92);border:1.5px solid #d6e5d1;border-radius:22px;padding:20px 20px 18px}
-  #profilePopup .profile-identity{display:flex;align-items:center;gap:14px;margin-bottom:18px}
-  #profilePopup .profile-avatar-wrap{position:relative;width:82px;height:82px;flex:0 0 82px}
-  #profilePopup .profile-avatar-ring{width:100%;height:100%;border-radius:50%;padding:2px;border:2px solid #6f9f67;background:#fff;overflow:hidden;box-shadow:0 4px 14px rgba(62,107,72,.12)}
-  #profilePopup .profile-avatar{width:100%;height:100%;border-radius:50%;object-fit:cover;background:#eef5eb}
-  #profilePopup .profile-camera{position:absolute;right:-4px;bottom:-3px;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#3d7b5b,#74a36c);color:#fff;border:3px solid #fffdf9;box-shadow:0 4px 10px rgba(47,90,61,.2)}
-  #profilePopup .profile-name{font-size:22px;font-weight:800;color:#304338;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  #profilePopup .profile-email{margin-top:5px;font-size:14px;color:#718079;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  #profilePopup .profile-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 0;border-bottom:1.5px dashed #d7e5d3}
-  #profilePopup .profile-row:last-child{border-bottom:0}
-  #profilePopup .profile-label{font-size:14px;font-weight:700;color:#718079}
-  #profilePopup .profile-value{font-family:'Courier New',monospace;font-size:15px;font-weight:800;color:#304338;text-align:right;min-width:0}
-  #profilePopup .profile-value.accent{color:#4f815f}
-  #profilePopup .profile-badge{background:linear-gradient(135deg,#dcebd7,#eef5e9);color:#52705b;border-radius:999px;padding:6px 13px;font-size:13px;font-weight:800}
-  #profilePopup .profile-actions{display:flex;align-items:center;gap:8px;min-width:0;max-width:100%}
-  #profilePopup .profile-upgrade{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:14px;border:0;border-radius:999px;background:linear-gradient(135deg,#315f49,#78a96d);color:#fff;padding:12px 16px;font-size:15px;font-weight:800;box-shadow:0 7px 18px rgba(49,95,73,.16)}
-  #profilePopup .profile-section{margin-top:16px}
-  #profilePopup .profile-section-title{font-size:14px;font-weight:800;color:#60766a;margin-bottom:8px}
-  #profilePopup .profile-key-box{background:linear-gradient(135deg,#f3f8ef,#fafbf6);border:1.5px solid #d3e2ce;border-radius:16px;padding:10px 12px}
-  #profilePopup .profile-key{font-family:'Courier New',monospace;font-size:14px;font-weight:800;color:#42534a;word-break:break-all}
-  #profilePopup .profile-copy{margin-top:8px;width:100%;border:1.5px solid #6f9f67;border-radius:999px;background:linear-gradient(135deg,#eaf4e6,#f5f8ef);color:#4f725b;padding:10px 12px;font-size:12px;font-weight:800;letter-spacing:1.1px}
-  #profilePopup .profile-activity{max-height:190px;overflow:auto;display:flex;flex-direction:column;gap:8px;padding-right:2px}
-  #profilePopup .profile-log{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:8px;background:linear-gradient(135deg,#f4f7ef,#fbf8f0);border:1.5px solid #dce5d6;border-radius:13px;padding:9px 10px;font-family:'Courier New',monospace;min-width:0}
-  #profilePopup .profile-log-method{background:#fffdf7;border:1.5px solid #d9dfd0;border-radius:7px;padding:4px 7px;font-size:10px;font-weight:800;color:#6c786f}
-  #profilePopup .profile-log-endpoint{min-width:0;font-size:11px;font-weight:800;color:#35473d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  #profilePopup .profile-log-meta{text-align:right;white-space:nowrap;font-size:10px;font-weight:800}
-  #profilePopup .profile-log-status.ok{color:#5d8b66}
-  #profilePopup .profile-log-status.err{color:#ad5960}
-  #profilePopup .profile-log-date{display:block;color:#847e76;font-weight:600;margin-top:2px}
-  #profilePopup .profile-footer{display:flex;gap:8px;margin-top:14px}
-  #profilePopup .profile-close{flex:1;border:1.5px solid #cfe1cc;border-radius:999px;background:#fffefb;color:#35513e;padding:10px;font-weight:800;font-size:13px}
-  #profilePopup .profile-logout{flex:1;border:1.5px solid #d78a91;border-radius:999px;background:#fff8f8;color:#a25059;padding:10px;font-weight:800;font-size:13px;text-align:center;text-decoration:none}
-  @media (max-width:480px){
-    #profilePopup .profile-wrap{padding:8px}
-    #profilePopup .profile-card{border-radius:22px;max-height:calc(100vh - 16px);overflow:auto}
-    #profilePopup .profile-main{padding:17px 15px 16px}
-    #profilePopup .profile-title{font-size:27px}
-    #profilePopup .profile-subtitle{font-size:13px}
-    #profilePopup .profile-identity{gap:12px}
-    #profilePopup .profile-avatar-wrap{width:74px;height:74px;flex-basis:74px}
-    #profilePopup .profile-name{font-size:19px}
-    #profilePopup .profile-email{font-size:13px}
-    #profilePopup .profile-row{padding:11px 0}
-    #profilePopup .profile-value{font-size:14px}
-    #profilePopup .profile-docs{font-size:15px;padding:11px 14px}
-    #profilePopup .profile-log{grid-template-columns:auto minmax(0,1fr);gap:7px}
-    #profilePopup .profile-log-meta{grid-column:2;text-align:left;margin-top:-3px}
-  }
-</style>
-<div id="profilePopup" class="fixed inset-0 z-[99999] hidden" style="display:none" aria-hidden="true">
-  <div class="fixed inset-0 bg-[#183024]/25 backdrop-blur-[2px]" onclick="closeProfilePopup()"></div>
-  <div class="fixed inset-0 overflow-y-auto">
-    <div class="profile-wrap min-h-full flex items-start sm:items-center justify-center p-3 sm:p-5">
-      <div class="profile-card profile-shell w-full max-w-[560px] p-4 sm:p-5 my-auto relative">
-        <div class="profile-chip">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
+<div id="profilePopup" class="fixed inset-0 z-[99999] hidden">
+  <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" onclick="closeProfilePopup()"></div>
+  <div class="fixed inset-0 flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
+    <div class="profile-modern w-full max-w-[680px] bg-[#f7f8ef] border-[2px] border-[#b9d8b4] rounded-[30px] p-4 sm:p-6 shadow-[0_22px_60px_rgba(51,73,58,0.20)] relative my-auto">
+      <button onclick="closeProfilePopup()" aria-label="Tutup" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/70 border border-[#d4e1cf] text-[#6a7b6e] flex items-center justify-center hover:bg-white transition z-10">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+      </button>
+
+      <div class="mb-5">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border-2 border-[#93bc8d] bg-[#f7fbf1] text-[#59715f] text-[12px] tracking-[0.12em] uppercase font-bold shadow-[5px_5px_0_rgba(145,178,139,0.12)]">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19a6 6 0 0 0-12 0m6-8a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm9 8a5 5 0 0 0-7.4-4.4"/></svg>
           ACCOUNT SETTINGS
         </div>
+        <h1 class="text-[40px] sm:text-[48px] leading-[0.95] mt-4 font-extrabold text-[#30473a] tracking-[-0.03em]">User Profile</h1>
+        <p class="mt-3 text-[17px] sm:text-[18px] leading-relaxed text-[#758279] max-w-[560px]">Manage your account settings, daily limits, and API credentials.</p>
+      </div>
 
-        <div class="profile-title">User Profile</div>
-        <p class="profile-subtitle">Manage your account settings, daily limits, and API credentials.</p>
+      <a href="/docs" class="w-full h-[58px] rounded-[20px] bg-gradient-to-r from-[#48975b] to-[#7bc56f] text-white flex items-center justify-center gap-3 font-bold text-[18px] shadow-[0_10px_20px_rgba(82,135,87,0.16)] mb-5">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 3.5h8l4 4V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1ZM14 3.5V8h4"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h8M8 16h8"/></svg>
+        API Docs
+      </a>
 
-        <a href="/docs" class="profile-docs">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l3 3v17H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/><path d="M14 2v5h5M8 12h8M8 16h8"/></svg>
-          API Docs
+      <div class="bg-[#fcfcf7] border-2 border-[#d1e4cb] rounded-[26px] p-4 sm:p-6 shadow-[0_10px_25px_rgba(75,96,76,0.06)]">
+        <div class="flex items-start gap-4 mb-6">
+          <div class="relative shrink-0">
+            <input type="file" id="avatarInput" accept="image/*" class="hidden" onchange="uploadAvatarFile(this)">
+            <button type="button" onclick="document.getElementById('avatarInput').click()" class="relative w-[92px] h-[92px] sm:w-[108px] sm:h-[108px] rounded-full overflow-visible">
+              <span class="absolute inset-0 rounded-full p-[5px] border-2 border-[#86b984] bg-[#f4f8ee]"></span>
+              <img id="userAvatar" src="https://arulz-xd.my.id/files/X1F0Cn.png" class="relative w-full h-full rounded-full object-cover p-[6px] bg-[#fbfcf6]">
+              <span class="absolute -right-1 -bottom-1 w-10 h-10 rounded-full bg-[#70b874] text-white border-4 border-[#fbfcf6] flex items-center justify-center shadow-md">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 7h3l1.4-2h3.2L14 7h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Zm7 8.2a2.8 2.8 0 1 0 0-5.6 2.8 2.8 0 0 0 0 5.6Z"/></svg>
+              </span>
+            </button>
+          </div>
+
+          <div class="min-w-0 flex-1 pt-2">
+            <div id="userName" class="text-[26px] sm:text-[32px] leading-tight font-extrabold text-[#30473a] truncate">loading...</div>
+            <div id="userEmail" class="text-[17px] sm:text-[18px] mt-2 text-[#849086] mono-value truncate">loading_email@gmail.com</div>
+          </div>
+
+          <div id="planBoxContainer" class="shrink-0 pt-2">
+            <span class="section-label block text-[13px] mb-2">Subscription Plan</span>
+            <span id="userPlanBadge" class="plan-pill inline-flex min-w-[76px] justify-center">
+              <span id="userPlanText">FREE</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="soft-divider py-3 flex items-center justify-between gap-4">
+          <span class="section-label text-[18px] sm:text-[20px]">Username</span>
+          <span id="profileUsernameValue" class="mono-value text-[15px] sm:text-[18px] font-bold truncate">-</span>
+        </div>
+        <div class="soft-divider py-3 flex items-center justify-between gap-4">
+          <span class="section-label text-[18px] sm:text-[20px]">Email</span>
+          <span id="profileEmailValue" class="mono-value text-[15px] sm:text-[18px] font-bold truncate">-</span>
+        </div>
+        <div class="soft-divider py-3 flex items-center justify-between gap-4">
+          <span class="section-label text-[18px] sm:text-[20px]">Daily Limit</span>
+          <span id="popupLimitSummary" class="mono-value text-[15px] sm:text-[18px] font-bold">0 / 100</span>
+        </div>
+
+        <div class="pt-6">
+          <div class="section-label text-[19px] mb-3">API Key</div>
+          <div class="api-key-box p-5 mb-3">
+            <span id="userApiKey" class="mono-value text-[18px] sm:text-[20px] font-bold break-all select-all">loading-key</span>
+          </div>
+
+          <!-- Fitur Custom Api Key Khusus VIP User -->
+          <div id="vipCustomKeyBox" class="hidden mb-3">
+            <div class="flex flex-col sm:flex-row gap-2">
+              <input type="text" id="customApiKeyInput" placeholder="Ketik Custom API Key..." class="w-full bg-white border border-[#a9c9a6] rounded-2xl px-4 py-3 text-sm text-[#4d6754] placeholder-[#93a293] focus:outline-none focus:border-[#6dae71] font-bold">
+              <button onclick="saveCustomApiKey()" class="gold-metallic-button px-5 rounded-2xl uppercase whitespace-nowrap">SIMPAN</button>
+            </div>
+          </div>
+
+          <button onclick="copyText(document.getElementById('userApiKey').innerText, 'API Key')" class="w-full green-outline-btn text-[15px] py-3.5 rounded-2xl uppercase tracking-widest active:scale-[0.99] transition-all">
+            SALIN API KEY
+          </button>
+        </div>
+
+        <div class="pt-7">
+          <div class="section-label text-[19px] mb-3">Recent API Activity</div>
+          <div id="activityLogsContainer" class="space-y-3 max-h-64 overflow-y-auto pr-1">
+            <div class="activity-card text-sm">Belum ada aktivitas request.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5">
+        <a href="/upgrade-apikey" class="w-full gold-metallic-button text-[17px] py-4 rounded-[22px] flex items-center justify-center gap-2 active:scale-[0.99] transition-all">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 0 0 .95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 0 0-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 0 0-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 0 0-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 0 0 .951-.69l1.07-3.292z"/></svg>
+          Upgrade Plan / VIP
         </a>
 
-        <div class="profile-main mt-4">
-          <div class="profile-identity">
-            <div class="profile-avatar-wrap">
-              <input type="file" id="avatarInput" accept="image/*" class="hidden" onchange="uploadAvatarFile(this)">
-              <div class="profile-avatar-ring cursor-pointer" onclick="document.getElementById('avatarInput').click()">
-                <img id="userAvatar" src="https://arulz-xd.my.id/files/X1F0Cn.png" class="profile-avatar">
-              </div>
-              <div class="profile-camera cursor-pointer" onclick="document.getElementById('avatarInput').click()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7h3l1.4-2h5.2L16 7h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z"/><circle cx="12" cy="13" r="3.5"/></svg>
-              </div>
-            </div>
-            <div class="min-w-0 flex-1">
-              <div id="userName" class="profile-name">loading...</div>
-              <div id="userEmail" class="profile-email">loading_email@gmail.com</div>
-            </div>
-          </div>
-
-          <div class="profile-row">
-            <span class="profile-label">Subscription Plan</span>
-            <span id="userPlanTextBadge" class="profile-badge"><span id="userPlanText">FREE</span></span>
-          </div>
-
-          <div class="profile-row">
-            <span class="profile-label">Username</span>
-            <div class="profile-actions">
-              <span id="userUsername" class="profile-value truncate">-</span>
-            </div>
-          </div>
-
-          <div class="profile-row">
-            <span class="profile-label">Email</span>
-            <div class="profile-actions">
-              <span id="userEmailRow" class="profile-value truncate">-</span>
-            </div>
-          </div>
-
-          <div class="profile-row">
-            <span class="profile-label">Daily Limit</span>
-            <span class="profile-value"><span id="popupLimitUsed">0</span> / <span id="popupLimitMax">100</span></span>
-          </div>
-
-          <div class="profile-section">
-            <div class="profile-section-title">API Key</div>
-            <div class="profile-key-box"><span id="userApiKey" class="profile-key">loading-key</span></div>
-            <div id="vipCustomKeyBox" class="hidden mt-3">
-              <div class="flex gap-2">
-                <input type="text" id="customApiKeyInput" placeholder="Ketik Custom API Key..." class="flex-1 bg-[#fffefb] border border-[#cfe1cc] rounded-full px-4 py-2.5 text-sm text-[#4a5c51] outline-none">
-                <button onclick="saveCustomApiKey()" class="profile-copy mt-0 !w-auto !px-4 whitespace-nowrap">SIMPAN</button>
-              </div>
-            </div>
-            <button onclick="copyText(document.getElementById('userApiKey').innerText, 'API Key')" class="profile-copy">SALIN API KEY</button>
-          </div>
-
-          <div class="profile-section">
-            <div class="profile-section-title">Recent API Activity</div>
-            <div id="activityLogsContainer" class="profile-activity">
-              <div class="profile-log"><span class="profile-log-method">GET</span><span class="profile-log-endpoint">belum ada request</span><span></span></div>
-            </div>
-          </div>
-
-          <a href="/upgrade-apikey" class="profile-upgrade">
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 0 0 .95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 0 0-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 0 0-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 0 0-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 0 0 .951-.69l1.07-3.292z"/></svg>
-            Upgrade Plan / VIP
+        <div class="flex gap-3 mt-3">
+          <button onclick="closeProfilePopup()" class="profile-close flex-1 font-bold text-[16px] py-3.5 rounded-[22px] uppercase tracking-widest transition-all active:scale-[0.99]">
+            TUTUP
+          </button>
+          <a href="/auth/logout" class="profile-logout flex-1 font-bold text-[16px] py-3.5 rounded-[22px] flex items-center justify-center gap-2 uppercase tracking-widest transition-all active:scale-[0.99]">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v1"/></svg>
+            LOG OUT
           </a>
-
-          <div class="profile-footer">
-            <button onclick="closeProfilePopup()" class="profile-close">TUTUP</button>
-            <a href="/auth/logout" class="profile-logout">
-              <span class="inline-flex items-center justify-center gap-2"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 16l4-4-4-4M21 12H7M13 5V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2-2h5a2 2 0 0 0 2-2v-1"/></svg> LOG OUT</span>
-            </a>
-          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<div id="toast" class="fixed top-6 right-6 z-[9999] flex flex-col gap-3 pointer-events-none items-end"></div>
-
-    <!-- Header Actions -->
-    <div class="fixed top-6 right-6 z-40 flex items-center gap-3">
-        <button id="bioMenuBtn" class="flex items-center justify-center w-10 h-10 rounded-xl glass-panel text-slate-300 hover:text-white shadow-lg transition-all active:scale-95 focus:outline-none light-mode:text-slate-700 light-mode:hover:text-slate-900 border border-white/5">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-        </button>
-    </div>
-
-    <!-- Sidebar Dropdown -->
-    <div id="bioDropdown" class="fixed top-0 right-0 h-full w-72 bg-[#060c18] border-l border-white/5 transform translate-x-full transition-transform duration-300 ease-in-out z-50 shadow-2xl flex flex-col p-6 font-['Space_Grotesk'] light-mode:bg-white light-mode:border-slate-200">
-        <div class="flex items-center justify-between mb-5">
-            <div class="flex gap-0 border border-white/10 rounded-lg p-0.5 bg-black/40">
-                <button id="lang-id" class="lang-btn rounded-md active" onclick="setLanguage('id')">ID</button>
-                <button id="lang-en" class="lang-btn rounded-md" onclick="setLanguage('en')">EN</button>
-            </div>
-            
-            <div class="flex items-center gap-1.5">
-                <button id="themeToggle" class="flex items-center justify-center w-8 h-8 rounded-lg transition-all active:scale-95 focus:outline-none border border-white/10 bg-slate-900/50 text-white light-mode:bg-slate-100 light-mode:border-slate-300 light-mode:text-slate-900">
-                    <svg id="theme-toggle-dark-icon" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
-                    </svg>
-                    <svg id="theme-toggle-light-icon" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
-                    </svg>
-                </button>
-
-                <button id="closeMenuBtn" class="text-white hover:text-red-400 transition-colors p-1.5 border border-white/10 rounded bg-slate-900/40 light-mode:text-slate-700 light-mode:bg-slate-100 light-mode:border-slate-300 light-mode:hover:text-red-500">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-        </div>
-
-        ${req.user ? `
-        <div class="mb-4 flex flex-col antialiased font-['Space_Grotesk']">
-            <button onclick="openProfilePopup()" class="group relative flex items-center gap-3 bg-slate-950/80 text-white font-bold p-3 rounded-xl transition-all duration-300 text-xs tracking-wider uppercase overflow-hidden active:scale-95 border border-cyan-500/20 hover:border-cyan-500/40 shadow-lg w-full">
-                <div class="relative flex-shrink-0 z-10">
-                    <img id="sidebarUserAvatar" src="${req.user.avatar}" class="w-8 h-8 rounded-full border border-white/20 object-cover shadow-sm">
-                    <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 border-2 border-slate-950 rounded-full"></span>
-                </div>
-                
-                <div class="flex flex-col text-left min-w-0 z-10">
-                    <span class="text-[8px] text-cyan-400 font-mono tracking-widest opacity-90">PROFILE USER</span>
-                    <span class="truncate text-white font-black tracking-wide normal-case text-xs shadow-sm">${req.user.username}</span>
-                </div>
-
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 ml-auto text-cyan-400 opacity-90 z-10 transition-transform group-hover:translate-x-1">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                </svg>
-            </button>
-        </div>
-        ` : `
-        <div class="mb-3 flex flex-col gap-2">
-            <a href="/login" class="flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-white font-bold p-3 rounded-xl text-xs uppercase tracking-wider transition-all duration-200">
-                <span>Masuk ke Akun</span>
-            </a>
-        </div>
-        `}
-
-        <nav class="flex flex-col gap-1.5 text-xs font-semibold tracking-wider uppercase text-slate-300 flex-1 py-1 overflow-y-auto scrollbar-hide">
-    <div class="text-[10px] font-bold text-slate-500 px-2 pt-2 pb-1 tracking-widest">PAGES</div>
-
-    <a href="/" class="menu-link group flex items-center gap-3 px-2 py-1.5 rounded-lg hover:bg-cyan-950/30 transition-all duration-300">
-        <div class="w-8 h-8 rounded-lg bg-cyan-950/40 border border-cyan-500/20 flex items-center justify-center group-hover:border-cyan-400/50 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all shrink-0">
-            <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5 transform group-hover:scale-110 transition-transform duration-300" style="filter: drop-shadow(0 0 3px rgba(34, 211, 238, 0.8));">
-                <path d="M3 11l9-9 9 9v11H3V11z" stroke="#22d3ee" stroke-width="1.5" stroke-linejoin="round" />
-                <path d="M19 8v-3h-2v1.5M10 16h4v6h-4v-6z" stroke="#22d3ee" stroke-width="1.5" stroke-linecap="round" />
-                <path d="M7 13v6M9 13v6M7 16h2" stroke="#22d3ee" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M14 13v6l1.5-1.5 1.5 1.5v-6" stroke="#22d3ee" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" />
-                <path d="M12 5v3M10 8h4" stroke="#22d3ee" stroke-width="0.5" stroke-linecap="round" />
-                <circle cx="12" cy="5.5" r="0.5" fill="#22d3ee" />
-                <circle cx="9" cy="9" r="0.4" fill="#22d3ee" />
-                <circle cx="15" cy="9" r="0.4" fill="#22d3ee" />
-            </svg>
-        </div>
-        <span class="font-medium text-cyan-100 group-hover:text-cyan-400 transition-colors duration-300">Dashboard</span>
-    </a>
-
-    <a href="/docs" class="menu-link group flex items-center gap-3 px-2 py-1.5 rounded-lg hover:bg-cyan-950/30 transition-all duration-300">
-        <div class="w-8 h-8 rounded-lg bg-cyan-950/40 border border-cyan-500/20 flex items-center justify-center group-hover:border-cyan-400/50 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all shrink-0">
-            <svg viewBox="0 0 24 24" fill="none" class="w-5 h-5 transform group-hover:scale-110 transition-transform duration-300" style="filter: drop-shadow(0 0 3px rgba(34, 211, 238, 0.8));">
-                <path d="M2 5c0-1.1.9-2 2-2h6.5l1.5 1.5L13.5 3H20c1.1 0 2 .9 2 2v13c0 1.1-.9 2-2 2h-6.5L12 18.5 10.5 20H4c-1.1 0-2-.9-2-2V5z" stroke="#22d3ee" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M3 6.5C3 5.7 3.7 5 4.5 5H11v13H4.5C3.7 18 3 17.3 3 16.5V6.5zM21 6.5c0-.8-.7-1.5-1.5-1.5H13v13h6.5c.8 0 1.5-.7 1.5-1.5V6.5z" stroke="#22d3ee" stroke-width="1.2" stroke-linejoin="round"/>
-                <path d="M12 4v14.5" stroke="#22d3ee" stroke-width="1.2" stroke-linecap="round"/>
-                <rect x="5.5" y="8" width="4.5" height="6.5" rx="0.8" stroke="#22d3ee" stroke-width="0.9" fill="none"/>
-                <line x1="6.5" y1="10" x2="9" y2="10" stroke="#22d3ee" stroke-width="0.7" stroke-linecap="round"/>
-                <line x1="6.5" y1="11.5" x2="9" y2="11.5" stroke="#22d3ee" stroke-width="0.7" stroke-linecap="round"/>
-                <text x="16.8" y="11" fill="#22d3ee" font-size="2.6" font-weight="900" font-family="sans-serif" text-anchor="middle">DOCS</text>
-            </svg>
-        </div>
-        <span class="font-medium text-cyan-100 group-hover:text-cyan-400 transition-colors duration-300">Docs</span>
-    </a>
-
-    <a href="/store" class="menu-link group flex items-center gap-3 px-2 py-1.5 rounded-lg hover:bg-cyan-950/30 transition-all duration-300">
-        <div class="w-8 h-8 rounded-lg bg-cyan-950/40 border border-cyan-500/20 flex items-center justify-center group-hover:border-cyan-400/50 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all shrink-0">
-            <svg class="w-4 h-4 text-cyan-400 transform group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M4.756 5.272h15.744l-1.38 6.21a2.25 2.25 0 01-2.195 1.762H7.27a2.25 2.25 0 01-2.196-1.762L3.636 3.835M7.5 21a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm10.5 0a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
-                <polygon points="12,5.5 13.09,7.71 15.54,8.07 13.77,9.8 14.19,12.24 12,11.09 9.81,12.24 10.23,9.8 8.46,8.07 10.91,7.71" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-        </div>
-        <span class="font-medium text-cyan-100 group-hover:text-cyan-400 transition-colors duration-300">Store</span>
-    </a>
-
-    <a href="/changelog" class="menu-link group flex items-center gap-3 px-2 py-1.5 rounded-lg hover:bg-cyan-950/30 transition-all duration-300">
-        <div class="w-8 h-8 rounded-lg bg-cyan-950/40 border border-cyan-500/20 flex items-center justify-center group-hover:border-cyan-400/50 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all shrink-0">
-            <svg class="w-4 h-4 text-cyan-400 transform group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-        </div>
-        <span class="font-medium text-cyan-100 group-hover:text-cyan-400 transition-colors duration-300">Changelog</span>
-    </a>
-
-    <a href="/uploader" class="menu-link group flex items-center gap-3 px-2 py-1.5 rounded-lg hover:bg-cyan-950/30 transition-all duration-300">
-        <div class="w-8 h-8 rounded-lg bg-cyan-950/40 border border-cyan-500/20 flex items-center justify-center group-hover:border-cyan-400/50 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all shrink-0">
-            <svg class="w-4 h-4 text-cyan-400 transform group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
-            </svg>
-        </div>
-        <span class="font-medium text-cyan-100 group-hover:text-cyan-400 transition-colors duration-300">Uploader</span>
-    </a>
-
-    <a href="/pastecode" class="menu-link group flex items-center gap-3 px-2 py-1.5 rounded-lg hover:bg-cyan-950/30 transition-all duration-300">
-        <div class="w-8 h-8 rounded-lg bg-cyan-950/40 border border-cyan-500/20 flex items-center justify-center group-hover:border-cyan-400/50 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all shrink-0">
-            <svg class="w-4 h-4 text-cyan-400 transform group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" />
-            </svg>
-        </div>
-        <span class="font-medium text-cyan-100 group-hover:text-cyan-400 transition-colors duration-300">Pastecode</span>
-    </a>
-
-    <a href="/feedback" class="menu-link group flex items-center gap-3 px-2 py-1.5 rounded-lg hover:bg-cyan-950/30 transition-all duration-300">
-        <div class="w-8 h-8 rounded-lg bg-cyan-950/40 border border-cyan-500/20 flex items-center justify-center group-hover:border-cyan-400/50 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all shrink-0">
-            <svg class="w-4 h-4 text-cyan-400 transform group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8.5h1.5A2.5 2.5 0 0 1 21 11v5a2.5 2.5 0 0 1-2.5 2.5H17v2.5l-3-2.5h-1" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5.5 3.5h10A2.5 2.5 0 0 1 18 6v7a2.5 2.5 0 0 1-2.5 2.5H8.5L5 18.5V15.5H5.5A2.5 2.5 0 0 1 3 13V6a2.5 2.5 0 0 1 2.5-2.5Z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 9.5h1.5l1-2 1.5 4 1.5-3h1" />
-            </svg>
-        </div>
-        <span class="font-medium text-cyan-100 group-hover:text-cyan-400 transition-colors duration-300">Feedback</span>
-    </a>
-
-    <a href="/status" class="menu-link group flex items-center gap-3 px-2 py-1.5 rounded-lg hover:bg-cyan-950/30 transition-all duration-300">
-        <div class="w-8 h-8 rounded-lg bg-cyan-950/40 border border-cyan-500/20 flex items-center justify-center group-hover:border-cyan-400/50 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all shrink-0">
-            <svg class="w-4 h-4 text-cyan-400 transform group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                <rect x="3" y="3" width="18" height="6" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <rect x="3" y="10.5" width="18" height="6" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5v2M3 20.5h6.5m5 0H21"/>
-                <circle cx="12" cy="20.5" r="1.5"/>
-            </svg>
-        </div>
-        <span class="font-medium text-cyan-100 group-hover:text-cyan-400 transition-colors duration-300">Stats / Status</span>
-    </a>
-
-    <div class="text-[10px] font-bold text-slate-500 px-2 pt-3 pb-1 tracking-widest">LEGAL</div>
-
-    <a href="/privacy" class="menu-link group flex items-center gap-3 px-2 py-1.5 rounded-lg hover:bg-cyan-950/30 transition-all duration-300">
-        <div class="w-8 h-8 rounded-lg bg-cyan-950/40 border border-cyan-500/20 flex items-center justify-center group-hover:border-cyan-400/50 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all shrink-0">
-            <svg class="w-4 h-4 text-cyan-400 transform group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 2.25c-3.6 0-6.818 1.433-9.176 3.766A.75.75 0 0 0 2.6 6.58C3.12 11.95 6.35 18.08 12 21.75c5.65-3.67 8.88-9.8 9.4-15.17a.75.75 0 0 0-.224-.564A12.986 12.986 0 0 0 12 2.25Z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M10 8h2.8a2.2 2.2 0 0 1 0 4.4H10V8Zm0 0v8" />
-            </svg>
-        </div>
-        <span class="font-medium text-cyan-100 group-hover:text-cyan-400 transition-colors duration-300">Privacy Policy</span>
-    </a>
-
-    <a href="/support" class="menu-link group flex items-center gap-3 px-2 py-1.5 rounded-lg hover:bg-cyan-950/30 transition-all duration-300">
-        <div class="w-8 h-8 rounded-lg bg-cyan-950/40 border border-cyan-500/20 flex items-center justify-center group-hover:border-cyan-400/50 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.2)] transition-all shrink-0">
-            <svg class="w-4 h-4 text-cyan-400 transform group-hover:scale-110 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M11 20H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4M22 6v6m-3-3h6m-13 1h2m-2 4h4" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M16 14.5a3 3 0 0 1-4.8 2.4l-1.2 1.2a1 1 0 0 1-1.4-1.4l1.2-1.2A3 3 0 1 1 16 14.5Zm0 0V21a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-4.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-        </div>
-        <span class="font-medium text-cyan-100 group-hover:text-cyan-400 transition-colors duration-300">Support</span>
-      </a>
-     </nav>
-    </div>
-
-    <div id="menuOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-xs hidden z-30 transition-opacity duration-300"></div>
-
-    <div class="max-w-5xl mx-auto px-4 py-8 relative z-10">
-        <header id="api" class="mb-10 text-center">
-            <div class="flex items-center justify-center gap-3 mb-3">
-                <span class="bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 px-3.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 light-mode:bg-cyan-100 light-mode:text-cyan-700">
-                    <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span> ONLINE
-                </span>
-            </div>
-            
-            <div id="mainTitle" class="flex justify-center mb-3 min-h-[50px] items-center text-4xl md:text-5xl font-extrabold tracking-tight text-white"><img src="https://readme-typing-svg.demolab.com?font=Poppins&weight=700&size=28&pause=1000&color=00D4FF&center=true&vCenter=true&width=600&lines=Welcome+To+XS-Pedia+API;Fast+%F0%9F%9A%80+Reliable+%E2%9A%A1;Free+REST+API+Services;Developer+Friendly+API" alt="Typing SVG" class="mx-auto" /></div>
-            <p id="mainDescription" class="text-sm md:text-base font-normal tracking-wide text-slate-400 max-w-xl mx-auto leading-relaxed">
-  Jelajahi, uji, dan jalankan request secara langsung ke endpoint aktif.
-</p>
-
-            <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-                <div class="glass-panel flex flex-col items-center justify-center p-4 rounded-xl shadow-lg border border-white/5">
-                    <div class="text-center font-['Space_Grotesk']">
-                        <div id="liveClock" class="text-xl md:text-2xl font-extrabold tracking-wider text-cyan-400 light-mode:text-cyan-600 font-mono">
-                            00:00:00
-                        </div>
-                        <div id="liveDate" class="text-[9px] font-bold opacity-60 tracking-wide mt-1 uppercase">
-                            Loading...
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="glass-panel flex flex-col items-center justify-center p-4 rounded-xl shadow-lg border border-white/5">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 text-center">Limit Terpakai</span>
-                    <div class="flex items-baseline gap-0.5 mt-0.5">
-                        <span id="userLimitUsed" class="text-2xl font-black text-cyan-400">0</span>
-                        <span class="text-slate-500 font-bold text-xs">/</span>
-                        <span id="userLimitMax" class="text-xs font-bold text-slate-400">100</span>
-                    </div>
-                    <span id="userLimitBadge" class="text-[8px] font-bold px-1.5 py-0.5 mt-1 rounded bg-slate-900 text-slate-400 uppercase tracking-widest border border-white/5">FREE</span>
-                </div>
-                
-                <div class="glass-panel flex flex-col items-center justify-center p-4 rounded-xl shadow-lg border border-white/5">
-                    <span id="stat-endpoints-title" class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Endpoint</span>
-                    <span id="totalEndpoints" class="text-2xl font-black text-cyan-400 mt-0.5 light-mode:text-cyan-600">0</span>
-                </div>
-                
-                <div class="glass-panel flex flex-col items-center justify-center p-4 rounded-xl shadow-lg border border-white/5">
-                    <span id="stat-categories-title" class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Total Kategori</span>
-                    <span id="totalCategories" class="text-2xl font-black text-cyan-400 mt-0.5 light-mode:text-cyan-600">0</span>
-                </div>
-            </div>
-
-            <div class="glass-panel max-w-4xl mx-auto mt-4 p-3 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 border border-cyan-500/10">
-                <div class="flex items-center gap-2 text-xs md:text-sm text-cyan-400 light-mode:text-cyan-700 font-mono">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                    </svg>
-                    <span class="underline break-all font-semibold">https://xs-pedia.id</span>
-                </div>
-                <a href="/feedback" 
-                   class="w-full sm:w-auto px-5 py-2 bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-slate-950 font-bold text-[11px] uppercase rounded-lg shadow-md transition-all active:scale-95 light-mode:text-white text-center flex items-center justify-center gap-1.5">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-                    Request Feature
-                </a>
-            </div>
-
-            <div class="flex justify-center gap-4 mt-4 max-w-4xl mx-auto">
-                <a href="https://whatsapp.com/channel/0029VbAwdIyJJhzRMpjUcS3P" 
-                   target="_blank" 
-                   class="flex-1 glass-panel py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-white/5 transition-all text-center flex items-center justify-center gap-2 border border-white/5 text-slate-300">
-                   <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                       <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 10.742l.08-.08a2.25 2.25 0 013.182 0l.397.397m-1.397-1.398a2.25 2.25 0 00-3.182 0l-3.472 3.472a2.25 2.25 0 000 3.181l.08.08a2.25 2.25 0 003.181 0l3.472-3.472a2.25 2.25 0 000-3.181c-.074-.074-.154-.14-.237-.196zm7.708-.943a2.25 2.25 0 00-3.182 0l-.397.397m1.397-1.397a2.25 2.25 0 013.182 0l3.472 3.473a2.25 2.25 0 010 3.182l-.08.08a2.25 2.25 0 01-3.181 0l-3.472-3.472a2.25 2.25 0 010-3.181c.074-.074.154-.14.237-.196z" />
-                   </svg>
-                   Channel
-                </a>
-                <a href="https://chat.whatsapp.com/LBeGqVsmDBb6j29ysuusd9" 
-                   target="_blank" 
-                   class="flex-1 glass-panel py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-white/5 transition-all text-center flex items-center justify-center gap-2 border border-white/5 text-slate-300">
-                   <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                       <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.998 5.998 0 00-12 0m12 0a5.998 5.998 0 00-12 0m12 0a5.998 5.998 0 00-12 0M12 12a4.5 4.5 0 100-9 4.5 4.5 0 000 9zm0 0l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.998 5.998 0 00-12 0m12 0a5.998 5.998 0 00-12 0" />
-                   </svg>
-                   Group
-                </a>
-            </div>
-
-            <div class="music-player-card glass-panel mt-6 max-w-2xl mx-auto rounded-2xl p-4 shadow-xl relative overflow-hidden border border-white/5">
-                <audio id="audioElement"></audio>
-                <div class="flex items-center justify-between gap-4">
-                    <div class="flex items-center gap-4 flex-1 min-w-0">
-                        <div class="relative w-14 h-14 rounded-xl overflow-hidden bg-black/50 flex-shrink-0 border border-white/10 shadow-md">
-                            <img id="musicCoverImg" src="" alt="Cover" class="w-full h-full object-cover">
-                        </div>
-                        <div class="flex-1 min-w-0 text-left">
-                            <h3 id="musicTitle" class="music-text-title text-white font-bold text-[13px] tracking-wide truncate m-0 uppercase">Loading...</h3>
-                            <p id="musicArtist" class="music-text-artist text-slate-400 text-[11px] font-medium truncate mt-0.5">-</p>
-                            <div class="flex items-center gap-2 mt-2">
-                                <span id="currentTime" class="text-[9px] text-slate-400 font-mono w-7 text-left">0:00</span>
-                                <div id="progressContainer" class="music-progress-bar-bg flex-1 h-1 bg-white/10 rounded-full relative cursor-pointer">
-                                    <div id="progressBar" class="h-full bg-cyan-400 rounded-full w-0 transition-all duration-300"></div>
-                                </div>
-                                <span id="totalDuration" class="text-[9px] text-slate-400 font-mono w-7 text-right">0:00</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-1.5 flex-shrink-0">
-                        <button id="prevBtn" class="music-btn-nav w-8 h-8 flex items-center justify-center glass-panel rounded-lg text-slate-300 hover:text-white transition-all active:scale-95 border border-white/5">
-                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
-                        </button>
-                        <button id="playBtn" class="music-btn-nav w-10 h-10 flex items-center justify-center glass-panel rounded-lg text-slate-300 hover:text-white transition-all active:scale-95 border border-white/5">
-                            <svg id="playIcon" class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                        </button>
-                        <button id="nextBtn" class="music-btn-nav w-8 h-8 flex items-center justify-center glass-panel rounded-lg text-slate-300 hover:text-white transition-all active:scale-95 border border-white/5">
-                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M16 6h2v12h-2zm-10.5 12l8.5-6-8.5-6z"/></svg>
-                        </button>
-                        <button id="playlistToggleBtn" class="music-btn-nav w-8 h-8 flex items-center justify-center glass-panel rounded-lg text-slate-300 hover:text-white transition-all active:scale-95 border border-white/5">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                        </button>
-                    </div>
-                </div>
-                <div id="playlistPanel" class="music-playlist-border hidden mt-4 pt-4 border-t border-white/10 max-h-40 overflow-y-auto space-y-1 light-mode:border-slate-200"></div>
-            </div>
-            
-        </header>
-
-        <div class="mb-8">
-            <div class="relative max-w-4xl mx-auto">
-                <input 
-                    type="text" 
-                    id="searchInput" 
-                    placeholder="Cari endpoint berdasarkan nama, path, atau kategori..."
-                    class="search-input w-full px-4 py-3.5 pl-11 text-xs rounded-xl focus:outline-none focus:border-cyan-500 transition-all font-mono glass-panel border border-white/5 text-white placeholder-slate-400 light-mode:text-slate-900 light-mode:placeholder-slate-500 light-mode:focus:border-cyan-600"
-                >
-                <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
-            </div>
-            <div id="categoryFilters" class="category-scroll flex flex-nowrap gap-3 mt-4 justify-start overflow-x-auto pb-3 scrollbar-hide max-w-4xl mx-auto"></div>
-        </div>
-
-        <div id="noResults" class="text-center py-12 hidden">
-            <div class="flex justify-center mb-3">
-                <svg class="w-12 h-12 text-amber-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-            </div>
-            <h3 id="no-results-title" class="text-sm font-bold mb-1 text-white">Endpoint tidak ditemukan</h3>
-            <p id="no-results-desc" class="text-xs text-slate-400 light-mode:text-slate-500">Coba gunakan kata kunci lain</p>
-        </div>
-
-        <div id="apiList" class="space-y-4 max-w-4xl mx-auto"></div>
-
-        <footer id="siteFooter" class="mt-16 pt-6 border-t border-white/5 text-center text-[11px] text-slate-500">
-            © XS-Pedia
-        </footer>
-    </div>
-
-    <div id="imageLightbox" class="fixed inset-0 bg-black/95 z-[100] hidden flex items-center justify-center p-4 opacity-0 transition-opacity duration-300 backdrop-blur-xs cursor-zoom-out">
-        <div class="relative max-w-4xl max-h-[90vh] flex items-center justify-center">
-            <img id="lightboxImage" src="" alt="Preview" class="max-w-full max-h-[85vh] rounded-lg shadow-2xl object-contain scale-95 transition-transform duration-300" />
-            <button id="closeLightbox" class="absolute -top-12 right-0 text-white hover:text-cyan-400 transition-colors focus:outline-none flex items-center gap-1 bg-black/50 px-3 py-1.5 rounded-lg border border-white/10 text-xs font-mono">
-                ✕ Close
-            </button>
-        </div>
-    </div>
-    
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/locale/id.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.45/moment-timezone-with-data.min.js"></script>
@@ -4090,24 +3506,12 @@ body.dark-mode #siteFooter,
         }
 
         function openProfilePopup() {
-            const popup = document.getElementById('profilePopup');
-            const menu = document.getElementById('bioDropdown');
-            if (!popup) return;
-            if (menu) menu.classList.add('translate-x-full');
-            popup.classList.remove('hidden');
-            popup.style.display = 'block';
-            popup.setAttribute('aria-hidden', 'false');
-            document.body.classList.add('overflow-hidden');
+            document.getElementById('profilePopup').classList.remove('hidden');
             fetchUserProfile();
         }
 
         function closeProfilePopup() {
-            const popup = document.getElementById('profilePopup');
-            if (!popup) return;
-            popup.classList.add('hidden');
-            popup.style.display = 'none';
-            popup.setAttribute('aria-hidden', 'true');
-            document.body.classList.remove('overflow-hidden');
+            document.getElementById('profilePopup').classList.add('hidden');
         }
 
         function showWelcomePopup() {
@@ -4127,22 +3531,21 @@ body.dark-mode #siteFooter,
 
         function setRoleTheme(roleName) {
             const planText = document.getElementById('userPlanText');
+            const planBadge = document.getElementById('userPlanBadge');
             const vipCustomBox = document.getElementById('vipCustomKeyBox');
             if (!planText) return;
 
             const role = (roleName || '').toLowerCase();
+            planBadge?.classList.remove('bg-[#e8f6e6]', 'text-[#52735c]');
 
             if (role.includes('vip')) {
                 planText.textContent = 'VIP';
-                planText.setAttribute('fill', '#00f3ff');
                 if (vipCustomBox) vipCustomBox.classList.remove('hidden');
             } else if (role.includes('premium')) {
                 planText.textContent = 'PREM';
-                planText.setAttribute('fill', '#fbbf24');
                 if (vipCustomBox) vipCustomBox.classList.add('hidden');
             } else {
                 planText.textContent = 'FREE';
-                planText.setAttribute('fill', '#34d399');
                 if (vipCustomBox) vipCustomBox.classList.add('hidden');
             }
         }
@@ -4178,92 +3581,73 @@ body.dark-mode #siteFooter,
             if (!input.files || !input.files[0]) return;
 
             const file = input.files[0];
-            if (!file.type.startsWith('image/')) return;
+            const formData = new FormData();
+            formData.append('avatar', file);
 
             const userAvatarImg = document.getElementById('userAvatar');
             const sidebarAvatarImg = document.getElementById('sidebarUserAvatar');
             const oldSrc = userAvatarImg ? userAvatarImg.src : '';
 
-            // Preview langsung agar gambar baru langsung terlihat sebelum response server.
-            const previewUrl = URL.createObjectURL(file);
-            document.querySelectorAll('#userAvatar, #sidebarUserAvatar').forEach(img => {
-                img.style.display = '';
-                img.style.opacity = '0.55';
-                img.src = previewUrl;
-            });
+            if (userAvatarImg) userAvatarImg.style.opacity = '0.4';
+            if (sidebarAvatarImg) sidebarAvatarImg.style.opacity = '0.4';
 
-            const formData = new FormData();
-            formData.append('avatar', file);
+            const showCyberAlert = (icon, title, text) => {
+                Swal.fire({
+                    icon: icon,
+                    title: title,
+                    text: text,
+                    background: '#0b1329',
+                    color: '#f8fafc',
+                    border: '1px solid rgba(6, 182, 212, 0.3)',
+                    confirmButtonText: 'OKE',
+                    customClass: {
+                        popup: 'rounded-2xl shadow-[0_0_25px_rgba(6,182,212,0.25)] border border-cyan-500/30',
+                        title: 'text-cyan-400 font-extrabold tracking-wide font-["Space_Grotesk"]',
+                        htmlContainer: 'text-slate-300 text-xs font-["Space_Grotesk"]',
+                        confirmButton: 'bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-slate-950 font-bold px-6 py-2.5 rounded-xl uppercase tracking-wider text-xs border-0 shadow-lg shadow-cyan-500/20'
+                    }
+                });
+            };
 
             try {
                 const response = await fetch('/api/user/update-avatar', {
                     method: 'POST',
-                    body: formData,
-                    credentials: 'same-origin'
+                    body: formData
                 });
 
                 const result = await response.json();
-                if (!response.ok || !result.status) throw new Error(result.message || 'Gagal mengunggah avatar.');
 
-                const newAvatarUrl = result.avatar;
-                document.querySelectorAll('#userAvatar, #sidebarUserAvatar').forEach(img => {
-                    img.style.display = '';
-                    img.style.opacity = '1';
-                    img.src = newAvatarUrl || previewUrl;
-                });
+                if (result.status) {
+                    const newAvatarUrl = result.avatar;
 
-                try { sessionStorage.setItem('latestProfileAvatar', newAvatarUrl || previewUrl); } catch (_) {}
-
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Avatar diperbarui',
-                        text: 'Foto profil berhasil disimpan.',
-                        confirmButtonText: 'OKE',
-                        confirmButtonColor: '#4f815f'
+                    document.querySelectorAll('#userAvatar, #sidebarUserAvatar').forEach(img => {
+                        img.src = newAvatarUrl;
                     });
+
+                    showCyberAlert('success', 'AVATAR UPDATED', 'Avatar profil berhasil diperbarui!');
                 } else {
-                    alert('Foto profil berhasil diperbarui.');
+                    showCyberAlert('error', 'UPDATE FAILED', result.message || 'Gagal mengunggah avatar.');
+                    if (userAvatarImg) userAvatarImg.src = oldSrc;
+                    if (sidebarAvatarImg) sidebarAvatarImg.src = oldSrc;
                 }
             } catch (error) {
-                console.error('Error uploading avatar:', error);
-                document.querySelectorAll('#userAvatar, #sidebarUserAvatar').forEach(img => {
-                    img.style.opacity = '1';
-                    img.src = oldSrc || img.src;
-                });
-                alert(error.message || 'Terjadi kesalahan saat mengunggah foto.');
+                console.error("Error uploading avatar:", error);
+                showCyberAlert('error', 'CONNECTION ERROR', 'Terjadi kesalahan koneksi saat mengunggah gambar.');
+                if (userAvatarImg) userAvatarImg.src = oldSrc;
+                if (sidebarAvatarImg) sidebarAvatarImg.src = oldSrc;
             } finally {
                 if (userAvatarImg) userAvatarImg.style.opacity = '1';
                 if (sidebarAvatarImg) sidebarAvatarImg.style.opacity = '1';
                 input.value = '';
-                setTimeout(() => URL.revokeObjectURL(previewUrl), 1500);
             }
         }
 
-        
-        function syncProfileMirrorFields() {
-            const name = document.getElementById('userName')?.innerText || '';
-            const email = document.getElementById('userEmail')?.innerText || '';
-            const usernameEl = document.getElementById('userUsername');
-            const emailRowEl = document.getElementById('userEmailRow');
-            if (usernameEl && name) usernameEl.innerText = name;
-            if (emailRowEl && email) emailRowEl.innerText = email;
-        }
-        document.addEventListener('DOMContentLoaded', () => {
-            const watcher = new MutationObserver(syncProfileMirrorFields);
-            const n = document.getElementById('userName');
-            const e = document.getElementById('userEmail');
-            if (n) watcher.observe(n, {childList:true, subtree:true, characterData:true});
-            if (e) watcher.observe(e, {childList:true, subtree:true, characterData:true});
-            syncProfileMirrorFields();
-        });
-
-function fetchUserProfile() {
+        function fetchUserProfile() {
             fetch('/api/user-status')
                 .then(res => res.json())
                 .then(data => {
                     if (data.loggedIn && data.user) {
-                        const latestAvatar = data.user.avatar || sessionStorage.getItem('latestProfileAvatar') || 'https://arulz-xd.my.id/files/X1F0Cn.png';
+                        const latestAvatar = data.user.avatar || 'https://arulz-xd.my.id/files/X1F0Cn.png';
 
                         document.querySelectorAll('#userAvatar, #sidebarUserAvatar').forEach(img => {
                             if (img) img.src = latestAvatar;
@@ -4271,6 +3655,10 @@ function fetchUserProfile() {
 
                         document.getElementById('userName').innerText = data.user.username || 'User';
                         document.getElementById('userEmail').innerText = data.user.email || 'no-email@mail.com';
+                        const profileUsernameValue = document.getElementById('profileUsernameValue');
+                        const profileEmailValue = document.getElementById('profileEmailValue');
+                        if (profileUsernameValue) profileUsernameValue.innerText = data.user.username || '-';
+                        if (profileEmailValue) profileEmailValue.innerText = data.user.email || '-';
                         
                         const userKey = data.user.apikey || '';
                         document.getElementById('userApiKey').innerText = userKey || 'No Key Found';
@@ -4281,6 +3669,19 @@ function fetchUserProfile() {
                         if (typeof fetchAndUpdateUserLimit === 'function') {
                             fetchAndUpdateUserLimit();
                         }
+                        fetch('/api/user-limit?apikey=' + encodeURIComponent(userKey))
+                          .then(res => res.json())
+                          .then(limitData => {
+                              const used = limitData.limitUsed ?? 0;
+                              const max = limitData.maxLimit ?? 100;
+                              const usedEl = document.getElementById('popupLimitUsed');
+                              const maxEl = document.getElementById('popupLimitMax');
+                              const summaryEl = document.getElementById('popupLimitSummary');
+                              if (usedEl) usedEl.innerText = used;
+                              if (maxEl) maxEl.innerText = max;
+                              if (summaryEl) summaryEl.innerText = used + ' / ' + max;
+                          })
+                          .catch(() => {});
                     }
                 })
                 .catch((err) => {
@@ -4288,43 +3689,45 @@ function fetchUserProfile() {
                 });
         }
 
-        function escapeActivityText(value) {
-            return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-        }
-
         function fetchUserActivityLogs() {
             const container = document.getElementById('activityLogsContainer');
             if (!container) return;
 
-            fetch('/api/user-activity', { credentials: 'same-origin' })
-              .then(res => res.json())
-              .then(resData => {
-                  if (resData.status && Array.isArray(resData.data) && resData.data.length > 0) {
-                      container.innerHTML = resData.data.slice(0, 12).map(item => {
-                          // Kompatibel dengan format string lama dan format object baru.
-                          if (typeof item === 'string') {
-                              const match = item.match(/^\[(.*?)\] \[(OK|ERR)\] \[(.*?)\] : (.*)$/);
-                              if (!match) {
-                                  return '<div class="profile-log"><span class="profile-log-method">GET</span><span class="profile-log-endpoint">' + escapeActivityText(item) + '</span><span></span></div>';
-                              }
-                              return '<div class="profile-log"><span class="profile-log-method">' + escapeActivityText(match[3]) + '</span><span class="profile-log-endpoint">' + escapeActivityText(match[4]) + '</span><span class="profile-log-meta"><span class="profile-log-status ' + (match[2] === 'OK' ? 'ok' : 'err') + '">' + escapeActivityText(match[2]) + '</span><span class="profile-log-date">' + escapeActivityText(match[1]) + '</span></span></div>';
-                          }
-
-                          const method = escapeActivityText(item.method || 'GET');
-                          const endpoint = escapeActivityText(item.endpoint || '/');
-                          const status = escapeActivityText(item.status || ((Number(item.statusCode) >= 200 && Number(item.statusCode) < 300) ? 'OK' : 'ERR'));
-                          const statusClass = status === 'OK' ? 'ok' : 'err';
-                          const time = escapeActivityText(item.time || '');
-                          const date = escapeActivityText(item.date || '');
-                          return '<div class="profile-log"><span class="profile-log-method">' + method + '</span><span class="profile-log-endpoint" title="' + endpoint + '">' + endpoint + '</span><span class="profile-log-meta"><span class="profile-log-status ' + statusClass + '">' + status + (item.statusCode ? ' ' + escapeActivityText(item.statusCode) : '') + '</span><span class="profile-log-date">' + time + (time && date ? ' - ' : '') + date + '</span></span></div>';
-                      }).join('');
-                  } else {
-                      container.innerHTML = '<div class="profile-log"><span class="profile-log-method">GET</span><span class="profile-log-endpoint">Belum ada aktivitas request</span><span></span></div>';
-                  }
-              })
-              .catch(() => {
-                  container.innerHTML = '<div class="profile-log"><span class="profile-log-method">!</span><span class="profile-log-endpoint">Gagal memuat aktivitas</span><span></span></div>';
-              });
+        fetch('/api/user-activity')
+          .then(res => res.json())
+          .then(resData => {
+              if (resData.status && resData.data && resData.data.length > 0) {
+                  container.innerHTML = resData.data.map(logText => {
+                    const match = logText.match(/^\[([^\]]+)\] \[([^\]]+)\] \[([^\]]+)\] : (.+)$/);
+                    const time = match ? match[1] : '';
+                    const status = match ? match[2] : '';
+                    const method = match ? match[3] : 'GET';
+                    const endpoint = match ? match[4] : logText;
+                    const statusLabel = status === 'OK' ? 'OK 200' : status;
+                    return '<div class="activity-card">' +
+                        '<div class="flex items-start gap-3">' +
+                          '<span class="method-badge">' + method + '</span>' +
+                          '<div class="min-w-0 flex-1">' +
+                            '<div class="mono-value text-[14px] sm:text-[16px] font-bold break-all">' + endpoint + '</div>' +
+                            '<div class="activity-status mt-3">' + statusLabel + '</div>' +
+                            '<div class="activity-date mt-2">' + time + ' • 29 Aug</div>' +
+                          '</div>' +
+                        '</div>' +
+                      '</div>';
+                  }).join('');
+            } else {
+                container.innerHTML = 
+                    '<div class="activity-card">' +
+                        'Belum ada aktivitas request' +
+                    '</div>';
+            }
+        })
+        .catch(err => {
+            container.innerHTML = 
+                '<div class="activity-card" style="color:#b15661">' +
+                    'Gagal memuat aktivitas' +
+                '</div>';
+          });
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -4374,53 +3777,33 @@ function fetchUserProfile() {
             if (percentageText) percentageText.innerText = Math.floor(currentProgress) + '%';
         }
 
-        function hideLoaderImmediately() {
-            if (!loaderOverlay) return;
-            loaderOverlay.classList.add('fade-out');
-            loaderOverlay.style.display = 'none';
-        }
-
         function finishLoader() {
             if (hasFinishedLoading) return;
             hasFinishedLoading = true;
+            clearInterval(progressInterval);
             updateProgress(100);
-            try { sessionStorage.setItem('xs_pedia_loader_seen', '1'); } catch (_) {}
-            if (loaderOverlay) {
-                loaderOverlay.classList.add('fade-out');
-                setTimeout(() => { loaderOverlay.style.display = 'none'; }, 180);
-            }
-        }
 
-        let hasSeenLoader = false;
-        try { hasSeenLoader = sessionStorage.getItem('xs_pedia_loader_seen') === '1'; } catch (_) {}
-
-        if (hasSeenLoader) {
-            hideLoaderImmediately();
-            hasFinishedLoading = true;
-        } else {
-            updateProgress(35);
-            document.addEventListener('DOMContentLoaded', () => {
-                updateProgress(70);
-                const list = document.getElementById('apiList');
-                if (list) {
-                    const showWhenReady = () => {
-                        if (list.children.length > 0) {
-                            observer.disconnect();
-                            finishLoader();
-                        }
-                    };
-                    const observer = new MutationObserver(showWhenReady);
-                    observer.observe(list, { childList:true, subtree:true });
-                    showWhenReady();
+            setTimeout(() => {
+                if (loaderOverlay) {
+                    loaderOverlay.classList.add('fade-out');
+                    setTimeout(() => {
+                        showWelcomePopup();
+                    }, 200);
                 }
-                // Fast fallback only if the page has no endpoint list to populate.
-                setTimeout(() => {
-                    if (!document.getElementById('apiList')?.children.length) finishLoader();
-                }, 900);
-            }, { once:true });
+            }, 400);
         }
-</script>
 
+        const progressInterval = setInterval(() => {
+            if (currentProgress < 85) {
+                const increment = Math.random() * 12 + 5;
+                updateProgress(currentProgress + increment);
+            }
+        }, 120);
+
+        window.addEventListener('load', finishLoader);
+
+        setTimeout(finishLoader, 1500);
+</script>
 
 </body>
 </html>
