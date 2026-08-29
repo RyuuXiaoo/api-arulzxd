@@ -41,13 +41,13 @@ mongoose.connect(MONGODB_URI)
     .then(() => console.log('📦 Berhasil terhubung ke MongoDB!'))
     .catch(err => console.error('❌ Gagal koneksi ke MongoDB:', err));
 
-const JWT_SECRET = process.env.JWT_SECRET || 'arulzxd-super-secret-jwt-key-999';
+const JWT_SECRET = process.env.JWT_SECRET || 'xs-pedia-super-secret-jwt-key-999';
 
 // ====================================================
 // HELPER GENERATOR API KEY SESUAI ATURAN
 // ====================================================
 function generateFreeApiKey() {
-    return 'arulzxdfree-' + crypto.randomBytes(3).toString('hex').slice(0, 5);
+    return 'xs-pedia-' + crypto.randomBytes(3).toString('hex').slice(0, 5);
 }
 
 function generatePremiumApiKey(username) {
@@ -100,7 +100,7 @@ userSchema.pre('save', function() {
 const User = mongoose.models.User || mongoose.model('User', userSchema);
 
 app.use(session({
-    secret: 'arulzxd_secret_session_key_99', 
+    secret: 'xs-pedia_secret_session_key_99', 
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
