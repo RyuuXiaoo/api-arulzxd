@@ -3295,151 +3295,167 @@ app.get('/docs', (req, res) => {
     </div>
     
 <!-- User Profile Pop-up Modal -->
+<style>
+  #profilePopup .profile-shell{font-family:Georgia,'Times New Roman',serif;color:#5b4a49}
+  #profilePopup .profile-card{background:#fbf7ef;border:2px solid #eadcc1;border-radius:28px;box-shadow:0 18px 55px rgba(80,58,48,.18)}
+  #profilePopup .profile-chip{display:inline-flex;align-items:center;gap:10px;background:#f5ecd9;border:2px solid #d3ad55;border-radius:999px;color:#9a6670;font-weight:700;letter-spacing:3px;font-size:12px;padding:9px 18px;text-transform:uppercase}
+  #profilePopup .profile-title{font-family:Georgia,'Times New Roman',serif;font-size:34px;line-height:1.05;font-weight:800;color:#3e3032;margin:18px 0 8px}
+  #profilePopup .profile-subtitle{font-size:16px;line-height:1.5;color:#806d67;margin:0 0 18px}
+  #profilePopup .profile-docs{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:#3e3032;color:#fff;border-radius:999px;padding:16px 20px;font-weight:800;font-size:18px;text-decoration:none;box-shadow:none}
+  #profilePopup .profile-main{background:#fffdf8;border:2px solid #eadcc1;border-radius:26px;padding:28px 28px 24px}
+  #profilePopup .profile-identity{display:flex;align-items:center;gap:18px;margin-bottom:24px}
+  #profilePopup .profile-avatar-wrap{position:relative;width:102px;height:102px;flex:0 0 102px}
+  #profilePopup .profile-avatar-ring{width:100%;height:100%;border-radius:50%;padding:2px;border:2px solid #cba852;background:#fff;overflow:hidden;box-shadow:0 2px 8px rgba(111,78,51,.12)}
+  #profilePopup .profile-avatar{width:100%;height:100%;border-radius:50%;object-fit:cover}
+  #profilePopup .profile-camera{position:absolute;right:-2px;bottom:-2px;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#8e5065;color:#fff;border:4px solid #fffdf8}
+  #profilePopup .profile-name{font-size:25px;font-weight:800;color:#3f3132;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #profilePopup .profile-email{margin-top:7px;font-size:15px;color:#806d67;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #profilePopup .profile-row{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:17px 0;border-bottom:2px dashed #eadcc1}
+  #profilePopup .profile-row:last-child{border-bottom:0}
+  #profilePopup .profile-label{font-size:15px;font-weight:700;color:#806d67}
+  #profilePopup .profile-value{font-family:'Courier New',monospace;font-size:18px;font-weight:800;color:#3e3032;text-align:right}
+  #profilePopup .profile-value.accent{color:#5f845f}
+  #profilePopup .profile-badge{background:#eadfc6;color:#776b67;border-radius:999px;padding:8px 17px;font-size:14px;font-weight:800}
+  #profilePopup .profile-edit{width:46px;height:46px;border:2px solid #eadcc1;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fffdf8;color:#463638}
+  #profilePopup .profile-actions{display:flex;align-items:center;gap:10px}
+  #profilePopup .profile-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:2px solid #eadcc1;background:#fffdf8;color:#3e3032;border-radius:999px;padding:11px 18px;font-weight:800;font-size:14px;white-space:nowrap}
+  #profilePopup .profile-action-icon{width:46px;height:46px;border:2px solid #eadcc1;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fffdf8;color:#3e3032}
+  #profilePopup .profile-upgrade{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:18px;border:0;border-radius:999px;background:#3e3032;color:#fff;padding:15px 18px;font-size:17px;font-weight:800}
+  #profilePopup .profile-section{margin-top:18px}
+  #profilePopup .profile-section-title{font-size:15px;font-weight:800;color:#806d67;margin-bottom:10px}
+  #profilePopup .profile-key-box{background:#faf6ec;border:2px solid #eadcc1;border-radius:18px;padding:12px 14px}
+  #profilePopup .profile-key{font-family:'Courier New',monospace;font-size:15px;font-weight:800;color:#4e4141;word-break:break-all}
+  #profilePopup .profile-copy{margin-top:10px;width:100%;border:2px solid #d3ad55;border-radius:999px;background:#f5ecd9;color:#75585f;padding:11px 14px;font-size:13px;font-weight:800;letter-spacing:1.3px}
+  #profilePopup .profile-limit{font-family:'Courier New',monospace;font-weight:800;font-size:18px;color:#5f845f}
+  #profilePopup .profile-activity{max-height:170px;overflow:auto;display:flex;flex-direction:column;gap:8px}
+  #profilePopup .profile-log{background:#faf6ec;border:1px solid #eadcc1;border-radius:14px;padding:9px 11px;font-family:'Courier New',monospace;font-size:11px;color:#806d67;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #profilePopup .profile-footer{display:flex;gap:10px;margin-top:18px}
+  #profilePopup .profile-close{flex:1;border:2px solid #eadcc1;border-radius:999px;background:#fffdf8;color:#3e3032;padding:12px;font-weight:800}
+  #profilePopup .profile-logout{flex:1;border:2px solid #c96c73;border-radius:999px;background:#fff7f7;color:#a34f58;padding:12px;font-weight:800;text-align:center;text-decoration:none}
+  @media (max-width:480px){
+    #profilePopup .profile-wrap{padding:10px}
+    #profilePopup .profile-card{border-radius:24px}
+    #profilePopup .profile-main{padding:22px 18px 20px}
+    #profilePopup .profile-title{font-size:31px}
+    #profilePopup .profile-identity{gap:13px}
+    #profilePopup .profile-avatar-wrap{width:88px;height:88px;flex-basis:88px}
+    #profilePopup .profile-name{font-size:22px}
+    #profilePopup .profile-email{font-size:14px}
+    #profilePopup .profile-row{padding:14px 0}
+    #profilePopup .profile-value{font-size:16px}
+  }
+</style>
 <div id="profilePopup" class="fixed inset-0 z-[99999] hidden">
-  <div class="fixed inset-0 bg-black/85 backdrop-blur-md" onclick="closeProfilePopup()"></div>
-  <div class="fixed inset-0 flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    
-    <div class="w-full max-w-[410px] cyber-popup-bg border-2 border-cyan-400 rounded-[32px] p-4 sm:p-5 shadow-[0_0_45px_rgba(0,243,255,0.4)] relative font-mono text-cyan-400 my-auto">
-        
-        <div class="flex items-center justify-between mb-5 gap-2">
-            <div class="relative w-20 h-20 sm:w-22 sm:h-22 flex-shrink-0">
-                <input type="file" id="avatarInput" accept="image/*" class="hidden" onchange="uploadAvatarFile(this)">
-                <div class="relative cursor-pointer w-full h-full" onclick="document.getElementById('avatarInput').click()">
-                    <div class="w-full h-full rounded-full p-[3px] border-2 border-cyan-400 shadow-[0_0_18px_rgba(0,243,255,0.8)] overflow-hidden">
-                        <img id="userAvatar" src="https://arulz-xd.my.id/files/X1F0Cn.png" class="w-full h-full rounded-full object-cover">
-                    </div>
-                    <div class="absolute bottom-0 right-0 bg-[#010811] text-cyan-400 p-1.5 rounded-full border border-cyan-400 shadow-[0_0_10px_rgba(0,243,255,0.8)]">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.821 1.316z"/>
-                            <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex-1 flex flex-col gap-3 min-w-0 px-2">
-                <div class="cyber-pill-capsule py-1.5 px-4 text-center truncate">
-                    <span id="userName" class="text-xs font-bold text-cyan-300 tracking-widest">loading...</span>
-                </div>
-                <div class="cyber-pill-capsule py-1.5 px-4 text-center truncate">
-                    <span id="userEmail" class="text-[11px] text-cyan-300 tracking-wider">loading_email@gmail.com</span>
-                </div>
-            </div>
-
-            <div id="planBoxContainer" class="relative w-20 h-28 flex flex-col items-center justify-center flex-shrink-0">
-                <svg class="w-full h-full filter drop-shadow-[0_0_8px_rgba(0,243,255,0.6)]" viewBox="0 0 100 130" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <linearGradient id="cyberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#00f3ff" />
-                            <stop offset="50%" stop-color="#38bdf8" />
-                            <stop offset="100%" stop-color="#c084fc" />
-                        </linearGradient>
-
-                        <linearGradient id="greenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                            <stop offset="0%" stop-color="#4ade80" />
-                            <stop offset="100%" stop-color="#16a34a" />
-                        </linearGradient>
-                    </defs>
-
-                    <text x="50" y="14" fill="#00f3ff" font-size="9" font-weight="900" font-family="monospace" text-anchor="middle" letter-spacing="0.5">USER</text>
-                    <text x="50" y="24" fill="#00f3ff" font-size="9" font-weight="900" font-family="monospace" text-anchor="middle" letter-spacing="0.5">PLAN</text>
-
-                    <path d="M 20 31 L 8 47 L 18 80 L 25 68 L 20 48 Z" fill="url(#cyberGrad)" opacity="0.95"/>
-                    <path d="M 20 31 L 8 47 L 18 80" stroke="#00f3ff" stroke-width="1.5" stroke-linejoin="round"/>
-
-                    <path d="M 80 31 L 92 47 L 82 80 L 75 68 L 80 48 Z" fill="url(#cyberGrad)" opacity="0.95"/>
-                    <path d="M 80 31 L 92 47 L 82 80" stroke="#c084fc" stroke-width="1.5" stroke-linejoin="round"/>
-
-                    <path d="M 50 40 L 76 49 L 78 82 L 50 112 L 22 82 L 24 49 Z" fill="#010811" stroke="url(#cyberGrad)" stroke-width="2.5" stroke-linejoin="round"/>
-
-                    <path d="M 50 46 L 71 53 L 73 79 L 50 104 L 27 79 L 29 53 Z" fill="#020d1a" stroke="url(#cyberGrad)" stroke-width="1.5" stroke-linejoin="round"/>
-
-                    <path d="M 42 41 L 50 48 L 58 41 L 58 46 L 50 53 L 42 46 Z" fill="url(#greenGrad)" stroke="#22c55e" stroke-width="0.8"/>
-
-                    <text id="userPlanText" x="50" y="80" fill="#00f3ff" font-size="20" font-weight="900" font-family="sans-serif" text-anchor="middle" letter-spacing="1">FREE</text>
-                </svg>
-            </div>
+  <div class="fixed inset-0 bg-[#3e3032]/25 backdrop-blur-[2px]" onclick="closeProfilePopup()"></div>
+  <div class="fixed inset-0 overflow-y-auto">
+    <div class="profile-wrap min-h-full flex items-start sm:items-center justify-center p-4 sm:p-6">
+      <div class="profile-card profile-shell w-full max-w-[700px] p-4 sm:p-6 my-auto relative">
+        <div class="profile-chip">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21a8 8 0 0 0-16 0"/><circle cx="12" cy="7" r="4"/></svg>
+          ACCOUNT SETTINGS
         </div>
 
-        <!-- Section 1: Api Key Kamu -->
-        <div class="double-border-cyan rounded-2xl p-3 mb-4 relative">
-            <div class="flex items-center justify-between mb-2">
-                <span class="text-[10px] font-bold text-cyan-300 border border-cyan-400 bg-[#010811] px-2.5 py-0.5 rounded-md">Api Key Kamu :</span>
-                <svg class="w-20 h-4 text-cyan-400 opacity-80" viewBox="0 0 100 20" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <path d="M0 10 L60 10 L75 2 L90 2" />
-                    <circle cx="92" cy="2" r="2" fill="currentColor"/>
-                    <circle cx="98" cy="2" r="1.5" fill="#fcd34d"/>
-                </svg>
-            </div>
-            
-            <div class="cyber-pill-capsule text-cyan-200 text-xs font-bold py-1.5 px-3 truncate mb-3 text-center tracking-wider">
-                <span id="userApiKey">loading-key</span>
-            </div>
+        <div class="profile-title">User Profile</div>
+        <p class="profile-subtitle">Manage your account settings, daily limits, and API credentials.</p>
 
-            <!-- Fitur Custom Api Key Khusus VIP User -->
-            <div id="vipCustomKeyBox" class="hidden mb-3">
-                <div class="flex gap-1.5">
-                    <input type="text" id="customApiKeyInput" placeholder="Ketik Custom API Key..." class="w-full bg-[#010a14] border border-cyan-400 rounded-xl px-3 py-1.5 text-xs text-cyan-300 placeholder-cyan-700 focus:outline-none font-bold">
-                    <button onclick="saveCustomApiKey()" class="gold-metallic-button text-[10px] px-3 rounded-xl uppercase font-extrabold whitespace-nowrap">SIMPAN</button>
-                </div>
-            </div>
-            
-            <button onclick="copyText(document.getElementById('userApiKey').innerText, 'API Key')" class="w-full gold-metallic-button text-xs py-2 rounded-xl uppercase tracking-widest active:scale-95 transition-all">
-                SALIN API KEY
-            </button>
-        </div>
+        <a href="/docs" class="profile-docs">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l3 3v17H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/><path d="M14 2v5h5M8 12h8M8 16h8"/></svg>
+          API Docs
+        </a>
 
-        <!-- Section 2: Limit User -->
-        <div class="double-border-cyan rounded-2xl p-3 mb-4 text-center relative">
-            <div class="w-full cyan-solid-header text-[11px] py-1 rounded-xl uppercase tracking-widest mb-3">
-                LIMIT USER
+        <div class="profile-main mt-5">
+          <div class="profile-identity">
+            <div class="profile-avatar-wrap">
+              <input type="file" id="avatarInput" accept="image/*" class="hidden" onchange="uploadAvatarFile(this)">
+              <div class="profile-avatar-ring cursor-pointer" onclick="document.getElementById('avatarInput').click()">
+                <img id="userAvatar" src="https://arulz-xd.my.id/files/X1F0Cn.png" class="profile-avatar">
+              </div>
+              <div class="profile-camera cursor-pointer" onclick="document.getElementById('avatarInput').click()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7h3l1.4-2h5.2L16 7h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z"/><circle cx="12" cy="13" r="3.5"/></svg>
+              </div>
             </div>
-            
-            <div class="absolute right-3 top-2 pointer-events-none opacity-40">
-                <svg class="w-12 h-6 text-cyan-400" viewBox="0 0 50 30" fill="none" stroke="currentColor">
-                    <path d="M0 15 L25 15 L35 5 L45 5" stroke-width="1.5"/>
-                    <circle cx="47" cy="5" r="2" fill="currentColor"/>
-                </svg>
+            <div class="min-w-0 flex-1">
+              <div id="userName" class="profile-name">loading...</div>
+              <div id="userEmail" class="profile-email">loading_email@gmail.com</div>
             </div>
+          </div>
 
-            <div class="py-0.5">
-                <span class="inline-block cyber-pill-capsule text-cyan-300 px-6 py-1 text-sm font-bold tracking-widest">
-                    <span id="popupLimitUsed">0</span> / <span id="popupLimitMax">100</span>
-                </span>
-            </div>
-        </div>
+          <div class="profile-row">
+            <span class="profile-label">Subscription Plan</span>
+            <span id="userPlanTextBadge" class="profile-badge"><span id="userPlanText">FREE</span></span>
+          </div>
 
-        <!-- Section 3: Aktifitas Request API Terakhir -->
-        <div class="double-border-cyan rounded-2xl p-3 mb-4">
-            <div class="w-full cyan-solid-header text-[11px] py-1 rounded-xl uppercase tracking-widest mb-3 text-center">
-                AKTIFITAS REQUEST API TERAKHIR
+          <div class="profile-row">
+            <span class="profile-label">Username</span>
+            <div class="profile-actions">
+              <span id="userUsername" class="profile-value">-</span>
+              <button type="button" class="profile-edit" onclick="openEditUsername && openEditUsername()" aria-label="Edit username">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>
+              </button>
             </div>
-            
-            <div id="activityLogsContainer" class="space-y-2 max-h-44 overflow-y-auto pr-1">
-                <div class="cyber-pill-capsule text-cyan-300 text-[10px] py-1.5 px-3 text-center truncate">
-                    belum ada request
-                </div>
-            </div>
-        </div>
+          </div>
 
-        <!-- Buttons Footer -->
-        <div class="space-y-2.5">
-            <a href="/upgrade-apikey" class="w-full gold-metallic-button text-xs py-2.5 rounded-xl flex items-center justify-center gap-1.5 uppercase tracking-widest active:scale-95 transition-all">
-                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                UPGRADE
+          <div class="profile-row">
+            <span class="profile-label">Email</span>
+            <div class="profile-actions">
+              <span id="userEmailRow" class="profile-value">-</span>
+              <button type="button" class="profile-edit" onclick="openEditEmail && openEditEmail()" aria-label="Edit email">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="profile-row">
+            <span class="profile-label">Daily Limit</span>
+            <span class="profile-value"><span id="popupLimitUsed">0</span> / <span id="popupLimitMax">100</span></span>
+          </div>
+
+          <div class="profile-row">
+            <span class="profile-label">Account Balance</span>
+            <div class="profile-actions">
+              <span id="profileBalance" class="profile-value accent">Rp 0</span>
+              <button type="button" class="profile-btn" onclick="window.location.href='/deposit'">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                Top Up
+              </button>
+              <button type="button" class="profile-action-icon" onclick="window.location.href='/transactions'" aria-label="Transactions">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h13M8 3l-4 4 4 4M20 17H7M16 21l4-4-4-4"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="profile-section">
+            <div class="profile-section-title">API Key</div>
+            <div class="profile-key-box"><span id="userApiKey" class="profile-key">loading-key</span></div>
+            <div id="vipCustomKeyBox" class="hidden mt-3">
+              <div class="flex gap-2">
+                <input type="text" id="customApiKeyInput" placeholder="Ketik Custom API Key..." class="flex-1 bg-[#fffdf8] border-2 border-[#eadcc1] rounded-full px-4 py-3 text-sm text-[#5b4a49] outline-none">
+                <button onclick="saveCustomApiKey()" class="profile-btn">Simpan</button>
+              </div>
+            </div>
+            <button onclick="copyText(document.getElementById('userApiKey').innerText, 'API Key')" class="profile-copy">SALIN API KEY</button>
+          </div>
+
+          <div class="profile-section">
+            <div class="profile-section-title">Aktifitas Request API Terakhir</div>
+            <div id="activityLogsContainer" class="profile-activity">
+              <div class="profile-log">belum ada request</div>
+            </div>
+          </div>
+
+          <a href="/upgrade-apikey" class="profile-upgrade">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 0 0 .95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 0 0-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 0 0-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 0 0-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 0 0 .951-.69l1.07-3.292z"/></svg>
+            Upgrade Plan / VIP
+          </a>
+
+          <div class="profile-footer">
+            <button onclick="closeProfilePopup()" class="profile-close">TUTUP</button>
+            <a href="/auth/logout" class="profile-logout">
+              <span class="inline-flex items-center justify-center gap-2"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17 16l4-4-4-4M21 12H7M13 5V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h5a2 2 0 0 0 2-2v-1"/></svg> LOG OUT</span>
             </a>
-
-            <div class="flex gap-2">
-                <button onclick="closeProfilePopup()" class="flex-1 cyber-pill-capsule hover:bg-[#03203c] text-cyan-300 font-bold text-xs py-2 uppercase tracking-widest transition-all active:scale-95">
-                    TUTUP
-                </button>
-                <a href="/auth/logout" class="flex-1 border border-red-500/80 bg-[#140306] hover:bg-red-950 text-red-400 font-bold text-xs py-2 rounded-full flex items-center justify-center gap-1.5 uppercase tracking-widest transition-all active:scale-95">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-                    LOG OUT
-                </a>
-            </div>
+          </div>
         </div>
-
+      </div>
     </div>
   </div>
 </div>
@@ -3945,7 +3961,25 @@ app.get('/docs', (req, res) => {
             }
         }
 
-        function fetchUserProfile() {
+        
+        function syncProfileMirrorFields() {
+            const name = document.getElementById('userName')?.innerText || '';
+            const email = document.getElementById('userEmail')?.innerText || '';
+            const usernameEl = document.getElementById('userUsername');
+            const emailRowEl = document.getElementById('userEmailRow');
+            if (usernameEl && name) usernameEl.innerText = name;
+            if (emailRowEl && email) emailRowEl.innerText = email;
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const watcher = new MutationObserver(syncProfileMirrorFields);
+            const n = document.getElementById('userName');
+            const e = document.getElementById('userEmail');
+            if (n) watcher.observe(n, {childList:true, subtree:true, characterData:true});
+            if (e) watcher.observe(e, {childList:true, subtree:true, characterData:true});
+            syncProfileMirrorFields();
+        });
+
+function fetchUserProfile() {
             fetch('/api/user-status')
                 .then(res => res.json())
                 .then(data => {
