@@ -3379,6 +3379,131 @@ app.get('/docs', (req, res) => {
   }
 </style>
 
+
+<style id="comic-response-theme">
+/* === Comic bright-green response / endpoint theme === */
+:root{
+  --comic-bg:#f3eddc;
+  --comic-paper:#fffdf5;
+  --comic-paper-2:#f7f1df;
+  --comic-ink:#1f2b24;
+  --comic-stroke:#17251e;
+  --comic-green:#2d8a52;
+  --comic-green-2:#69c96f;
+  --comic-green-3:#bfe8ae;
+  --comic-yellow:#f0c84b;
+}
+
+/* Cards / boxes on the API list: less washed-out, stronger comic outline */
+#apiList > *,
+#apiList .glass-panel,
+#apiList [class*="bg-slate-"],
+#apiList [class*="bg-gray-"],
+#apiList [class*="bg-zinc-"],
+#apiList [class*="bg-neutral-"],
+#apiList [class*="bg-[#"],
+#apiList .endpoint-card,
+#apiList .api-card,
+#apiList .response-card,
+#apiList .response-box,
+#apiList .response-container,
+#apiList .result-box,
+#apiList .result-container,
+#apiList .server-response{
+  border-color:var(--comic-stroke) !important;
+}
+
+/* Category / endpoint cards */
+#apiList .endpoint-card,
+#apiList .api-card,
+#apiList [class*="rounded"][class*="border"]{
+  box-shadow:4px 4px 0 rgba(23,37,30,.16) !important;
+}
+
+/* Response containers that contain <pre> / JSON output */
+#apiList div:has(> pre),
+#apiList section:has(> pre),
+#apiList article:has(> pre),
+#apiList div:has(pre),
+#apiList section:has(pre),
+#apiList article:has(pre){
+  background:var(--comic-paper) !important;
+  color:var(--comic-ink) !important;
+  border:2px solid var(--comic-stroke) !important;
+  box-shadow:5px 5px 0 rgba(23,37,30,.18) !important;
+}
+
+#apiList pre,
+#apiList code{
+  background:var(--comic-paper-2) !important;
+  color:#244b32 !important;
+  border-color:var(--comic-stroke) !important;
+  text-shadow:none !important;
+}
+
+#apiList pre{
+  border:1.5px solid #415247 !important;
+  border-radius:14px !important;
+}
+
+/* Server response title / labels */
+#apiList [class*="response"] h1,
+#apiList [class*="response"] h2,
+#apiList [class*="response"] h3,
+#apiList [class*="response"] h4,
+#apiList [class*="response"] p,
+#apiList [class*="response"] span,
+#apiList [class*="response"] label{
+  text-shadow:none !important;
+}
+
+/* Don't allow explicit dark Tailwind utility backgrounds to win in light/comic mode */
+.light-mode #apiList [class*="bg-black"],
+.light-mode #apiList [class*="bg-slate-9"],
+.light-mode #apiList [class*="bg-slate-8"],
+.light-mode #apiList [class*="bg-gray-9"],
+.light-mode #apiList [class*="bg-zinc-9"]{
+  background:var(--comic-paper) !important;
+  color:var(--comic-ink) !important;
+  border-color:var(--comic-stroke) !important;
+}
+
+/* Request/response metadata boxes */
+#apiList [class*="status"],
+#apiList [class*="method"],
+#apiList [class*="time"],
+#apiList [class*="size"]{
+  text-shadow:none !important;
+}
+
+/* Buttons stay colorful but receive a comic outline */
+#apiList button,
+#apiList a[class*="button"],
+#apiList [role="button"]{
+  border:2px solid var(--comic-stroke) !important;
+  box-shadow:3px 3px 0 rgba(23,37,30,.16) !important;
+}
+
+/* Green, readable text accents */
+#apiList .text-green-300,
+#apiList .text-green-400,
+#apiList .text-emerald-300,
+#apiList .text-emerald-400{
+  color:#2f8a52 !important;
+}
+
+/* Make the API list background feel warm instead of hospital-white */
+#apiList{
+  color:var(--comic-ink) !important;
+}
+
+/* Mobile: keep outlines visible but avoid oversized cards */
+@media(max-width:640px){
+  #apiList > *{ border-width:2px !important; }
+  #apiList pre{ font-size:12px !important; line-height:1.65 !important; }
+}
+</style>
+
 <!-- User Profile Pop-up Modal -->
 <style>
   #profilePopup .profile-shell{font-family:Georgia,'Times New Roman',serif;color:#52645a}
