@@ -3083,7 +3083,7 @@ app.get('/docs', (req, res) => {
         position: fixed;
         inset: 0;
         z-index: 99999;
-        background-color: var(--bg-dark);
+        background:linear-gradient(135deg,#f4fff1,#dff7df,#fffdf3);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -3228,7 +3228,7 @@ app.get('/docs', (req, res) => {
 }
 </style>
 </head>
-<body class="min-h-screen antialiased bg-[#020617] text-slate-100 relative">
+<body class="min-h-screen antialiased text-slate-900 relative">
 
 <div id="cyber-loader-overlay">
     <div class="scanner-beam"></div>
@@ -3307,6 +3307,78 @@ app.get('/docs', (req, res) => {
       </div>
     </div>
     
+<!-- Bright Comic Green Theme Overrides -->
+<style>
+  :root{
+    --comic-ink:#244235;
+    --comic-green:#48c774;
+    --comic-green-2:#8be28f;
+    --comic-mint:#effff0;
+    --comic-cream:#fffdf5;
+    --comic-border:#b8dcb8;
+  }
+  body{
+    background:
+      radial-gradient(circle at 10% 0%, rgba(139,226,143,.42), transparent 34%),
+      radial-gradient(circle at 100% 20%, rgba(72,199,116,.25), transparent 30%),
+      linear-gradient(135deg,#f7fff5 0%,#ecfff0 48%,#fdfcf3 100%) !important;
+    color:var(--comic-ink) !important;
+    font-family: Georgia,'Times New Roman',serif !important;
+  }
+  body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;background-image:radial-gradient(#67b978 1px,transparent 1px);background-size:18px 18px;z-index:-1}
+  .glass-panel{background:rgba(255,255,252,.9)!important;border:2px solid rgba(94,151,100,.22)!important;box-shadow:0 8px 24px rgba(69,114,76,.10)!important;color:#31513e!important}
+  .light-mode .glass-panel{background:rgba(255,255,252,.96)!important;border-color:rgba(94,151,100,.24)!important}
+  .light-mode{background:transparent!important;color:var(--comic-ink)!important}
+  .light-mode #mainTitle,.light-mode #mainDescription,.light-mode #no-results-title{color:var(--comic-ink)!important}
+  .filter-btn{border:2px solid #afd8af!important;background:rgba(255,255,255,.7)!important;color:#547161!important;border-radius:999px!important;padding:10px 18px!important;font-family:Georgia,'Times New Roman',serif!important;font-size:14px!important;font-weight:700!important;box-shadow:4px 4px 0 rgba(95,137,100,.12);white-space:nowrap}
+  .filter-btn:hover{background:#eaffea!important;color:#31513e!important}
+  .filter-btn.active{background:linear-gradient(135deg,#35b86a,#8fe28c)!important;color:#123b24!important;border-color:#54bc71!important}
+  .category-scroll{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto!important;overflow-y:hidden!important;scroll-snap-type:x proximity!important;padding:4px 4px 12px!important;-webkit-overflow-scrolling:touch}
+  .category-scroll .filter-btn{flex:0 0 auto!important;scroll-snap-align:start}
+  #bioDropdown{background:linear-gradient(180deg,#fbfff8,#edffef)!important;border-left:2px solid #9dce9e!important;color:#355040!important}
+  #bioDropdown .menu-link span{color:#4e6d58!important}
+  #bioDropdown .menu-link:hover{background:#e6f8e7!important}
+  #bioDropdown nav>div{color:#6c8a73!important}
+  .music-player-card{background:rgba(255,255,252,.94)!important;border:2px solid #c4dfc2!important;box-shadow:0 8px 24px rgba(69,114,76,.10)!important}
+  .music-text-title{color:#31513e!important}.music-text-artist{color:#6f8274!important}
+  #profilePopup{font-family:Georgia,'Times New Roman',serif}
+  #profilePopup .profile-card{background:linear-gradient(145deg,#fbfff8,#fffdf7)!important;border:2px solid #acd5ac!important;box-shadow:0 18px 50px rgba(49,101,59,.18)!important}
+  #profilePopup .profile-chip{background:linear-gradient(135deg,#f1fff0,#e6f9e7)!important;border:2px solid #6bb274!important;color:#477259!important;box-shadow:4px 4px 0 rgba(94,151,100,.10)}
+  #profilePopup .profile-docs{background:linear-gradient(135deg,#2c9a5f,#79c66d)!important;box-shadow:5px 5px 0 rgba(55,122,77,.12)!important}
+  #profilePopup .profile-main{background:rgba(255,255,250,.95)!important;border:2px solid #d0e6ce!important}
+  #profilePopup .profile-row{border-bottom:2px dashed #cde2ca!important}
+  #profilePopup .profile-badge{background:linear-gradient(135deg,#dff4df,#f2fbec)!important;color:#52705b!important}
+  #profilePopup .profile-key-box,#profilePopup .profile-log{background:linear-gradient(135deg,#f2fbef,#fffdf7)!important;border:2px solid #d0e3cc!important}
+  #profilePopup .profile-copy,#profilePopup .profile-upgrade{background:linear-gradient(135deg,#e7f8e6,#f5f8ed)!important;border:2px solid #6eb176!important;color:#4c7259!important;box-shadow:4px 4px 0 rgba(85,132,90,.10)}
+  #profilePopup .profile-upgrade{background:linear-gradient(135deg,#2f925a,#7bc96c)!important;color:#fff!important;border:0!important}
+  #profilePopup .profile-footer .profile-close{background:#f8fff6!important;border:2px solid #b8d9b5!important;color:#385843!important}
+  #profilePopup .profile-footer .profile-logout{background:#fff7f7!important}
+  #profilePopup .profile-avatar-ring{border:3px solid #72a974!important;box-shadow:5px 5px 0 rgba(91,133,94,.10)!important}
+  #profilePopup .profile-camera{background:linear-gradient(135deg,#3c9e62,#83cb74)!important;border-color:#fff!important}
+  #profilePopup .profile-title{color:#294335!important}
+  #profilePopup .profile-subtitle{color:#6c8174!important}
+  #profilePopup .profile-label{color:#718176!important}
+  #profilePopup .profile-value,#profilePopup .profile-name{color:#30483b!important}
+  #profilePopup .profile-value.accent{color:#4c805d!important}
+  @media(max-width:640px){
+    #profilePopup .profile-wrap{padding:10px!important}
+    #profilePopup .profile-card{max-width:430px!important;border-radius:24px!important;padding:12px!important}
+    #profilePopup .profile-main{padding:15px 13px!important}
+    #profilePopup .profile-title{font-size:26px!important}
+    #profilePopup .profile-subtitle{font-size:13px!important}
+    #profilePopup .profile-identity{gap:10px!important}
+    #profilePopup .profile-avatar-wrap{width:70px!important;height:70px!important;flex-basis:70px!important}
+    #profilePopup .profile-name{font-size:18px!important}
+    #profilePopup .profile-row{padding:10px 0!important}
+    #profilePopup .profile-label{font-size:13px!important}
+    #profilePopup .profile-value{font-size:13px!important}
+    #profilePopup .profile-section{margin-top:13px!important}
+    #profilePopup .profile-section-title{font-size:13px!important}
+    #profilePopup .profile-log{grid-template-columns:auto minmax(0,1fr)!important}
+    #profilePopup .profile-log-meta{grid-column:2!important;text-align:left!important;margin-top:-2px!important}
+  }
+</style>
+
 <!-- User Profile Pop-up Modal -->
 <style>
   #profilePopup .profile-shell{font-family:Georgia,'Times New Roman',serif;color:#52645a}
@@ -3329,8 +3401,7 @@ app.get('/docs', (req, res) => {
   #profilePopup .profile-value{font-family:'Courier New',monospace;font-size:15px;font-weight:800;color:#304338;text-align:right;min-width:0}
   #profilePopup .profile-value.accent{color:#4f815f}
   #profilePopup .profile-badge{background:linear-gradient(135deg,#dcebd7,#eef5e9);color:#52705b;border-radius:999px;padding:6px 13px;font-size:13px;font-weight:800}
-  #profilePopup .profile-actions{display:flex;align-items:center;gap:8px;min-width:0;max-width:72%}
-  #profilePopup .profile-edit{width:40px;height:40px;flex:0 0 40px;border:1.5px solid #cfe1cc;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#fffefb;color:#35513e}
+  #profilePopup .profile-actions{display:flex;align-items:center;gap:8px;min-width:0;max-width:100%}
   #profilePopup .profile-upgrade{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:14px;border:0;border-radius:999px;background:linear-gradient(135deg,#315f49,#78a96d);color:#fff;padding:12px 16px;font-size:15px;font-weight:800;box-shadow:0 7px 18px rgba(49,95,73,.16)}
   #profilePopup .profile-section{margin-top:16px}
   #profilePopup .profile-section-title{font-size:14px;font-weight:800;color:#60766a;margin-bottom:8px}
@@ -3360,14 +3431,12 @@ app.get('/docs', (req, res) => {
     #profilePopup .profile-email{font-size:13px}
     #profilePopup .profile-row{padding:11px 0}
     #profilePopup .profile-value{font-size:14px}
-    #profilePopup .profile-actions{max-width:70%}
-    #profilePopup .profile-edit{width:37px;height:37px;flex-basis:37px}
     #profilePopup .profile-docs{font-size:15px;padding:11px 14px}
     #profilePopup .profile-log{grid-template-columns:auto minmax(0,1fr);gap:7px}
     #profilePopup .profile-log-meta{grid-column:2;text-align:left;margin-top:-3px}
   }
 </style>
-<div id="profilePopup" class="fixed inset-0 z-[99999] hidden">
+<div id="profilePopup" class="fixed inset-0 z-[99999] hidden" style="display:none" aria-hidden="true">
   <div class="fixed inset-0 bg-[#183024]/25 backdrop-blur-[2px]" onclick="closeProfilePopup()"></div>
   <div class="fixed inset-0 overflow-y-auto">
     <div class="profile-wrap min-h-full flex items-start sm:items-center justify-center p-3 sm:p-5">
@@ -3390,7 +3459,7 @@ app.get('/docs', (req, res) => {
             <div class="profile-avatar-wrap">
               <input type="file" id="avatarInput" accept="image/*" class="hidden" onchange="uploadAvatarFile(this)">
               <div class="profile-avatar-ring cursor-pointer" onclick="document.getElementById('avatarInput').click()">
-                <img id="userAvatar" src="https://arulz-xd.my.id/files/X1F0Cn.png" class="profile-avatar" onerror="this.style.display='none'">
+                <img id="userAvatar" src="https://arulz-xd.my.id/files/X1F0Cn.png" class="profile-avatar">
               </div>
               <div class="profile-camera cursor-pointer" onclick="document.getElementById('avatarInput').click()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7h3l1.4-2h5.2L16 7h3a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z"/><circle cx="12" cy="13" r="3.5"/></svg>
@@ -3411,9 +3480,6 @@ app.get('/docs', (req, res) => {
             <span class="profile-label">Username</span>
             <div class="profile-actions">
               <span id="userUsername" class="profile-value truncate">-</span>
-              <button type="button" class="profile-edit" onclick="openEditUsername && openEditUsername()" aria-label="Edit username">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>
-              </button>
             </div>
           </div>
 
@@ -3421,9 +3487,6 @@ app.get('/docs', (req, res) => {
             <span class="profile-label">Email</span>
             <div class="profile-actions">
               <span id="userEmailRow" class="profile-value truncate">-</span>
-              <button type="button" class="profile-edit" onclick="openEditEmail && openEditEmail()" aria-label="Edit email">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg>
-              </button>
             </div>
           </div>
 
@@ -3783,7 +3846,7 @@ app.get('/docs', (req, res) => {
                     <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
             </div>
-            <div id="categoryFilters" class="flex flex-wrap gap-2 mt-4 justify-start md:justify-center overflow-x-auto pb-2 scrollbar-hide max-w-4xl mx-auto"></div>
+            <div id="categoryFilters" class="category-scroll flex flex-nowrap gap-3 mt-4 justify-start overflow-x-auto pb-3 scrollbar-hide max-w-4xl mx-auto"></div>
         </div>
 
         <div id="noResults" class="text-center py-12 hidden">
@@ -3832,12 +3895,24 @@ app.get('/docs', (req, res) => {
         }
 
         function openProfilePopup() {
-            document.getElementById('profilePopup').classList.remove('hidden');
+            const popup = document.getElementById('profilePopup');
+            const menu = document.getElementById('bioDropdown');
+            if (!popup) return;
+            if (menu) menu.classList.add('translate-x-full');
+            popup.classList.remove('hidden');
+            popup.style.display = 'block';
+            popup.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('overflow-hidden');
             fetchUserProfile();
         }
 
         function closeProfilePopup() {
-            document.getElementById('profilePopup').classList.add('hidden');
+            const popup = document.getElementById('profilePopup');
+            if (!popup) return;
+            popup.classList.add('hidden');
+            popup.style.display = 'none';
+            popup.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('overflow-hidden');
         }
 
         function showWelcomePopup() {
@@ -3993,7 +4068,7 @@ function fetchUserProfile() {
                 .then(res => res.json())
                 .then(data => {
                     if (data.loggedIn && data.user) {
-                        const latestAvatar = data.user.avatar || 'https://arulz-xd.my.id/files/X1F0Cn.png';
+                        const latestAvatar = data.user.avatar || sessionStorage.getItem('latestProfileAvatar') || 'https://arulz-xd.my.id/files/X1F0Cn.png';
 
                         document.querySelectorAll('#userAvatar, #sidebarUserAvatar').forEach(img => {
                             if (img) img.src = latestAvatar;
@@ -4104,32 +4179,40 @@ function fetchUserProfile() {
             if (percentageText) percentageText.innerText = Math.floor(currentProgress) + '%';
         }
 
+        let progressInterval = null;
+        function hideLoaderImmediately() {
+            if (loaderOverlay) {
+                loaderOverlay.classList.add('fade-out');
+                loaderOverlay.style.display = 'none';
+            }
+        }
+
         function finishLoader() {
             if (hasFinishedLoading) return;
             hasFinishedLoading = true;
-            clearInterval(progressInterval);
+            if (progressInterval) clearInterval(progressInterval);
             updateProgress(100);
-
+            try { sessionStorage.setItem('xs_pedia_loader_seen', '1'); } catch (_) {}
             setTimeout(() => {
                 if (loaderOverlay) {
                     loaderOverlay.classList.add('fade-out');
-                    setTimeout(() => {
-                        showWelcomePopup();
-                    }, 200);
+                    setTimeout(() => { loaderOverlay.style.display = 'none'; }, 650);
                 }
-            }, 400);
+            }, 180);
         }
 
-        const progressInterval = setInterval(() => {
-            if (currentProgress < 85) {
-                const increment = Math.random() * 12 + 5;
-                updateProgress(currentProgress + increment);
-            }
-        }, 120);
-
-        window.addEventListener('load', finishLoader);
-
-        setTimeout(finishLoader, 1500);
+        let hasSeenLoader = false;
+        try { hasSeenLoader = sessionStorage.getItem('xs_pedia_loader_seen') === '1'; } catch (_) {}
+        if (hasSeenLoader) {
+            hideLoaderImmediately();
+            hasFinishedLoading = true;
+        } else {
+            progressInterval = setInterval(() => {
+                if (currentProgress < 85) updateProgress(currentProgress + Math.random() * 12 + 5);
+            }, 120);
+            window.addEventListener('load', finishLoader, { once:true });
+            setTimeout(finishLoader, 1500);
+        }
 </script>
 
 </body>
