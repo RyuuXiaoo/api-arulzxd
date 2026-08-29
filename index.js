@@ -47,7 +47,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'xs-pedia-super-secret-jwt-key-999'
 // HELPER GENERATOR API KEY SESUAI ATURAN
 // ====================================================
 function generateFreeApiKey() {
-    return 'xs-pedia-' + crypto.randomBytes(3).toString('hex').slice(0, 5);
+    return 'xs-pedia' + crypto.randomBytes(3).toString('hex').slice(0, 5);
 }
 
 function generatePremiumApiKey(username) {
@@ -89,7 +89,7 @@ userSchema.pre('save', function() {
                 this.apikey = generatePremiumApiKey(this.username);
             }
         } else {
-            if (!this.apikey || !this.apikey.startsWith('arulzxdfree-')) {
+            if (!this.apikey || !this.apikey.startsWith('xs-pedia')) {
                 this.apikey = generateFreeApiKey();
             }
         }
@@ -100,7 +100,7 @@ userSchema.pre('save', function() {
 const User = mongoose.models.User || mongoose.model('User', userSchema);
 
 app.use(session({
-    secret: 'xs-pedia_secret_session_key_99', 
+    secret: 'arulzxd_secret_session_key_99', 
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
@@ -1168,7 +1168,7 @@ app.post('/webhook', async (req, res) => {
                                 if (targetRole === "Premium User") {
                                     targetUser.apikey = generatePremiumApiKey(targetUser.username);
                                 } else if (targetRole === "VIP User") {
-                                    if (!targetUser.apikey || targetUser.apikey.startsWith('arulzxdfree-')) {
+                                    if (!targetUser.apikey || targetUser.apikey.startsWith('xs-pedia')) {
                                         targetUser.apikey = `${targetUser.username.toLowerCase()}-custom-vip`;
                                     }
                                 }
@@ -1368,7 +1368,7 @@ app.post('/auth/login', (req, res, next) => {
                         needSave = true;
                     }
                 } else {
-                    if (!user.apikey || !user.apikey.startsWith('arulzxdfree-')) {
+                    if (!user.apikey || !user.apikey.startsWith('xs-pedia')) {
                         user.apikey = generateFreeApiKey();
                         needSave = true;
                     }
@@ -1523,7 +1523,7 @@ app.post('/auth/forgot-password', async (req, res) => {
         <tr>
             <td style="padding: 32px 32px 24px 32px; text-align: center;">
                 <h1 style="margin: 0; color: #ffffff; font-size: 24px; font-weight: 800; tracking-tight: -0.025em;">
-                    Arulz<span style="color: #22d3ee;">XD</span> API
+                    XS-Pedia API
                 </h1>
             </td>
         </tr>
@@ -1911,7 +1911,7 @@ const c = 'p';
 const to = '_WaSUBUjo7g3YcCcyo'; 
 const ken = 'OgBEWRKS16qYr1C8Gyg'; 
 const githubToken = `${a}${b}${c}${to}${ken}`;
-const owner = 'arulzzzxd'; 
+const owner = 'xs-pedia'; 
 const branch = 'main';
 
 const getRandomRepo = () => repoList[Math.floor(Math.random() * repoList.length)];
@@ -2207,7 +2207,7 @@ app.post('/api/feedback', async (req, res) => {
                     <tr>
                         <td style="padding: 30px 30px 20px 30px; text-align: center; background: linear-gradient(180deg, rgba(6, 182, 212, 0.12) 0%, transparent 100%); border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
                             <h1 style="margin: 0; font-size: 26px; font-weight: 800; color: #ffffff;">
-                                ARULZ<span style="color: #22d3ee;">XD</span> <span style="font-size: 14px; font-family: monospace; color: #64748b;">v2.0</span>
+                                XS-PEDIA <span style="font-size: 14px; font-family: monospace; color: #64748b;">v2.0</span>
                             </h1>
                         </td>
                     </tr>
@@ -2257,14 +2257,14 @@ app.post('/api/feedback', async (req, res) => {
         const userMailOptions = {
             from: '"Support XS-Pedia" <supportarulzxd@gmail.com>', 
             to: email, 
-            subject: `[Received] Terima Kasih atas Feedback Anda - API-ARULZXD`,
+            subject: `[Received] Terima Kasih atas Feedback Anda - API-XS-PEDIA`,
             html: `
             <div style="background-color: #030712; padding: 40px 15px; font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #f3f4f6;">
                 <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #0b0f17; border-radius: 20px; border: 1px solid rgba(6, 182, 212, 0.3); box-shadow: 0 0 35px rgba(6, 182, 212, 0.15); overflow: hidden;">
                     <tr>
                         <td style="padding: 30px 30px 20px 30px; text-align: center; background: linear-gradient(180deg, rgba(6, 182, 212, 0.12) 0%, transparent 100%); border-bottom: 1px solid rgba(255, 255, 255, 0.05);">
                             <h1 style="margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.025em; color: #ffffff;">
-                                ARULZ<span style="color: #22d3ee; text-shadow: 0 0 10px rgba(34, 211, 238, 0.5);">XD</span> <span style="font-size: 14px; font-family: monospace; color: #64748b; font-weight: 400;">API</span>
+                                XS-PEDIA <span style="font-size: 14px; font-family: monospace; color: #64748b; font-weight: 400;">API</span>
                             </h1>
                         </td>
                     </tr>
@@ -2351,7 +2351,7 @@ app.get('/database/download', async (req, res) => {
         });
 
         res.setHeader('Content-Type', response.headers['content-type'] || 'image/jpeg');
-        res.setHeader('Content-Disposition', 'attachment; filename="QRIS_Arulz_XD.jpg"');
+        res.setHeader('Content-Disposition', 'attachment; filename="QRIS_XS-Pedia_XD.jpg"');
         res.setHeader('Access-Control-Allow-Origin', '*'); 
 
         response.data.pipe(res);
@@ -2931,7 +2931,7 @@ app.get('/docs', (req, res) => {
     <meta charset="UTF-8" />
     <meta name="google" content="notranslate" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>API-ARULZXD - REST</title>
+    <title>XS-PEDIA API - REST</title>
     <link rel="icon" href="https://arulz-xd.my.id/files/Q2C70y.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -3678,7 +3678,7 @@ app.get('/docs', (req, res) => {
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                     </svg>
-                    <span class="underline break-all font-semibold">https://arulz-xd.my.id</span>
+                    <span class="underline break-all font-semibold">https://xs-pedia.id</span>
                 </div>
                 <a href="/feedback" 
                    class="w-full sm:w-auto px-5 py-2 bg-gradient-to-r from-cyan-600 to-cyan-500 hover:from-cyan-500 hover:to-cyan-400 text-slate-950 font-bold text-[11px] uppercase rounded-lg shadow-md transition-all active:scale-95 light-mode:text-white text-center flex items-center justify-center gap-1.5">
