@@ -4781,6 +4781,553 @@ body[data-xs-theme="dark"] #siteFooter{
   observer.observe(document.body, { attributes:true, attributeFilter:['class'] });
 })();
 </script>
+
+<!-- FINAL XS-PEDIA UI PATCH v3 -->
+<style id="xs-pedia-ui-final-v3">
+/* =========================================================
+   V3: NO GIANT OUTER OVAL / ONE REAL CATEGORY PILL
+   ========================================================= */
+#apiList > .xs-category,
+#apiList > *{
+  background:transparent !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+  padding:0 !important;
+}
+
+/* Old generic "first child = giant pill" rules are neutralized. */
+#apiList > .xs-category > :first-child,
+#apiList > * > :first-child{
+  background:transparent !important;
+  color:inherit !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  overflow:visible !important;
+  min-height:0 !important;
+  width:auto !important;
+}
+
+/* The JS below marks ONLY the actual category header. */
+#apiList .xs-category-header{
+  display:flex !important;
+  align-items:center !important;
+  width:100% !important;
+  min-height:112px !important;
+  box-sizing:border-box !important;
+  padding:22px 28px !important;
+  background:#ffffff !important;
+  color:#172019 !important;
+  border:3px solid #172019 !important;
+  border-radius:999px !important;
+  box-shadow:5px 5px 0 rgba(23,32,25,.12) !important;
+  overflow:hidden !important;
+  margin:0 0 12px 0 !important;
+}
+
+/* Endpoint rows stay separate from the category header. */
+#apiList .xs-endpoint-row,
+#apiList .endpoint-card,
+#apiList .api-card{
+  width:100% !important;
+  max-width:none !important;
+  box-sizing:border-box !important;
+  background:#ffffff !important;
+  color:#172019 !important;
+  border:2px solid #172019 !important;
+  border-radius:999px !important;
+  box-shadow:3px 3px 0 rgba(23,32,25,.10) !important;
+  overflow:hidden !important;
+  margin:8px 0 !important;
+  padding:14px 14px !important;
+}
+
+#apiList .xs-endpoint-row > div,
+#apiList .xs-endpoint-row > section,
+#apiList .xs-endpoint-row > article,
+#apiList .endpoint-card > div,
+#apiList .endpoint-card > section,
+#apiList .endpoint-card > article,
+#apiList .api-card > div,
+#apiList .api-card > section,
+#apiList .api-card > article{
+  background:transparent !important;
+  border:0 !important;
+  box-shadow:none !important;
+}
+
+/* =========================================================
+   READY / FREE / MAINTENANCE: STRONG, NEVER WASHED OUT
+   ========================================================= */
+#apiList .text-green-300,
+#apiList .text-green-400,
+#apiList .text-emerald-300,
+#apiList .text-emerald-400{
+  color:#166534 !important;
+  opacity:1 !important;
+  font-weight:900 !important;
+  text-shadow:none !important;
+}
+
+#apiList [class*="bg-green"],
+#apiList [class*="bg-emerald"]{
+  background:#dcfce7 !important;
+  color:#14532d !important;
+  border:2px solid #34a853 !important;
+  opacity:1 !important;
+  border-radius:999px !important;
+  font-weight:900 !important;
+  text-shadow:none !important;
+}
+
+#apiList [class*="bg-cyan"],
+#apiList [class*="bg-blue"]{
+  background:#dff6fb !important;
+  color:#075985 !important;
+  border:2px solid #3fa3bf !important;
+  opacity:1 !important;
+  border-radius:999px !important;
+  font-weight:900 !important;
+  text-shadow:none !important;
+}
+
+#apiList [class*="status"],
+#apiList [class*="badge"],
+#apiList [class*="method"]{
+  opacity:1 !important;
+  font-weight:900 !important;
+  text-shadow:none !important;
+}
+
+/* =========================================================
+   REQUEST / RESPONSE: LIGHT BOXES IN LIGHT MODE
+   ========================================================= */
+#apiList .xs-detail-surface{
+  background:#ffffff !important;
+  color:#172019 !important;
+  border:2px solid #172019 !important;
+  border-radius:22px !important;
+  box-shadow:none !important;
+  padding:12px 14px !important;
+  overflow:hidden !important;
+}
+
+#apiList .xs-codebox,
+#apiList pre,
+#apiList code{
+  background:#ffffff !important;
+  color:#172019 !important;
+  border:2px solid #789083 !important;
+  border-radius:16px !important;
+  box-shadow:none !important;
+  padding:14px !important;
+  margin:9px 0 !important;
+  font-family:'JetBrains Mono',monospace !important;
+  font-size:12.5px !important;
+  line-height:1.65 !important;
+  white-space:pre-wrap !important;
+  overflow-wrap:anywhere !important;
+  word-break:break-word !important;
+  opacity:1 !important;
+}
+
+#apiList .xs-detail-surface pre,
+#apiList .xs-detail-surface code{
+  border-color:#789083 !important;
+  background:#ffffff !important;
+}
+
+#apiList [class*="font-mono"]{
+  color:#25362c !important;
+  opacity:1 !important;
+  text-shadow:none !important;
+  overflow-wrap:anywhere !important;
+  word-break:break-word !important;
+}
+
+/* Request/response labels */
+#apiList .xs-detail-surface h1,
+#apiList .xs-detail-surface h2,
+#apiList .xs-detail-surface h3,
+#apiList .xs-detail-surface h4,
+#apiList .xs-detail-surface p,
+#apiList .xs-detail-surface span,
+#apiList .xs-codebox h1,
+#apiList .xs-codebox h2,
+#apiList .xs-codebox h3,
+#apiList .xs-codebox h4,
+#apiList .xs-codebox p,
+#apiList .xs-codebox span{
+  color:#25362c !important;
+  opacity:1 !important;
+  text-shadow:none !important;
+}
+
+/* Copy buttons remain simple outlined pills. */
+#apiList button,
+#apiList a[class*="copy"],
+#apiList [aria-label*="copy" i],
+#apiList [title*="copy" i]{
+  border:2px solid #172019 !important;
+  border-radius:999px !important;
+  box-shadow:3px 3px 0 rgba(23,32,25,.12) !important;
+  opacity:1 !important;
+}
+
+/* =========================================================
+   TRUE DARK MODE: BLACK BACKDROP + DARK MENU
+   ========================================================= */
+html[data-xs-theme="dark"],
+body[data-xs-theme="dark"],
+html.dark-mode,
+body.dark-mode{
+  background:#000000 !important;
+  background-color:#000000 !important;
+  background-image:none !important;
+  color:#f5f7f5 !important;
+}
+
+html[data-xs-theme="dark"] #themeBg,
+body[data-xs-theme="dark"] #themeBg,
+html.dark-mode #themeBg,
+body.dark-mode #themeBg{
+  background:#000000 !important;
+  background-color:#000000 !important;
+  background-image:none !important;
+}
+
+html[data-xs-theme="dark"] #apiList .xs-category-header,
+body[data-xs-theme="dark"] #apiList .xs-category-header,
+html.dark-mode #apiList .xs-category-header,
+body.dark-mode #apiList .xs-category-header{
+  background:#0b0d0e !important;
+  color:#f5f7f5 !important;
+  border-color:#e1e7e2 !important;
+  box-shadow:5px 5px 0 rgba(0,0,0,.85) !important;
+}
+
+html[data-xs-theme="dark"] #apiList .xs-endpoint-row,
+body[data-xs-theme="dark"] #apiList .xs-endpoint-row,
+html.dark-mode #apiList .xs-endpoint-row,
+body.dark-mode #apiList .xs-endpoint-row,
+html[data-xs-theme="dark"] #apiList .endpoint-card,
+body[data-xs-theme="dark"] #apiList .endpoint-card,
+html.dark-mode #apiList .endpoint-card,
+body.dark-mode #apiList .endpoint-card,
+html[data-xs-theme="dark"] #apiList .api-card,
+body[data-xs-theme="dark"] #apiList .api-card,
+html.dark-mode #apiList .api-card,
+body.dark-mode #apiList .api-card{
+  background:#0b0d0e !important;
+  color:#f5f7f5 !important;
+  border-color:#e1e7e2 !important;
+  box-shadow:3px 3px 0 rgba(0,0,0,.9) !important;
+}
+
+/* Dark request/response boxes are charcoal, not green/cream. */
+html[data-xs-theme="dark"] #apiList .xs-detail-surface,
+body[data-xs-theme="dark"] #apiList .xs-detail-surface,
+html.dark-mode #apiList .xs-detail-surface,
+body.dark-mode #apiList .xs-detail-surface{
+  background:#0f1213 !important;
+  color:#f5f7f5 !important;
+  border-color:#d7dfda !important;
+}
+
+html[data-xs-theme="dark"] #apiList .xs-codebox,
+body[data-xs-theme="dark"] #apiList .xs-codebox,
+html.dark-mode #apiList .xs-codebox,
+body.dark-mode #apiList .xs-codebox,
+html[data-xs-theme="dark"] #apiList pre,
+body[data-xs-theme="dark"] #apiList pre,
+html.dark-mode #apiList pre,
+body.dark-mode #apiList pre,
+html[data-xs-theme="dark"] #apiList code,
+body[data-xs-theme="dark"] #apiList code,
+html.dark-mode #apiList code,
+body.dark-mode #apiList code{
+  background:#171a1c !important;
+  color:#f5f7f5 !important;
+  border-color:#535d58 !important;
+}
+
+html[data-xs-theme="dark"] #apiList .xs-detail-surface h1,
+html[data-xs-theme="dark"] #apiList .xs-detail-surface h2,
+html[data-xs-theme="dark"] #apiList .xs-detail-surface h3,
+html[data-xs-theme="dark"] #apiList .xs-detail-surface h4,
+html[data-xs-theme="dark"] #apiList .xs-detail-surface p,
+html[data-xs-theme="dark"] #apiList .xs-detail-surface span,
+html[data-xs-theme="dark"] #apiList [class*="font-mono"],
+body[data-xs-theme="dark"] #apiList .xs-detail-surface h1,
+body[data-xs-theme="dark"] #apiList .xs-detail-surface h2,
+body[data-xs-theme="dark"] #apiList .xs-detail-surface h3,
+body[data-xs-theme="dark"] #apiList .xs-detail-surface h4,
+body[data-xs-theme="dark"] #apiList .xs-detail-surface p,
+body[data-xs-theme="dark"] #apiList .xs-detail-surface span,
+body[data-xs-theme="dark"] #apiList [class*="font-mono"],
+html.dark-mode #apiList .xs-detail-surface h1,
+html.dark-mode #apiList .xs-detail-surface h2,
+html.dark-mode #apiList .xs-detail-surface h3,
+html.dark-mode #apiList .xs-detail-surface h4,
+html.dark-mode #apiList .xs-detail-surface p,
+html.dark-mode #apiList .xs-detail-surface span,
+html.dark-mode #apiList [class*="font-mono"],
+body.dark-mode #apiList .xs-detail-surface h1,
+body.dark-mode #apiList .xs-detail-surface h2,
+body.dark-mode #apiList .xs-detail-surface h3,
+body.dark-mode #apiList .xs-detail-surface h4,
+body.dark-mode #apiList .xs-detail-surface p,
+body.dark-mode #apiList .xs-detail-surface span,
+body.dark-mode #apiList [class*="font-mono"]{
+  color:#eef4ef !important;
+}
+
+html[data-xs-theme="dark"] #apiList [class*="bg-green"],
+html[data-xs-theme="dark"] #apiList [class*="bg-emerald"],
+body[data-xs-theme="dark"] #apiList [class*="bg-green"],
+body[data-xs-theme="dark"] #apiList [class*="bg-emerald"]{
+  background:#153923 !important;
+  color:#98efb1 !important;
+  border-color:#4da66d !important;
+}
+
+html[data-xs-theme="dark"] #apiList [class*="bg-cyan"],
+html[data-xs-theme="dark"] #apiList [class*="bg-blue"],
+body[data-xs-theme="dark"] #apiList [class*="bg-cyan"],
+body[data-xs-theme="dark"] #apiList [class*="bg-blue"]{
+  background:#102f38 !important;
+  color:#9ae9f5 !important;
+  border-color:#4ca8be !important;
+}
+
+/* DARK MODE MENU / 3-LINE PANEL — force every layer dark. */
+html[data-xs-theme="dark"] #bioDropdown,
+body[data-xs-theme="dark"] #bioDropdown,
+html.dark-mode #bioDropdown,
+body.dark-mode #bioDropdown,
+#bioDropdown.xs-dark-menu{
+  background:#050607 !important;
+  background-color:#050607 !important;
+  background-image:none !important;
+  color:#f4f7f5 !important;
+  border-left:1px solid #2a302d !important;
+  box-shadow:-18px 0 45px rgba(0,0,0,.65) !important;
+}
+
+html[data-xs-theme="dark"] #bioDropdown > *,
+body[data-xs-theme="dark"] #bioDropdown > *,
+html.dark-mode #bioDropdown > *,
+body.dark-mode #bioDropdown > *,
+#bioDropdown.xs-dark-menu > *{
+  background-color:transparent !important;
+}
+
+html[data-xs-theme="dark"] #bioDropdown .glass-panel,
+body[data-xs-theme="dark"] #bioDropdown .glass-panel,
+html.dark-mode #bioDropdown .glass-panel,
+body.dark-mode #bioDropdown .glass-panel,
+#bioDropdown.xs-dark-menu .glass-panel{
+  background:#0d1011 !important;
+  color:#f4f7f5 !important;
+  border-color:#303734 !important;
+}
+
+html[data-xs-theme="dark"] #bioDropdown a,
+html[data-xs-theme="dark"] #bioDropdown button,
+html[data-xs-theme="dark"] #bioDropdown span,
+html[data-xs-theme="dark"] #bioDropdown p,
+html[data-xs-theme="dark"] #bioDropdown h1,
+html[data-xs-theme="dark"] #bioDropdown h2,
+html[data-xs-theme="dark"] #bioDropdown h3,
+body[data-xs-theme="dark"] #bioDropdown a,
+body[data-xs-theme="dark"] #bioDropdown button,
+body[data-xs-theme="dark"] #bioDropdown span,
+body[data-xs-theme="dark"] #bioDropdown p,
+body[data-xs-theme="dark"] #bioDropdown h1,
+body[data-xs-theme="dark"] #bioDropdown h2,
+body[data-xs-theme="dark"] #bioDropdown h3,
+#bioDropdown.xs-dark-menu a,
+#bioDropdown.xs-dark-menu button,
+#bioDropdown.xs-dark-menu span,
+#bioDropdown.xs-dark-menu p,
+#bioDropdown.xs-dark-menu h1,
+#bioDropdown.xs-dark-menu h2,
+#bioDropdown.xs-dark-menu h3{
+  color:#f4f7f5 !important;
+}
+
+html[data-xs-theme="dark"] #bioDropdown .text-green-300,
+html[data-xs-theme="dark"] #bioDropdown .text-green-400,
+body[data-xs-theme="dark"] #bioDropdown .text-green-300,
+body[data-xs-theme="dark"] #bioDropdown .text-green-400,
+#bioDropdown.xs-dark-menu .text-green-300,
+#bioDropdown.xs-dark-menu .text-green-400{
+  color:#8fe8ac !important;
+}
+
+@media(max-width:640px){
+  #apiList .xs-category-header{
+    min-height:108px !important;
+    padding:18px 20px !important;
+    border-width:2.5px !important;
+    margin-bottom:10px !important;
+  }
+
+  #apiList .xs-endpoint-row,
+  #apiList .endpoint-card,
+  #apiList .api-card{
+    border-width:2px !important;
+    border-radius:999px !important;
+    margin:7px 0 !important;
+    padding:12px !important;
+  }
+
+  #apiList .xs-detail-surface{
+    border-radius:18px !important;
+    padding:10px 12px !important;
+  }
+
+  #apiList .xs-codebox,
+  #apiList pre,
+  #apiList code{
+    border-radius:14px !important;
+    padding:12px !important;
+    margin:8px 0 !important;
+    font-size:12px !important;
+    line-height:1.6 !important;
+  }
+}
+</style>
+
+<script id="xs-pedia-v3-dom-fix">
+(function(){
+  function isEndpoint(el){
+    return !!(el && el.matches && el.matches('.endpoint-card, .api-card'));
+  }
+
+  function rectArea(el){
+    try {
+      var r = el.getBoundingClientRect();
+      return {w:r.width,h:r.height,area:r.width*r.height};
+    } catch(e){ return {w:0,h:0,area:0}; }
+  }
+
+  function pickCategoryHeader(category){
+    var all = Array.from(category.querySelectorAll('*'));
+    var categoryWidth = rectArea(category).w || window.innerWidth * 0.9;
+    var candidates = all.filter(function(el){
+      if (!el || isEndpoint(el)) return false;
+      if (el.closest('.endpoint-card, .api-card')) return false;
+      var txt = (el.textContent || '').replace(/\s+/g,' ').trim();
+      if (!/\b\d+\s+endpoints?\b/i.test(txt)) return false;
+      var r = rectArea(el);
+      return r.w >= categoryWidth * 0.70 && r.h >= 65 && r.h <= 190;
+    });
+
+    candidates.sort(function(a,b){
+      return rectArea(a).area - rectArea(b).area;
+    });
+
+    if (candidates.length) return candidates[0];
+
+    var direct = Array.from(category.children).filter(function(el){
+      return !isEndpoint(el) && !el.querySelector('.endpoint-card, .api-card');
+    });
+    if (direct.length) return direct[0];
+
+    return null;
+  }
+
+  function markDetailSurface(pre){
+    var endpoint = pre.closest('.endpoint-card, .api-card');
+    if (!endpoint) return;
+
+    var endpointWidth = rectArea(endpoint).w || window.innerWidth;
+    var chain = [];
+    var node = pre.parentElement;
+    while (node && node !== endpoint && chain.length < 5){
+      var r = rectArea(node);
+      if (r.w >= endpointWidth * 0.72 && r.h >= 80 && !isEndpoint(node)) chain.push({el:node,r:r});
+      node = node.parentElement;
+    }
+
+    if (!chain.length) return;
+    chain.sort(function(a,b){ return a.r.area - b.r.area; });
+    var chosen = chain[0].el;
+    chosen.classList.add('xs-detail-surface');
+  }
+
+  function enhance(){
+    var list = document.getElementById('apiList');
+    if (!list) return;
+
+    Array.from(list.children).forEach(function(category){
+      category.classList.add('xs-category');
+
+      var header = pickCategoryHeader(category);
+      if (header) header.classList.add('xs-category-header');
+
+      category.querySelectorAll('.endpoint-card, .api-card').forEach(function(card){
+        card.classList.add('xs-endpoint-row');
+      });
+
+      category.querySelectorAll('pre').forEach(function(pre){
+        pre.classList.add('xs-codebox');
+        markDetailSurface(pre);
+      });
+    });
+  }
+
+  function syncTheme(){
+    var html = document.documentElement;
+    var body = document.body;
+    if (!html || !body) return;
+
+    var dark = html.classList.contains('dark-mode') ||
+               body.classList.contains('dark-mode') ||
+               html.classList.contains('dark') ||
+               body.classList.contains('dark') ||
+               html.getAttribute('data-xs-theme') === 'dark' ||
+               body.getAttribute('data-xs-theme') === 'dark';
+
+    var theme = dark ? 'dark' : 'light';
+    html.setAttribute('data-xs-theme', theme);
+    body.setAttribute('data-xs-theme', theme);
+
+    var menu = document.getElementById('bioDropdown');
+    if (menu) menu.classList.toggle('xs-dark-menu', dark);
+  }
+
+  function runAll(){
+    syncTheme();
+    enhance();
+  }
+
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', runAll, {once:true});
+  } else {
+    runAll();
+  }
+
+  var list = document.getElementById('apiList');
+  if (list){
+    new MutationObserver(function(){ enhance(); }).observe(list, {childList:true,subtree:true});
+  } else {
+    document.addEventListener('DOMContentLoaded', function(){
+      var liveList = document.getElementById('apiList');
+      if (liveList) new MutationObserver(function(){ enhance(); }).observe(liveList,{childList:true,subtree:true});
+    }, {once:true});
+  }
+
+  new MutationObserver(function(){ syncTheme(); }).observe(document.documentElement,{attributes:true,attributeFilter:['class','data-xs-theme']});
+  new MutationObserver(function(){ syncTheme(); }).observe(document.body,{attributes:true,attributeFilter:['class','data-xs-theme']});
+
+  window.addEventListener('resize', enhance);
+})();
+</script>
+
 </body>
 </html>
     `);
