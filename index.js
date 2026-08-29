@@ -3079,19 +3079,6 @@ app.get('/docs', (req, res) => {
     .scrollbar-hide::-webkit-scrollbar { display: none; }
     .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-    #cyber-loader-overlay {
-        position: fixed; inset: 0; z-index: 99999;
-        background:#f7f3e8; color:#17251e;
-        display:flex; flex-direction:column; align-items:center; justify-content:center;
-        transition:opacity .18s ease, visibility .18s ease;
-    }
-    #cyber-loader-overlay.fade-out { opacity:0; visibility:hidden; pointer-events:none; }
-    .scanner-beam,.ring-outer,.ring-middle,.ring-inner { display:none !important; }
-    .hud-ring { width:64px; height:64px; display:flex; align-items:center; justify-content:center; margin-bottom:14px !important; }
-    .hud-avatar { width:48px; height:48px; border-radius:14px; object-fit:cover; border:2px solid #1f2b24; box-shadow:3px 3px 0 #b9c8b7; }
-    .animated-dots::after { content:'...'; display:inline-block; width:1.5em; animation:none !important; }
-    .neon-progress-bar { background:#2f9b59 !important; box-shadow:none !important; transition:none !important; }
-
 .cyber-popup-bg {
   background-color: #010811;
   background-image: radial-gradient(circle at 50% 30%, #031e36 0%, #010811 80%);
@@ -3137,40 +3124,6 @@ app.get('/docs', (req, res) => {
 </style>
 </head>
 <body class="min-h-screen antialiased text-slate-900 relative">
-
-<div id="cyber-loader-overlay">
-    <div class="scanner-beam"></div>
-
-    <div class="hud-ring mb-6">
-        <div class="ring-outer"></div>
-        <div class="ring-middle"></div>
-        <div class="ring-inner"></div>
-        <img src="https://arulz-xd.my.id/files/Q2C70y.png" alt="Logo" class="hud-avatar">
-    </div>
-
-    <div class="text-center px-4">
-        <div id="loader-title-text" class="text-sm font-extrabold tracking-widest uppercase text-cyan-400 code-font mb-1">
-            Memuat Halaman<span class="animated-dots"></span>
-        </div>
-        <div class="text-[10px] text-slate-400 font-mono tracking-wider opacity-80 uppercase">
-            SYSTEM INITIALIZING // CORE GATEWAY
-        </div>
-    </div>
-
-    <div class="w-64 sm:w-80 mt-6">
-        <div class="flex items-center justify-between text-xs font-bold code-font mb-2">
-            <span class="text-slate-400 text-[10px]">SYSTEM STATUS</span>
-            <span id="loader-percentage" class="text-cyan-400 text-sm">0%</span>
-        </div>
-        <div class="w-full h-2 bg-slate-900/90 rounded-full border border-cyan-500/30 overflow-hidden p-0.5">
-            <div id="loader-progress-fill" class="h-full rounded-full neon-progress-bar w-0"></div>
-        </div>
-    </div>
-
-    <div class="absolute bottom-6 text-[10px] font-mono text-slate-500 uppercase tracking-widest">
-        XS-PEDIA API v2.0
-    </div>
-</div>
 
 <div id="themeBg" class="fixed inset-0 -z-10"></div>
 
@@ -3419,12 +3372,6 @@ body.dark-mode #themeBg,
   background-image:none !important;
 }
 
-html.dark-mode #cyber-loader-overlay,
-body.dark-mode #cyber-loader-overlay,
-.dark-mode #cyber-loader-overlay{
-  background:#000 !important;
-  color:#f4f1e8 !important;
-}
 
 html.dark-mode .glass-panel,
 body.dark-mode .glass-panel,
@@ -4259,95 +4206,8 @@ function fetchUserProfile() {
             fetchUserProfile();
         });
 
-        function getPageDisplayName() {
-            const path = window.location.pathname;
-            let fileName = path.split('/').pop().replace('.html', '').toLowerCase();
 
-            if (!fileName || fileName === '' || fileName === 'index') return 'Home';
 
-            const pageMap = {
-                'home': 'Home',
-                'docs': 'Dokumentasi',
-                'doc': 'Dokumentasi',
-                'status': 'Status Server',
-                'store': 'Store API',
-                'changelog': 'Changelog',
-                'uploader': 'Uploader File',
-                'pastecode': 'Pastecode',
-                'feedback': 'Feedback',
-                'privacy': 'Kebijakan Privasi',
-                'support': 'Dukungan Support',
-                'login': 'Halaman Login'
-            };
-
-            if (pageMap[fileName]) return pageMap[fileName];
-            return fileName.charAt(0).toUpperCase() + fileName.slice(1);
-        }
-
-        const pageName = getPageDisplayName();
-        const loaderTitleEl = document.getElementById('loader-title-text');
-        if (loaderTitleEl) {
-            loaderTitleEl.innerHTML = 'Memuat ' + pageName + '<span class="animated-dots"></span>';
-        }
-
-        let currentProgress = 0;
-        let hasFinishedLoading = false;
-        const progressFill = document.getElementById('loader-progress-fill');
-        const percentageText = document.getElementById('loader-percentage');
-        const loaderOverlay = document.getElementById('cyber-loader-overlay');
-
-        function updateProgress(targetVal) {
-            currentProgress = Math.min(Math.max(currentProgress, targetVal), 100);
-            if (progressFill) progressFill.style.width = currentProgress + '%';
-            if (percentageText) percentageText.innerText = Math.floor(currentProgress) + '%';
-        }
-
-        function hideLoaderImmediately() {
-            if (!loaderOverlay) return;
-            loaderOverlay.classList.add('fade-out');
-            loaderOverlay.style.display = 'none';
-        }
-
-        function finishLoader() {
-            if (hasFinishedLoading) return;
-            hasFinishedLoading = true;
-            updateProgress(100);
-            try { sessionStorage.setItem('xs_pedia_loader_seen', '1'); } catch (_) {}
-            if (loaderOverlay) {
-                loaderOverlay.classList.add('fade-out');
-                setTimeout(() => { loaderOverlay.style.display = 'none'; }, 180);
-            }
-        }
-
-        let hasSeenLoader = false;
-        try { hasSeenLoader = sessionStorage.getItem('xs_pedia_loader_seen') === '1'; } catch (_) {}
-
-        if (hasSeenLoader) {
-            hideLoaderImmediately();
-            hasFinishedLoading = true;
-        } else {
-            updateProgress(35);
-            document.addEventListener('DOMContentLoaded', () => {
-                updateProgress(70);
-                const list = document.getElementById('apiList');
-                if (list) {
-                    const showWhenReady = () => {
-                        if (list.children.length > 0) {
-                            observer.disconnect();
-                            finishLoader();
-                        }
-                    };
-                    const observer = new MutationObserver(showWhenReady);
-                    observer.observe(list, { childList:true, subtree:true });
-                    showWhenReady();
-                }
-                // Fast fallback only if the page has no endpoint list to populate.
-                setTimeout(() => {
-                    if (!document.getElementById('apiList')?.children.length) finishLoader();
-                }, 900);
-            }, { once:true });
-        }
-</script>
 
 
 
@@ -4603,11 +4463,6 @@ body[data-xs-theme="dark"] #themeBg{
   background-image:none !important;
 }
 
-html[data-xs-theme="dark"] #cyber-loader-overlay,
-body[data-xs-theme="dark"] #cyber-loader-overlay{
-  background:#000000 !important;
-  color:#f6f7f4 !important;
-}
 
 html[data-xs-theme="dark"] .glass-panel,
 body[data-xs-theme="dark"] .glass-panel{
