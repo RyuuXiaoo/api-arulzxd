@@ -3288,291 +3288,217 @@ app.get('/docs', (req, res) => {
 </style>
 
 
-<style id="comic-response-theme">
-/* === Comic bright-green response / endpoint theme === */
+<!-- CLEAN COMIC API UI PATCH -->
+<style id="clean-comic-api-ui">
 :root{
-  --comic-bg:#f3eddc;
-  --comic-paper:#fffdf5;
-  --comic-paper-2:#f7f1df;
-  --comic-ink:#1f2b24;
-  --comic-stroke:#17251e;
-  --comic-green:#2d8a52;
-  --comic-green-2:#69c96f;
-  --comic-green-3:#bfe8ae;
-  --comic-yellow:#f0c84b;
+  --api-paper:#fffdf7;
+  --api-paper-2:#f3ead8;
+  --api-ink:#17231d;
+  --api-stroke:#17231d;
+  --api-green:#17683a;
+  --api-green-soft:#bfe8c8;
 }
 
-/* Cards / boxes on the API list: less washed-out, stronger comic outline */
-#apiList > *,
-#apiList .glass-panel,
-#apiList [class*="bg-slate-"],
-#apiList [class*="bg-gray-"],
-#apiList [class*="bg-zinc-"],
-#apiList [class*="bg-neutral-"],
-#apiList [class*="bg-[#"],
-#apiList .endpoint-card,
-#apiList .api-card,
-#apiList .response-card,
-#apiList .response-box,
-#apiList .response-container,
-#apiList .result-box,
-#apiList .result-container,
-#apiList .server-response{
-  border-color:var(--comic-stroke) !important;
+/* Only the main API cards get an outline. Inner wrappers stay flat. */
+#apiList > *{
+  background:var(--api-paper) !important;
+  color:var(--api-ink) !important;
+  border:2.5px solid var(--api-stroke) !important;
+  border-radius:999px !important;
+  box-shadow:4px 4px 0 rgba(23,35,29,.14) !important;
+  overflow:hidden !important;
 }
 
-/* Category / endpoint cards */
-#apiList .endpoint-card,
-#apiList .api-card,
-#apiList [class*="rounded"][class*="border"]{
-  box-shadow:4px 4px 0 rgba(23,37,30,.16) !important;
+#apiList > * div,
+#apiList > * section,
+#apiList > * article{
+  box-shadow:none !important;
 }
 
-/* Response containers that contain <pre> / JSON output */
+/* Remove accidental nested card/border layers inside an endpoint. */
+#apiList > * .rounded-lg,
+#apiList > * .rounded-xl,
+#apiList > * .rounded-2xl,
+#apiList > * .rounded-3xl{
+  box-shadow:none !important;
+}
+
+/* Request + response columns: one box only, same surface as the main card. */
 #apiList div:has(> pre),
 #apiList section:has(> pre),
-#apiList article:has(> pre),
-#apiList div:has(pre),
-#apiList section:has(pre),
-#apiList article:has(pre){
-  background:var(--comic-paper) !important;
-  color:var(--comic-ink) !important;
-  border:2px solid var(--comic-stroke) !important;
-  box-shadow:5px 5px 0 rgba(23,37,30,.18) !important;
+#apiList article:has(> pre){
+  background:var(--api-paper) !important;
+  color:var(--api-ink) !important;
+  border:2px solid var(--api-stroke) !important;
+  border-radius:22px !important;
+  box-shadow:none !important;
+  padding:12px 14px !important;
 }
 
+/* Code is no longer a second card inside request/response. */
 #apiList pre,
 #apiList code{
-  background:var(--comic-paper-2) !important;
-  color:#244b32 !important;
-  border-color:var(--comic-stroke) !important;
+  display:block !important;
+  background:transparent !important;
+  color:#213129 !important;
+  border:0 !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+  margin:0 !important;
+  padding:0 !important;
+  font-family:'JetBrains Mono',monospace !important;
+  font-size:12.5px !important;
+  line-height:1.65 !important;
+  white-space:pre-wrap !important;
+  overflow-wrap:anywhere !important;
+  word-break:break-word !important;
+}
+
+/* Keep URL/cURL/code text tidy and readable. */
+#apiList [class*="font-mono"]{
+  font-family:'JetBrains Mono',monospace !important;
+  overflow-wrap:anywhere !important;
+  word-break:break-word !important;
   text-shadow:none !important;
 }
 
-#apiList pre{
-  border:1.5px solid #415247 !important;
-  border-radius:14px !important;
-}
-
-/* Server response title / labels */
-#apiList [class*="response"] h1,
-#apiList [class*="response"] h2,
-#apiList [class*="response"] h3,
-#apiList [class*="response"] h4,
-#apiList [class*="response"] p,
-#apiList [class*="response"] span,
-#apiList [class*="response"] label{
-  text-shadow:none !important;
-}
-
-/* Don't allow explicit dark Tailwind utility backgrounds to win in light/comic mode */
-.light-mode #apiList [class*="bg-black"],
-.light-mode #apiList [class*="bg-slate-9"],
-.light-mode #apiList [class*="bg-slate-8"],
-.light-mode #apiList [class*="bg-gray-9"],
-.light-mode #apiList [class*="bg-zinc-9"]{
-  background:var(--comic-paper) !important;
-  color:var(--comic-ink) !important;
-  border-color:var(--comic-stroke) !important;
-}
-
-/* Request/response metadata boxes */
-#apiList [class*="status"],
-#apiList [class*="method"],
-#apiList [class*="time"],
-#apiList [class*="size"]{
-  text-shadow:none !important;
-}
-
-/* Buttons stay colorful but receive a comic outline */
-#apiList button,
-#apiList a[class*="button"],
-#apiList [role="button"]{
-  border:2px solid var(--comic-stroke) !important;
-  box-shadow:3px 3px 0 rgba(23,37,30,.16) !important;
-}
-
-/* Green, readable text accents */
+/* Strong contrast for the green status / labels. */
 #apiList .text-green-300,
 #apiList .text-green-400,
 #apiList .text-emerald-300,
 #apiList .text-emerald-400{
-  color:#2f8a52 !important;
+  color:var(--api-green) !important;
+  font-weight:900 !important;
+  text-shadow:0 1px 0 rgba(255,255,255,.6) !important;
 }
 
-/* Make the API list background feel warm instead of hospital-white */
-#apiList{
-  color:var(--comic-ink) !important;
+#apiList [class*="bg-green"],
+#apiList [class*="bg-emerald"]{
+  border-color:#28764a !important;
+  color:#12572e !important;
 }
 
-/* Mobile: keep outlines visible but avoid oversized cards */
-@media(max-width:640px){
-  #apiList > *{ border-width:2px !important; }
-  #apiList pre{ font-size:12px !important; line-height:1.65 !important; }
-}
-</style>
-
-<!-- Final comic readability overrides -->
-<style id="comic-final-overrides">
-:root{
-  --comic-ink:#18211d;
-  --comic-stroke:#17231d;
-  --comic-paper:#fffdf7;
-  --comic-paper-2:#f3ead8;
-  --comic-accent:#2fa866;
-  --comic-accent-dark:#216b42;
-}
-
-/* Warm light comic canvas: green only as an accent, never as the whole background */
-body{
-  background:
-    radial-gradient(circle at 20% 0%,rgba(47,168,102,.10),transparent 30%),
-    radial-gradient(circle at 100% 20%,rgba(245,224,170,.18),transparent 28%),
-    #f7f3e8 !important;
-  color:var(--comic-ink) !important;
-}
-
-/* Stable outline in both theme modes */
-#apiList > *,
-#apiList .endpoint-card,
-#apiList .api-card,
-#apiList [class*="rounded"][class*="border"],
-#apiList .response-card,
-#apiList .response-box,
-#apiList .response-container,
-#apiList .result-box,
-#apiList .server-response,
-#apiList div:has(> pre),
-#apiList section:has(> pre),
-#apiList article:has(> pre){
-  background:var(--comic-paper) !important;
-  border:2.5px solid var(--comic-stroke) !important;
-  border-radius:24px !important;
-  outline:none !important;
-  box-shadow:5px 5px 0 rgba(23,35,29,.16) !important;
-  color:var(--comic-ink) !important;
-}
-
-/* Endpoint rows: more breathing room and darker readable text */
-#apiList .endpoint-card,
-#apiList .api-card{
-  padding-top:14px !important;
-  padding-bottom:14px !important;
-  margin-bottom:10px !important;
-}
-#apiList .endpoint-card *,
-#apiList .api-card *{
-  text-shadow:none !important;
-}
-#apiList .endpoint-card h1,
-#apiList .endpoint-card h2,
-#apiList .endpoint-card h3,
-#apiList .endpoint-card h4,
-#apiList .endpoint-card .font-bold,
-#apiList .api-card h1,
-#apiList .api-card h2,
-#apiList .api-card h3,
-#apiList .api-card h4,
-#apiList .api-card .font-bold{
-  color:#17231d !important;
-  font-weight:800 !important;
-}
-#apiList .endpoint-card a,
-#apiList .api-card a,
-#apiList [class*="font-mono"]{
-  color:#2b7f4c !important;
-}
-
-/* Common Tailwind text utilities must remain readable in light comic mode */
-#apiList .text-white,
-#apiList .text-slate-100,
-#apiList .text-slate-200,
-#apiList .text-slate-300,
-#apiList .text-gray-100,
-#apiList .text-gray-200,
-#apiList .text-gray-300,
-#apiList [class*="text-cyan-1"],
-#apiList [class*="text-cyan-2"],
-#apiList [class*="text-cyan-3"]{
-  color:#223129 !important;
-}
-
-/* GET / FREE / READY / MAINTENANCE badges: strong contrast */
+/* Buttons/chips: outlined pills without creating extra card layers. */
 #apiList button,
-#apiList [class*="badge"],
-#apiList [class*="status"]{
-  text-shadow:none !important;
-}
-#apiList .text-green-300,#apiList .text-green-400,#apiList .text-emerald-300,#apiList .text-emerald-400{
-  color:#1f7a43 !important;
-}
-#apiList .text-cyan-300,#apiList .text-cyan-400{
-  color:#086f7b !important;
-}
-
-/* If a badge contains FREE / READY text, darken the actual text */
-#apiList span[class*="bg-"],
-#apiList div[class*="bg-"]{
-  text-shadow:none !important;
-}
-
-/* Response JSON: warm paper, dark ink, comfortable line spacing */
-#apiList pre,
-#apiList code{
-  background:#f1eadb !important;
-  color:#1d2a23 !important;
-  border:0 !important;
-  border-radius:16px !important;
-  font-size:13px !important;
-  line-height:1.75 !important;
-  padding:16px !important;
-  white-space:pre-wrap !important;
-  overflow-wrap:anywhere !important;
-}
-
-/* Request/response nested boxes keep rounded comic corners */
-#apiList .rounded-lg,#apiList .rounded-xl,#apiList .rounded-2xl,#apiList .rounded-3xl,#apiList .rounded-full{
-  border-radius:20px !important;
-}
-
-/* Category chips */
-.category-scroll{
-  gap:12px !important;
-  padding:6px 2px 14px !important;
-  scrollbar-width:none !important;
-}
-.category-scroll::-webkit-scrollbar{display:none !important;}
-.category-scroll .filter-btn{
-  flex:0 0 auto !important;
-  border:2.5px solid var(--comic-stroke) !important;
-  background:#fffdf7 !important;
-  color:#24342b !important;
+#apiList [role="button"],
+#apiList a[class*="copy"],
+#apiList [aria-label*="copy" i],
+#apiList [title*="copy" i]{
+  border:2px solid var(--api-stroke) !important;
   border-radius:999px !important;
-  box-shadow:4px 4px 0 rgba(23,35,29,.12) !important;
-  padding:10px 18px !important;
-}
-.category-scroll .filter-btn.active{
-  background:#5ad17b !important;
-  color:#13241a !important;
-  border-color:var(--comic-stroke) !important;
+  box-shadow:3px 3px 0 rgba(23,35,29,.13) !important;
 }
 
-/* Both dark/light classes use the same comic outline */
-.dark-mode #apiList > *,
-.dark-mode #apiList .endpoint-card,
-.dark-mode #apiList .api-card,
-.dark-mode #apiList [class*="rounded"][class*="border"],
-.light-mode #apiList > *,
-.light-mode #apiList .endpoint-card,
-.light-mode #apiList .api-card,
-.light-mode #apiList [class*="rounded"][class*="border"]{
-  border-color:var(--comic-stroke) !important;
+/* Dark mode: true black wallpaper, not cream. */
+html.dark-mode,
+body.dark-mode,
+.dark-mode{
+  --api-paper:#0d0f0e;
+  --api-paper-2:#0d0f0e;
+  --api-ink:#f4f1e8;
+  --api-stroke:#e8e3d7;
+  --api-green:#7ee2a1;
+  background:#000 !important;
+  background-color:#000 !important;
+  background-image:radial-gradient(rgba(255,255,255,.08) 1.1px,transparent 1.1px) !important;
+  background-size:18px 18px !important;
+  color:#f4f1e8 !important;
+}
+
+html.dark-mode:before,
+body.dark-mode:before,
+.dark-mode:before{
+  display:none !important;
+}
+
+html.dark-mode #themeBg,
+body.dark-mode #themeBg,
+.dark-mode #themeBg{
+  background:#000 !important;
+  background-color:#000 !important;
+  background-image:none !important;
+}
+
+html.dark-mode #cyber-loader-overlay,
+body.dark-mode #cyber-loader-overlay,
+.dark-mode #cyber-loader-overlay{
+  background:#000 !important;
+  color:#f4f1e8 !important;
+}
+
+html.dark-mode .glass-panel,
+body.dark-mode .glass-panel,
+.dark-mode .glass-panel{
+  background:#0b0d0c !important;
+  border-color:rgba(232,227,215,.18) !important;
+  color:#f4f1e8 !important;
+}
+
+html.dark-mode #apiList > *,
+body.dark-mode #apiList > *,
+.dark-mode #apiList > *{
+  background:#0d0f0e !important;
+  color:#f4f1e8 !important;
+  border-color:#e8e3d7 !important;
+  box-shadow:4px 4px 0 rgba(0,0,0,.85) !important;
+}
+
+html.dark-mode #apiList div:has(> pre),
+html.dark-mode #apiList section:has(> pre),
+html.dark-mode #apiList article:has(> pre),
+body.dark-mode #apiList div:has(> pre),
+body.dark-mode #apiList section:has(> pre),
+body.dark-mode #apiList article:has(> pre),
+.dark-mode #apiList div:has(> pre),
+.dark-mode #apiList section:has(> pre),
+.dark-mode #apiList article:has(> pre){
+  background:#0d0f0e !important;
+  color:#f4f1e8 !important;
+  border-color:#e8e3d7 !important;
+}
+
+html.dark-mode #apiList pre,
+html.dark-mode #apiList code,
+body.dark-mode #apiList pre,
+body.dark-mode #apiList code,
+.dark-mode #apiList pre,
+.dark-mode #apiList code{
+  background:transparent !important;
+  color:#f4f1e8 !important;
+}
+
+html.dark-mode #apiList .text-green-300,
+html.dark-mode #apiList .text-green-400,
+html.dark-mode #apiList .text-emerald-300,
+html.dark-mode #apiList .text-emerald-400,
+body.dark-mode #apiList .text-green-300,
+body.dark-mode #apiList .text-green-400,
+body.dark-mode #apiList .text-emerald-300,
+body.dark-mode #apiList .text-emerald-400,
+.dark-mode #apiList .text-green-300,
+.dark-mode #apiList .text-green-400,
+.dark-mode #apiList .text-emerald-300,
+.dark-mode #apiList .text-emerald-400{
+  color:#7ee2a1 !important;
+  text-shadow:0 1px 0 rgba(0,0,0,.7) !important;
 }
 
 @media(max-width:640px){
-  #apiList > *{border-radius:22px !important;}
-  #apiList .endpoint-card,#apiList .api-card{margin-bottom:11px !important;}
-  #apiList pre{font-size:12px !important;line-height:1.7 !important;padding:14px !important;}
+  #apiList > *{
+    border-width:2px !important;
+    border-radius:999px !important;
+  }
+  #apiList div:has(> pre),
+  #apiList section:has(> pre),
+  #apiList article:has(> pre){
+    border-radius:18px !important;
+    padding:10px 12px !important;
+  }
+  #apiList pre,
+  #apiList code{
+    font-size:12px !important;
+    line-height:1.6 !important;
+  }
 }
 </style>
 
@@ -4423,233 +4349,6 @@ function fetchUserProfile() {
         }
 </script>
 
-
-<!-- FINAL COMIC CONTRAST / DARK MODE PATCH -->
-<style id="comic-final-patch">
-:root{
-  --ink:#172019;
-  --ink-soft:#3c4a40;
-  --paper:#fffdf7;
-  --paper-2:#f5efe1;
-  --line:#172019;
-  --green:#2e9d58;
-  --green-dark:#21673c;
-  --cream:#efe6d5;
-}
-
-/* LIGHT MODE: warm paper, crisp ink, no washed-out green text */
-html,body,.light-mode{
-  color:var(--ink) !important;
-}
-body{
-  background:
-    radial-gradient(circle at 12% 8%,rgba(255,255,255,.8),transparent 22%),
-    radial-gradient(circle at 88% 12%,rgba(244,235,213,.75),transparent 24%),
-    #f3ecdf !important;
-}
-body:before{
-  opacity:.08 !important;
-  background-image:radial-gradient(#1d2a22 1px,transparent 1px) !important;
-  background-size:18px 18px !important;
-}
-
-/* DARK MODE: black + subtle dots only. No green background wash. */
-.dark-mode{
-  background-color:#070807 !important;
-  background-image:radial-gradient(rgba(255,255,255,.10) 1.2px,transparent 1.2px) !important;
-  background-size:18px 18px !important;
-  color:#f5f2e9 !important;
-}
-.dark-mode:before{
-  display:none !important;
-}
-.dark-mode .glass-panel,
-.dark-mode #apiList > *,
-.dark-mode #apiList .endpoint-card,
-.dark-mode #apiList .api-card,
-.dark-mode #apiList [class*="bg-slate-"],
-.dark-mode #apiList [class*="bg-gray-"],
-.dark-mode #apiList [class*="bg-zinc-"],
-.dark-mode #apiList [class*="bg-neutral-"]{
-  background:#0d0f0e !important;
-  color:#f4f1e8 !important;
-  border-color:#e8e3d7 !important;
-  box-shadow:4px 4px 0 rgba(0,0,0,.75) !important;
-}
-.dark-mode #apiList .endpoint-card h1,
-.dark-mode #apiList .endpoint-card h2,
-.dark-mode #apiList .endpoint-card h3,
-.dark-mode #apiList .endpoint-card h4,
-.dark-mode #apiList .api-card h1,
-.dark-mode #apiList .api-card h2,
-.dark-mode #apiList .api-card h3,
-.dark-mode #apiList .api-card h4,
-.dark-mode #apiList .font-bold,
-.dark-mode #apiList .text-white,
-.dark-mode #apiList .text-slate-100,
-.dark-mode #apiList .text-slate-200,
-.dark-mode #apiList .text-slate-300{
-  color:#fffdf7 !important;
-}
-.dark-mode #apiList .endpoint-card a,
-.dark-mode #apiList .api-card a,
-.dark-mode #apiList [class*="font-mono"]{
-  color:#f2eee3 !important;
-}
-.dark-mode #apiList pre,
-.dark-mode #apiList code{
-  background:#111311 !important;
-  color:#f4f0e6 !important;
-  border-color:#e8e3d7 !important;
-}
-.dark-mode .filter-btn{
-  background:#101211 !important;
-  color:#f3efe5 !important;
-  border-color:#e8e3d7 !important;
-  box-shadow:3px 3px 0 rgba(0,0,0,.75) !important;
-}
-.dark-mode .filter-btn.active{
-  background:#f1ece1 !important;
-  color:#111510 !important;
-  border-color:#f1ece1 !important;
-}
-
-/* CATEGORY + ENDPOINT CARDS: rounded comic shape, never square */
-#apiList > *{
-  border:3px solid var(--line) !important;
-  border-radius:28px !important;
-  overflow:hidden !important;
-  box-shadow:6px 6px 0 rgba(23,32,25,.18) !important;
-  margin-bottom:18px !important;
-}
-#apiList .endpoint-card,
-#apiList .api-card{
-  border:2.5px solid var(--line) !important;
-  border-radius:24px !important;
-  overflow:hidden !important;
-  margin-bottom:14px !important;
-  padding:18px 16px !important;
-}
-#apiList .endpoint-card > *:first-child,
-#apiList .api-card > *:first-child{
-  border-top-left-radius:20px !important;
-  border-top-right-radius:20px !important;
-}
-#apiList .endpoint-card > *:last-child,
-#apiList .api-card > *:last-child{
-  border-bottom-left-radius:20px !important;
-  border-bottom-right-radius:20px !important;
-}
-
-/* Endpoint typography: strong enough to read on cream */
-#apiList .endpoint-card h1,#apiList .endpoint-card h2,#apiList .endpoint-card h3,#apiList .endpoint-card h4,
-#apiList .api-card h1,#apiList .api-card h2,#apiList .api-card h3,#apiList .api-card h4{
-  color:#202a24 !important;
-  text-shadow:none !important;
-}
-#apiList .endpoint-card a,#apiList .api-card a,
-#apiList .endpoint-card [class*="font-mono"],#apiList .api-card [class*="font-mono"]{
-  color:#235f3a !important;
-  font-weight:800 !important;
-  text-shadow:none !important;
-}
-
-/* READY / FREE / GET / MAINTENANCE: explicit contrast */
-#apiList [class*="status"],#apiList [class*="badge"],#apiList [class*="method"]{
-  text-shadow:none !important;
-  font-weight:900 !important;
-  letter-spacing:.25px !important;
-}
-#apiList .text-green-300,#apiList .text-green-400,#apiList .text-emerald-300,#apiList .text-emerald-400{
-  color:#17683a !important;
-}
-#apiList .text-cyan-300,#apiList .text-cyan-400{
-  color:#005867 !important;
-}
-#apiList span[class*="bg-green"],#apiList span[class*="bg-emerald"],#apiList div[class*="bg-green"],#apiList div[class*="bg-emerald"]{
-  background:#d9f0dd !important;
-  color:#145b32 !important;
-  border:2px solid #2a7d4a !important;
-  border-radius:999px !important;
-  padding-left:10px !important;
-  padding-right:10px !important;
-}
-#apiList [class*="bg-cyan"]{
-  color:#003f49 !important;
-}
-
-/* Give every endpoint row actual breathing room */
-#apiList .endpoint-card > div,
-#apiList .api-card > div{
-  margin-bottom:8px !important;
-}
-#apiList .endpoint-card > div:last-child,
-#apiList .api-card > div:last-child{
-  margin-bottom:0 !important;
-}
-
-/* COPY / RESPONSE controls: clean separation and alignment */
-#apiList button,
-#apiList a[class*="copy"],
-#apiList [class*="copy"],
-#apiList [aria-label*="copy" i],
-#apiList [title*="copy" i]{
-  margin:6px 0 !important;
-  min-height:42px !important;
-  border-radius:999px !important;
-  padding:10px 16px !important;
-  gap:10px !important;
-  line-height:1.2 !important;
-  white-space:nowrap !important;
-  border:2px solid var(--line) !important;
-  box-shadow:3px 3px 0 rgba(23,32,25,.16) !important;
-}
-#apiList .copy-container,
-#apiList .copy-controls,
-#apiList .response-actions,
-#apiList .response-buttons{
-  display:flex !important;
-  flex-wrap:wrap !important;
-  align-items:center !important;
-  gap:12px !important;
-  margin-top:14px !important;
-  padding-top:12px !important;
-}
-
-/* Response box: same rounded silhouette as its category */
-#apiList div:has(> pre),
-#apiList section:has(> pre),
-#apiList article:has(> pre),
-#apiList div:has(pre),
-#apiList section:has(pre),
-#apiList article:has(pre){
-  background:var(--paper) !important;
-  color:var(--ink) !important;
-  border:3px solid var(--line) !important;
-  border-radius:28px !important;
-  overflow:hidden !important;
-  box-shadow:6px 6px 0 rgba(23,32,25,.18) !important;
-}
-#apiList pre,#apiList code{
-  background:var(--paper-2) !important;
-  color:#18221c !important;
-  border:2px solid #38453c !important;
-  border-radius:18px !important;
-  margin:12px !important;
-  padding:18px !important;
-  line-height:1.8 !important;
-  white-space:pre-wrap !important;
-  overflow-wrap:anywhere !important;
-}
-
-@media(max-width:640px){
-  #apiList > *{border-width:2.5px !important;border-radius:26px !important;margin-bottom:18px !important}
-  #apiList .endpoint-card,#apiList .api-card{border-width:2.5px !important;border-radius:22px !important;padding:16px 14px !important;margin-bottom:14px !important}
-  #apiList .endpoint-card > div,#apiList .api-card > div{margin-bottom:10px !important}
-  #apiList pre,#apiList code{margin:10px !important;padding:14px !important;font-size:12px !important;border-radius:16px !important}
-  #apiList button,#apiList a[class*="copy"],#apiList [class*="copy"]{min-height:40px !important;padding:9px 14px !important}
-}
-</style>
 
 </body>
 </html>
