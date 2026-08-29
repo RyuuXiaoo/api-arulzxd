@@ -4423,6 +4423,234 @@ function fetchUserProfile() {
         }
 </script>
 
+
+<!-- FINAL COMIC CONTRAST / DARK MODE PATCH -->
+<style id="comic-final-patch">
+:root{
+  --ink:#172019;
+  --ink-soft:#3c4a40;
+  --paper:#fffdf7;
+  --paper-2:#f5efe1;
+  --line:#172019;
+  --green:#2e9d58;
+  --green-dark:#21673c;
+  --cream:#efe6d5;
+}
+
+/* LIGHT MODE: warm paper, crisp ink, no washed-out green text */
+html,body,.light-mode{
+  color:var(--ink) !important;
+}
+body{
+  background:
+    radial-gradient(circle at 12% 8%,rgba(255,255,255,.8),transparent 22%),
+    radial-gradient(circle at 88% 12%,rgba(244,235,213,.75),transparent 24%),
+    #f3ecdf !important;
+}
+body:before{
+  opacity:.08 !important;
+  background-image:radial-gradient(#1d2a22 1px,transparent 1px) !important;
+  background-size:18px 18px !important;
+}
+
+/* DARK MODE: black + subtle dots only. No green background wash. */
+.dark-mode{
+  background-color:#070807 !important;
+  background-image:radial-gradient(rgba(255,255,255,.10) 1.2px,transparent 1.2px) !important;
+  background-size:18px 18px !important;
+  color:#f5f2e9 !important;
+}
+.dark-mode:before{
+  display:none !important;
+}
+.dark-mode .glass-panel,
+.dark-mode #apiList > *,
+.dark-mode #apiList .endpoint-card,
+.dark-mode #apiList .api-card,
+.dark-mode #apiList [class*="bg-slate-"],
+.dark-mode #apiList [class*="bg-gray-"],
+.dark-mode #apiList [class*="bg-zinc-"],
+.dark-mode #apiList [class*="bg-neutral-"]{
+  background:#0d0f0e !important;
+  color:#f4f1e8 !important;
+  border-color:#e8e3d7 !important;
+  box-shadow:4px 4px 0 rgba(0,0,0,.75) !important;
+}
+.dark-mode #apiList .endpoint-card h1,
+.dark-mode #apiList .endpoint-card h2,
+.dark-mode #apiList .endpoint-card h3,
+.dark-mode #apiList .endpoint-card h4,
+.dark-mode #apiList .api-card h1,
+.dark-mode #apiList .api-card h2,
+.dark-mode #apiList .api-card h3,
+.dark-mode #apiList .api-card h4,
+.dark-mode #apiList .font-bold,
+.dark-mode #apiList .text-white,
+.dark-mode #apiList .text-slate-100,
+.dark-mode #apiList .text-slate-200,
+.dark-mode #apiList .text-slate-300{
+  color:#fffdf7 !important;
+}
+.dark-mode #apiList .endpoint-card a,
+.dark-mode #apiList .api-card a,
+.dark-mode #apiList [class*="font-mono"]{
+  color:#f2eee3 !important;
+}
+.dark-mode #apiList pre,
+.dark-mode #apiList code{
+  background:#111311 !important;
+  color:#f4f0e6 !important;
+  border-color:#e8e3d7 !important;
+}
+.dark-mode .filter-btn{
+  background:#101211 !important;
+  color:#f3efe5 !important;
+  border-color:#e8e3d7 !important;
+  box-shadow:3px 3px 0 rgba(0,0,0,.75) !important;
+}
+.dark-mode .filter-btn.active{
+  background:#f1ece1 !important;
+  color:#111510 !important;
+  border-color:#f1ece1 !important;
+}
+
+/* CATEGORY + ENDPOINT CARDS: rounded comic shape, never square */
+#apiList > *{
+  border:3px solid var(--line) !important;
+  border-radius:28px !important;
+  overflow:hidden !important;
+  box-shadow:6px 6px 0 rgba(23,32,25,.18) !important;
+  margin-bottom:18px !important;
+}
+#apiList .endpoint-card,
+#apiList .api-card{
+  border:2.5px solid var(--line) !important;
+  border-radius:24px !important;
+  overflow:hidden !important;
+  margin-bottom:14px !important;
+  padding:18px 16px !important;
+}
+#apiList .endpoint-card > *:first-child,
+#apiList .api-card > *:first-child{
+  border-top-left-radius:20px !important;
+  border-top-right-radius:20px !important;
+}
+#apiList .endpoint-card > *:last-child,
+#apiList .api-card > *:last-child{
+  border-bottom-left-radius:20px !important;
+  border-bottom-right-radius:20px !important;
+}
+
+/* Endpoint typography: strong enough to read on cream */
+#apiList .endpoint-card h1,#apiList .endpoint-card h2,#apiList .endpoint-card h3,#apiList .endpoint-card h4,
+#apiList .api-card h1,#apiList .api-card h2,#apiList .api-card h3,#apiList .api-card h4{
+  color:#202a24 !important;
+  text-shadow:none !important;
+}
+#apiList .endpoint-card a,#apiList .api-card a,
+#apiList .endpoint-card [class*="font-mono"],#apiList .api-card [class*="font-mono"]{
+  color:#235f3a !important;
+  font-weight:800 !important;
+  text-shadow:none !important;
+}
+
+/* READY / FREE / GET / MAINTENANCE: explicit contrast */
+#apiList [class*="status"],#apiList [class*="badge"],#apiList [class*="method"]{
+  text-shadow:none !important;
+  font-weight:900 !important;
+  letter-spacing:.25px !important;
+}
+#apiList .text-green-300,#apiList .text-green-400,#apiList .text-emerald-300,#apiList .text-emerald-400{
+  color:#17683a !important;
+}
+#apiList .text-cyan-300,#apiList .text-cyan-400{
+  color:#005867 !important;
+}
+#apiList span[class*="bg-green"],#apiList span[class*="bg-emerald"],#apiList div[class*="bg-green"],#apiList div[class*="bg-emerald"]{
+  background:#d9f0dd !important;
+  color:#145b32 !important;
+  border:2px solid #2a7d4a !important;
+  border-radius:999px !important;
+  padding-left:10px !important;
+  padding-right:10px !important;
+}
+#apiList [class*="bg-cyan"]{
+  color:#003f49 !important;
+}
+
+/* Give every endpoint row actual breathing room */
+#apiList .endpoint-card > div,
+#apiList .api-card > div{
+  margin-bottom:8px !important;
+}
+#apiList .endpoint-card > div:last-child,
+#apiList .api-card > div:last-child{
+  margin-bottom:0 !important;
+}
+
+/* COPY / RESPONSE controls: clean separation and alignment */
+#apiList button,
+#apiList a[class*="copy"],
+#apiList [class*="copy"],
+#apiList [aria-label*="copy" i],
+#apiList [title*="copy" i]{
+  margin:6px 0 !important;
+  min-height:42px !important;
+  border-radius:999px !important;
+  padding:10px 16px !important;
+  gap:10px !important;
+  line-height:1.2 !important;
+  white-space:nowrap !important;
+  border:2px solid var(--line) !important;
+  box-shadow:3px 3px 0 rgba(23,32,25,.16) !important;
+}
+#apiList .copy-container,
+#apiList .copy-controls,
+#apiList .response-actions,
+#apiList .response-buttons{
+  display:flex !important;
+  flex-wrap:wrap !important;
+  align-items:center !important;
+  gap:12px !important;
+  margin-top:14px !important;
+  padding-top:12px !important;
+}
+
+/* Response box: same rounded silhouette as its category */
+#apiList div:has(> pre),
+#apiList section:has(> pre),
+#apiList article:has(> pre),
+#apiList div:has(pre),
+#apiList section:has(pre),
+#apiList article:has(pre){
+  background:var(--paper) !important;
+  color:var(--ink) !important;
+  border:3px solid var(--line) !important;
+  border-radius:28px !important;
+  overflow:hidden !important;
+  box-shadow:6px 6px 0 rgba(23,32,25,.18) !important;
+}
+#apiList pre,#apiList code{
+  background:var(--paper-2) !important;
+  color:#18221c !important;
+  border:2px solid #38453c !important;
+  border-radius:18px !important;
+  margin:12px !important;
+  padding:18px !important;
+  line-height:1.8 !important;
+  white-space:pre-wrap !important;
+  overflow-wrap:anywhere !important;
+}
+
+@media(max-width:640px){
+  #apiList > *{border-width:2.5px !important;border-radius:26px !important;margin-bottom:18px !important}
+  #apiList .endpoint-card,#apiList .api-card{border-width:2.5px !important;border-radius:22px !important;padding:16px 14px !important;margin-bottom:14px !important}
+  #apiList .endpoint-card > div,#apiList .api-card > div{margin-bottom:10px !important}
+  #apiList pre,#apiList code{margin:10px !important;padding:14px !important;font-size:12px !important;border-radius:16px !important}
+  #apiList button,#apiList a[class*="copy"],#apiList [class*="copy"]{min-height:40px !important;padding:9px 14px !important}
+}
+</style>
+
 </body>
 </html>
     `);
